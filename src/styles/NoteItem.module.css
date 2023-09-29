@@ -1,7 +1,15 @@
-.Image {
+.ImageListPage {
     height: 200px;
     width: 200px;
     margin-bottom: 10%;
+    object-fit: contain;
+}
+
+.ImageDetailPage {
+    height: 450px;
+    width: 450px;
+    margin-bottom: 10%;
+    object-fit: contain;
 }
 
 .Link {
@@ -17,10 +25,17 @@
     color: #b6b6b6;
 }
 
-.Container {
+.ContainerList {
     text-align: center;
     background-color: #282828;
     margin: 5% 30%;
+    color: #b6b6b6;
+}
+
+.ContainerDetail {
+    text-align: center;
+    background-color: #282828;
+    /* margin: 5% 30%; */
     color: #b6b6b6;
 }
 

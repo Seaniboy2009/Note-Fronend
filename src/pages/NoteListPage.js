@@ -6,17 +6,13 @@ import Form from 'react-bootstrap/Form';
 import appStyle from '../styles/App.module.css'
 import { DefaultURL } from '../api/DefaultURL';
 
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
 const NoteListPage = () => {
     const [notes, setNotes] = useState([])
     const [hasLoaded, setHasLoaded] = useState(false)
-    const navigate = useNavigate()
-    const imageInput = useRef(null)
-    const [formData, setFormData] = useState({
-      title: '',
-      image: '',
-    });
-
-    const { title } = formData;
 
     useEffect(() => {
       const getNotes = async () => {
@@ -26,15 +22,12 @@ const NoteListPage = () => {
         setHasLoaded(true)
      }
       
-      // Set a timer to call the get notes after x seconds
       const timer = setTimeout(() => {
         getNotes()
       }, 1000)
 
-      // Set has loaded to false
       setHasLoaded(false)
 
-      // clear the timer
       return () => {
         clearTimeout(timer)
       }
@@ -42,21 +35,35 @@ const NoteListPage = () => {
 
   return (
     <div className={appStyle.Container}>
-      <h3>NoteListPage</h3>
-      <br/>
-      <Link to={'note/create'}>
-        <button>Create</button>
-      </Link>
-      {hasLoaded ? (
-          <div className={appStyle.Notes}>
-            {notes?.map((note, index) => (
-                <NoteItem key={index} {...note} />
-            ))}
-          </div>
-        ) : (
-          <h3>Loading...</h3>
-        )
-      }
+      <Container>
+        <Row>
+          <Col><h3>NoteListPage</h3></Col>
+        </Row>
+        <Row>
+          <Col>
+            <Link to={'note/create'}>
+              <button>Create</button>
+            </Link>
+          </Col>
+        </Row>
+      </Container>
+      <Container>
+          {hasLoaded ? (
+            <Row>
+              {notes?.map((note, index) => (
+                <Col md="auto">
+                  <NoteItem key={index} {...note} />
+                </Col>
+              ))}
+            </Row>
+          ) : (
+            <Row>
+              <Col md="auto">
+                <h3>Loading...</h3>
+              </Col>
+            </Row>
+          )}
+      </Container>
     </div>
   )
 }

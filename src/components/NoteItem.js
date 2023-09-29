@@ -23,11 +23,20 @@ const NoteItem = ( props ) => {
     navigate('/')
   }
 
-  const details = (
+  const listPage = (
     <div>
       <p>Title: {title}</p>
       <p>Created on: {created}</p>
-      <img src={image} className={style.Image} />
+      <img src={image} className={style.ImageListPage} />
+      <br/>
+    </div>
+  )
+
+  const detailsPage = (
+    <div>
+      <p>Title: {title}</p>
+      <p>Created on: {created}</p>
+      <img src={image} className={style.ImageDetailPage} />
       <br/>
     </div>
   )
@@ -35,8 +44,8 @@ const NoteItem = ( props ) => {
   return (
     <div>
         {notePage ? (
-        <div className={style.Container}>
-          {details}
+        <div className={style.ContainerDetail}>
+          {detailsPage}
           <div className={style.ButtonContainer}> 
             <Link to={'/'}>
               <button className={style.Button}>Back</button>
@@ -46,9 +55,9 @@ const NoteItem = ( props ) => {
           </div>
         </div>
         ) : (
-          <div>
+          <div className={style.Container}>
             <Link to={`note/${id}`} className={style.Link}>
-              {details}
+              {listPage}
             </Link>
           </div>
         )}
