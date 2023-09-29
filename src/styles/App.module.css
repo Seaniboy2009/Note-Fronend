@@ -1,0 +1,9 @@
+.Container {
+    margin-top: 20px;
+    display: block;
+    padding: 0 1%;
+}
+
+.Notes {
+    display: flex;
+}

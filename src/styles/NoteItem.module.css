@@ -1,0 +1,17 @@
+.Image {
+    height: 150px;
+    width: 150px;
+}
+
+.Link {
+    text-align: center;
+    text-decoration: none;
+    color: black;
+    padding: 1%;
+}
+
+.Link:hover > div {
+    text-decoration: none;
+    background-color: rgb(167, 167, 167);
+    color: rgb(0, 0, 0);
+}

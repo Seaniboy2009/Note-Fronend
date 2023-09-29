@@ -1,0 +1,22 @@
+.Header {
+    display: flex;
+    margin: auto;
+    width: 100%;
+    text-align: center;
+    background-color: #282828;
+    color: #b6b6b6;
+}
+
+p {
+    font-size: 120%;
+    padding: 0 10px;
+    margin: 0;
+}
+
+.ServerConnected {
+    color: #0dc72c;
+}
+
+.ServerNotConnected {
+    color: #d11717;
+}
