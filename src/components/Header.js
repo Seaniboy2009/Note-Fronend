@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import style from '../styles/Header.module.css'
+import { DefaultURL } from '../api/DefaultURL';
 
 const Header = () => {
   const [online, setOnline] = useState(false)
@@ -9,7 +10,7 @@ const Header = () => {
   useEffect(() => {
     const checkServer = async () => {
       console.log('Check server called')
-      const response = await fetch('/api/notes/')
+      const response = await fetch(`${DefaultURL}/api/notes/`)
       const data = await response.json()
       console.log(response)
       if (response.status === 200) {

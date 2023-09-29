@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import style from '../styles/NoteItem.module.css'
+import { DefaultURL } from '../api/DefaultURL';
 
 const NoteItem = ( props ) => {
   const {
@@ -13,7 +14,7 @@ const NoteItem = ( props ) => {
   const navigate = useNavigate()
 
   const handleDelete = async () => {
-    fetch(`/api/notes/${id}/detail/`, {
+    fetch(`${DefaultURL}/api/notes/${id}/detail/`, {
       method: 'DELETE',
       'headers': {
         'Content-Type': 'application/json'

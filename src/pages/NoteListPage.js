@@ -4,6 +4,7 @@ import NoteItem from '../components/NoteItem'
 import axios from 'axios';
 import Form from 'react-bootstrap/Form';
 import appStyle from '../styles/App.module.css'
+import { DefaultURL } from '../api/DefaultURL';
 
 const NoteListPage = () => {
     const [notes, setNotes] = useState([])
@@ -19,7 +20,7 @@ const NoteListPage = () => {
 
     useEffect(() => {
       const getNotes = async () => {
-        const response = await fetch('/api/notes/')
+        const response = await fetch(`${DefaultURL}/api/notes/`)
         const data = await response.json()
         setNotes(data)
         setHasLoaded(true)

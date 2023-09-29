@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from "react-router-dom"
 import NoteItem from '../components/NoteItem'
+import { DefaultURL } from '../api/DefaultURL';
 
 const NotePage = () => {
   const { id } = useParams()
@@ -8,7 +9,7 @@ const NotePage = () => {
 
   useEffect(() => {
     const getNotes = async () => {
-      const response = await fetch(`/api/notes/${id}`)
+      const response = await fetch(`${DefaultURL}/api/notes/${id}`)
       const data = await response.json()
       setNote(data)
       console.log(data)
