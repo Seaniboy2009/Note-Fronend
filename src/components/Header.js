@@ -15,7 +15,6 @@ const Header = () => {
       console.log(response)
       if (response.status === 200) {
         setOnline(true)
-        setCount(prevCount => prevCount + 1)
         setNoteCount(data.length)
         document.getElementById('status').className = style.ServerConnected
       } else {
@@ -24,16 +23,19 @@ const Header = () => {
       }
     }
 
+    const checkCount = () => setCount(prevCount => prevCount + 1)
+
     const timer = setTimeout(() => {
       checkServer()
-      // checkNoteCount()
     }, 1000);
 
-    const interval = setInterval(checkServer, 60000);
+    const interval = setInterval(checkServer, 600000);
+    const count = setInterval(checkCount, 60000);
 
     return () => {
       clearTimeout(timer)
       clearInterval(interval)
+      clearInterval(count)
     }
   }, [])
 
@@ -45,10 +47,19 @@ const Header = () => {
     <p>Not Connected: <i className="fa-solid fa-dice-d20"></i></p>
   )
 
+  const minute = () => {
+    if(count == 1) {
+      return 'minute'
+    } else {
+      return 'minutes'
+    }
+  }
+
+
   return (
     <div className={style.Header}>
       <p>Home</p>
-      <p>Connected for: {count} Minutes</p>
+      <p>Connected for: {count} {minute()}</p>
       <p>Notes: {noteCount}</p>
       <p id='status' className={style.ServerNotConnected}> 
       {online ? (

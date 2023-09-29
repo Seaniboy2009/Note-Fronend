@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams } from "react-router-dom"
 import NoteItem from '../components/NoteItem'
 import { DefaultURL } from '../api/DefaultURL';
+import style from '../styles/NotePage.module.css'
 
 const NotePage = () => {
   const { id } = useParams()
@@ -27,9 +28,7 @@ const NotePage = () => {
   }, [])
 
   return (
-    <div>
-      <NoteItem {...note} notePage />
-    </div>
+    <NoteItem {...note} notePage />
   )
 }
 

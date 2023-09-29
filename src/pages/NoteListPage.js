@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import NoteItem from '../components/NoteItem'
 import axios from 'axios';
 import Form from 'react-bootstrap/Form';
@@ -40,55 +40,13 @@ const NoteListPage = () => {
       }
     }, [])
 
-    const createNote = async () => {
-      const formData  = new FormData()
-
-      formData.append('title', title)
-      formData.append('image', imageInput.current.files[0])
-
-      try {
-        await axios.post("https://note-backend-api-19a13319c6ea.herokuapp.com/api/notes/create/", formData)
-        
-      } catch (error) {
-        console.log(error)
-      }
-      navigate('/')
-    }
-
-    const updateNote = (event) => {
-      setFormData({...formData, title: event.target.value})
-    }
-
-    const handleChangeImage = (event) => {
-
-      setFormData({
-          ...formData,
-          image: URL.createObjectURL(event.target.files[0]),
-      });
-  };
-
   return (
     <div className={appStyle.Container}>
-      <div>
-        <Form.Group className="mb-3">
-        <Form.Label htmlFor="inputPassword5">Title</Form.Label>
-        <Form.Control
-          type="text"
-          id="title"
-          aria-describedby="title"
-          onChange={updateNote}
-        />
-        <Form.Label>Image</Form.Label>
-        <Form.Control 
-          type="file"
-          onChange={handleChangeImage}
-          ref={imageInput}
-        />
-        </Form.Group>
-      </div>
       <h3>NoteListPage</h3>
       <br/>
-      <button onClick={createNote}>Create</button>
+      <Link to={'note/create'}>
+        <button>Create</button>
+      </Link>
       {hasLoaded ? (
           <div className={appStyle.Notes}>
             {notes?.map((note, index) => (

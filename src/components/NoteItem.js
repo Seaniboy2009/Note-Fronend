@@ -35,20 +35,22 @@ const NoteItem = ( props ) => {
   return (
     <div>
         {notePage ? (
-          <>
+        <div className={style.Container}>
           {details}
-          <Link to={'/'}>
-            Back
-          </Link>
-          <button onClick={handleDelete}>Delete</button>
-          <button>Edit</button>
-        </>
+          <div className={style.ButtonContainer}> 
+            <Link to={'/'}>
+              <button className={style.Button}>Back</button>
+            </Link>
+            <button className={style.Button} onClick={handleDelete}>Delete</button>
+            <button className={style.Button}>Edit</button>
+          </div>
+        </div>
         ) : (
-          <>
+          <div>
             <Link to={`note/${id}`} className={style.Link}>
               {details}
             </Link>
-          </>
+          </div>
         )}
     </div>
   )

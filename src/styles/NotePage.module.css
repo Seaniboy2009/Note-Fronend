@@ -1,0 +1,12 @@
+.Container {
+    margin-top: 20px;
+    display: block;
+    padding: 0 1%;
+    text-align: center;
+}
+
+.Button {
+    background-color: aliceblue;
+    color: aliceblue;
+    border: 1px solid;
+}
