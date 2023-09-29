@@ -47,7 +47,7 @@ const NoteListPage = () => {
       formData.append('image', imageInput.current.files[0])
 
       try {
-        await axios.post("/api/notes/create/", formData)
+        await axios.post("https://note-backend-api-19a13319c6ea.herokuapp.com/api/notes/create/", formData)
         
       } catch (error) {
         console.log(error)
