@@ -1,10 +1,28 @@
 .Container {
-    margin-top: 20px;
-    display: block;
-    padding: 0 1%;
-    margin: 0 15%;
+    background-color: #100000;
+    color: #9d0913;
+    height: 100vh;
+    bottom: 0;
 }
 
 .Notes {
     display: flex;
+}
+
+.Max {
+    height: 100vh;
+}
+
+.Button {
+    background-color: #9d0913;
+    color: #100000;
+    border: 2px solid #9d0913;
+    font-size: 150%;
+}
+
+.Button:hover {
+    background-color: #100000;
+    color: #9d0913;
+    border: 2px solid #9d0913;
+    font-size: 150%;
 }

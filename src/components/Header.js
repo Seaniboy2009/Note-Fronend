@@ -45,11 +45,11 @@ const Header = () => {
   }, [])
 
   const connectedText = (
-    <h3 className={style.ServerConnected}>Connected: <i className="fa-solid fa-dice-d20"></i></h3>
+    <h4 className={style.ServerConnected}>Connected: <i className="fa-solid fa-dice-d20"></i></h4>
   )
 
   const notConnectedText = (
-    <h3 className={style.ServerNotConnected}>Not Connected: <i className="fa-solid fa-dice-d20"></i></h3>
+    <h4 className={style.ServerNotConnected}>Not Connected: <i className="fa-solid fa-dice-d20"></i></h4>
   )
 
   const minute = () => {
@@ -62,7 +62,7 @@ const Header = () => {
 
 
   return (
-    <Container className={style.Header}>
+    <Container fluid className={style.Header}>
       <Row>
         <Link className={style.Link} to={'/'}>Home</Link>
         <Link className={style.Link} to={'notes/'}>Notes</Link>

@@ -1,7 +1,8 @@
 .Header {
     text-align: center;
-    background-color: #282828;
-    color: #b6b6b6;
+    background-color: #100000;
+    border-bottom: 1px solid #9d0913;
+    color: #9d0913;
 }
 
 p {
@@ -11,22 +12,22 @@ p {
 }
 
 .Link {
-    color: #b6b6b6;
+    color: #9d0913;
     font-size: 130%;
     text-decoration: none;
     padding: 0 2%;
 }
 
 .Link:hover {
-    color: #cccccc;
+    color: #470307;
     font-size: 130%;
     text-decoration: none;
 }
 
 .ServerConnected {
-    color: #0dc72c;
+    color: #9d0913;
 }
 
 .ServerNotConnected {
-    color: #d11717;
+    color: #231672;
 }

@@ -6,10 +6,11 @@ import NoteCreate from './pages/NoteCreate';
 import ListPage from './pages/ListPage';
 import HomePage from './pages/HomePage';
 import ListDetailPage from './pages/ListDetailPage';
+import appStyle from './styles/App.module.css'
 
 function App() {
   return (
-    <div>
+    <div className={appStyle.Max}>
       <Header />
       <Routes>
         <Route exact path='/' element={<HomePage />} />

@@ -3,6 +3,7 @@ import { APIURL } from '../api/APIURL';
 import React, { useEffect, useState } from 'react'
 import style from '../styles/ListPage.module.css'
 import { useParams } from "react-router-dom"
+import appStyle from '../styles/App.module.css'
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -13,21 +14,18 @@ const ListDetailPage = () => {
     const { id } = useParams()
     const [list, setList] = useState({ results: []})
     const [items, setItems] = useState({ results: []})
-    const [listItems, setListItems] = useState({ results: []})
     const [hasLoaded, setHasLoaded] = useState(false)
 
     useEffect(() => {
         const getLists = async () => {
             console.log('Get list detail called')
-            const [ {data: list}, {data: items}, {data: listitems}] = await Promise.all([
+            const [ {data: list}, {data: items}] = await Promise.all([
                 axios.get(`${APIURL}/api/list/${id}`),
-                axios.get(`${APIURL}/api/listitem/`),
                 axios.get(`${APIURL}/api/listitem/?list=${id}`)
             ])
-            console.log(list, items, listitems)
+            console.log(list, items)
             setList(list)
             setItems(items)
-            setListItems(listitems)
             setHasLoaded(true)
         }
 
@@ -45,34 +43,35 @@ const ListDetailPage = () => {
     }, [])
 
   return (
-    <div>
+    <Container fluid className={appStyle.Container}>
         {hasLoaded ? (
             <>
-            {console.log(list, items, listItems)}
-            <p>{list.id}</p>
-            <p>{list.title}</p>
+            <Row>
+                <Col xs={2}>
+                    <Link to={'/lists/'}>Lists</Link>
+                </Col>
+                <Col >
+                    <h3>{list.title}</h3>
+                </Col>
+            </Row>
+            {console.log(list, items)}
             {items.results.map((item, index) => (
                 <>
-                <p>{item.id}</p>
-                <p>{item.content}</p>
+                <Row key={index + 1 }>
+                    <Col xs={2}>
+                        <p>Delete</p>
+                    </Col>
+                    <Col >
+                        <p>#{index + 1}:{item.content}</p>
+                    </Col>
+                </Row>
                 </>
             ))}
-            {/* <Row key={list.results.id} className={style.List}>
-                <Col>
-                    <h3 className={style.ListDetails}># {list.results.id}</h3>
-                </Col>
-                <Col>
-                    <h3 className={style.ListDetails}>List: {list.results.id}</h3>
-                </Col>
-                <Col>
-                    <i className='fa-solid fa-bars'/>
-                </Col>
-            </Row> */}
             </>
-        ) : ('Not loaded')}
+        ) : (<h3>Loading...</h3>)}
 
 
-    </div>
+    </Container>
   )
 }
 

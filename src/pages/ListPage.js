@@ -2,6 +2,7 @@ import axios from 'axios'
 import { APIURL } from '../api/APIURL';
 import React, { useEffect, useState } from 'react'
 import style from '../styles/ListPage.module.css'
+import appStyle from '../styles/App.module.css'
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -32,42 +33,35 @@ const ListPage = () => {
 
 
   return (
-    <Container className={style.Container}>
-        <Row fluid>
-            <Col>
-                <h3>Lists</h3>
-            </Col>
-        </Row>
-        <Row fluid>
-            <Col>
-                <h3>Number</h3>
-            </Col>
-            <Col>
-                <h3>Name</h3>
-            </Col>
-            <Col>
-                <h3>Edit</h3>
-            </Col>
-        </Row>
-        {lists ? (
-            <>
-            {lists?.results.map((list, index) => (
-                <Link to={`list/${list.id}`}>
-                    <Row key={index} className={style.List}>
-                        <Col>
-                            <h3 className={style.ListDetails}># {list.id}</h3>
-                        </Col>
-                        <Col>
-                            <h3 className={style.ListDetails}>List: {list.title}</h3>
-                        </Col>
-                        <Col>
-                            <i className='fa-solid fa-bars'/>
-                        </Col>
-                    </Row>
-                </Link>
-            ))}
-            </>
-        ) : ('No lists')}
+    <Container fluid className={`text-center ${appStyle.Container}`}>
+        <Container>
+            <Row fluid>
+                <Col>
+                    <h3>Lists</h3>
+                </Col>
+            </Row>
+        </Container>
+        <Container>
+                {lists ? (
+                    <>
+                    {lists?.results.map((list, index) => (
+                        <Link to={`list/${list.id}`}>
+                            <Row key={index} className={style.List}>
+                                <Col xs={2}>
+                                    <h5 className={style.ListDetails}># {list.id}</h5>
+                                </Col>
+                                <Col xs={8}>
+                                    <h4 className={style.ListDetails}>{list.title}</h4>
+                                </Col>
+                                <Col>
+                                    <i className='fa-solid fa-bars'/>
+                                </Col>
+                            </Row>
+                        </Link>
+                    ))}
+                    </>
+            ) : ('No lists')}
+        </Container>
     </Container>
   )
 }

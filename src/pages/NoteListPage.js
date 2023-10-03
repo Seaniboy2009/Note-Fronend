@@ -11,6 +11,7 @@ import Col from 'react-bootstrap/Col';
 const NoteListPage = () => {
     const [notes, setNotes] = useState([])
     const [hasLoaded, setHasLoaded] = useState(false)
+  
 
     useEffect(() => {
       const getNotes = async () => {
@@ -40,7 +41,7 @@ const NoteListPage = () => {
         <Row>
           <Col>
             <Link to={'note/create'}>
-              <button>Create</button>
+              <button className={appStyle.Button}>Create</button>
             </Link>
           </Col>
         </Row>
