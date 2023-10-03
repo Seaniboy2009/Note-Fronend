@@ -1,12 +1,16 @@
 .Container {
-    margin-top: 20px;
     display: block;
-    padding: 0 1%;
     text-align: center;
+    background-color: #100000;
+    color: #9d0913;
 }
 
 .Button {
     background-color: #100000;
     color: #9d0913;
     border: 1px solid;
+}
+
+.Row {
+    background-color: #100000;
 }

@@ -22,10 +22,9 @@
 }
 
 
-
 .Link:hover > div {
     text-decoration: none;
-    background-color: #100000;
+    background-color: #470307;
     color: #9d0913;
 }
 

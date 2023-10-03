@@ -17,12 +17,12 @@
     background-color: #9d0913;
     color: #100000;
     border: 2px solid #9d0913;
-    font-size: 150%;
+    font-size: 100%;
+    padding: 2px;
 }
 
 .Button:hover {
     background-color: #100000;
     color: #9d0913;
     border: 2px solid #9d0913;
-    font-size: 150%;
 }

@@ -3,7 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import style from '../styles/NoteItem.module.css'
 import appStyle from '../styles/App.module.css'
 import { APIURL } from '../api/APIURL';
-import { Container } from 'react-bootstrap';
+
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 const NoteItem = ( props ) => {
   const {
@@ -44,18 +47,24 @@ const NoteItem = ( props ) => {
   )
 
   return (
-    <Container fluid className={appStyle.Container}>
+    <Container>
         {notePage ? (
-        <div className={style.ContainerDetail}>
-          {detailsPage}
-          <div className={style.ButtonContainer}> 
-            <Link to={'/'}>
-              <button className={style.Button}>Back</button>
-            </Link>
-            <button className={style.Button} onClick={handleDelete}>Delete</button>
-            <button className={style.Button}>Edit</button>
-          </div>
-        </div>
+          <Container>
+            <Row className={style.ContainerDetail}>
+              <Col>
+              {detailsPage}
+              </Col>
+            </Row>
+            <Row className={style.ButtonContainer}> 
+              <Col>
+              <Link to={'/notes/'}>
+                <button className={style.Button}>Back</button>
+              </Link>
+              <button className={style.Button} onClick={handleDelete}>Delete</button>
+              <button className={style.Button}>Edit</button>
+              </Col>
+            </Row>
+          </Container>
         ) : (
           <div className={style.Container}>
             <Link to={`note/${id}`} className={style.Link}>

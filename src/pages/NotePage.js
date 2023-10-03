@@ -30,7 +30,9 @@ const NotePage = () => {
   }, [])
 
   return (
+    <Container fluid className={appStyle.Container}>
       <NoteItem key={id} {...note} notePage />
+    </Container>
   )
 }
 

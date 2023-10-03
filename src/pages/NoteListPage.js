@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import NoteItem from '../components/NoteItem'
 import appStyle from '../styles/App.module.css'
+import style from '../styles/NoteListPage.module.css'
 import { APIURL } from '../api/APIURL';
 
 import Container from 'react-bootstrap/Container';
@@ -33,37 +34,39 @@ const NoteListPage = () => {
     }, [])
 
   return (
-    <div className={appStyle.Container}>
-      <Container className='text-center'>
-        <Row>
-          <Col><h3>NoteListPage</h3></Col>
-        </Row>
+    <Container fluid className={appStyle.Container}>
+      <Container fluid className={style.Container}>
         <Row>
           <Col>
-            <Link to={'note/create'}>
-              <button className={appStyle.Button}>Create</button>
-            </Link>
+            <h4>Notes</h4>
           </Col>
+          {hasLoaded ? (
+            <Col>
+              <Link to={'note/create'}>
+                <button className={appStyle.Button}>Create</button>
+              </Link>
+            </Col>
+          ) : (<></>)}
         </Row>
       </Container>
       <Container>
-          {hasLoaded ? (
-            <Row>
-              {notes?.map((note, index) => (
+      {hasLoaded ? (
+        <Row>
+          {notes?.map((note, index) => (
                 <Col key={index} md="auto">
                   <NoteItem key={index} {...note} />
                 </Col>
-              ))}
-            </Row>
+          ))}
+          </Row>
           ) : (
             <Row>
-              <Col md="auto">
-                <h3>Loading...</h3>
+              <Col>
+                <h4>Loading...</h4>
               </Col>
-            </Row>
-          )}
+          </Row>
+      )}
       </Container>
-    </div>
+    </Container>
   )
 }
 
