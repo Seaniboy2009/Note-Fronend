@@ -33,7 +33,7 @@ const ListPage = () => {
 
 
   return (
-    <Container fluid className={`text-center ${appStyle.Container}`}>
+    <Container fluid className={appStyle.Container}>
         <Container>
             <Row fluid>
                 <Col>
@@ -47,11 +47,11 @@ const ListPage = () => {
                     {lists?.results.map((list, index) => (
                         <Link to={`list/${list.id}`}>
                             <Row key={index} className={style.List}>
-                                <Col xs={2}>
+                                <Col xs={3}>
                                     <h5 className={style.ListDetails}># {list.id}</h5>
                                 </Col>
-                                <Col xs={8}>
-                                    <h4 className={style.ListDetails}>{list.title}</h4>
+                                <Col xs={7}>
+                                    <h5 className={style.ListDetails}>{list.title}</h5>
                                 </Col>
                                 <Col>
                                     <i className='fa-solid fa-bars'/>

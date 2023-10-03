@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom"
 import NoteItem from '../components/NoteItem'
 import { APIURL } from '../api/APIURL';
 import style from '../styles/NotePage.module.css'
+import appStyle from '../styles/App.module.css'
+import { Container } from 'react-bootstrap';
 
 const NotePage = () => {
   const { id } = useParams()
@@ -28,7 +30,7 @@ const NotePage = () => {
   }, [])
 
   return (
-    <NoteItem key={id} {...note} notePage />
+      <NoteItem key={id} {...note} notePage />
   )
 }
 

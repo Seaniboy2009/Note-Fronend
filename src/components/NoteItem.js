@@ -1,7 +1,9 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import style from '../styles/NoteItem.module.css'
+import appStyle from '../styles/App.module.css'
 import { APIURL } from '../api/APIURL';
+import { Container } from 'react-bootstrap';
 
 const NoteItem = ( props ) => {
   const {
@@ -42,7 +44,7 @@ const NoteItem = ( props ) => {
   )
 
   return (
-    <div>
+    <Container fluid className={appStyle.Container}>
         {notePage ? (
         <div className={style.ContainerDetail}>
           {detailsPage}
@@ -61,7 +63,7 @@ const NoteItem = ( props ) => {
             </Link>
           </div>
         )}
-    </div>
+    </Container>
   )
 }
 

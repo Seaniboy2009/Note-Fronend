@@ -7,6 +7,7 @@
     background-color: #2b0000;
     border: 1px solid #9d0913;
     margin: .5% 0;
+    line-height: normal;
 }
 
 .ListDetails {
@@ -22,9 +23,10 @@
 a {
     text-decoration: none;
     color: #9d0913;
+    font-size: 140%;
 }
 
 a:hover {
     text-decoration: none;
-    color: #9d0913;
+    color: #470307;
 }

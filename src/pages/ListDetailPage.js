@@ -48,7 +48,7 @@ const ListDetailPage = () => {
             <>
             <Row>
                 <Col xs={2}>
-                    <Link to={'/lists/'}>Lists</Link>
+                    <Link to={'/lists/'}><i class="fa-solid fa-arrow-left" />&nbsp; Lists</Link>
                 </Col>
                 <Col >
                     <h3>{list.title}</h3>
