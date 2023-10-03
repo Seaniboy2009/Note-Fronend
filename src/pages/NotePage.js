@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from "react-router-dom"
 import NoteItem from '../components/NoteItem'
-import { DefaultURL } from '../api/DefaultURL';
+import { APIURL } from '../api/APIURL';
 import style from '../styles/NotePage.module.css'
 
 const NotePage = () => {
@@ -10,7 +10,7 @@ const NotePage = () => {
 
   useEffect(() => {
     const getNotes = async () => {
-      const response = await fetch(`${DefaultURL}/api/notes/${id}`)
+      const response = await fetch(`${APIURL}/api/notes/${id}`)
       const data = await response.json()
       setNote(data)
       console.log(data)
@@ -28,7 +28,7 @@ const NotePage = () => {
   }, [])
 
   return (
-    <NoteItem {...note} notePage />
+    <NoteItem key={id} {...note} notePage />
   )
 }
 

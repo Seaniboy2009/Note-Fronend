@@ -1,0 +1,19 @@
+.Container {
+    text-align: center;
+}
+
+.List {
+    background-color: #282828;
+    border: 1px solid #410000;
+    margin: .5% 0;
+}
+
+.ListDetails {
+    text-decoration: none;
+    color: #a9b6b6;
+}
+
+.ListDetails:hover, .List:hover {
+    text-decoration: none;
+    background-color: #410000;
+}

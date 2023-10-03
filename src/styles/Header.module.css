@@ -1,7 +1,4 @@
 .Header {
-    display: flex;
-    margin: auto;
-    width: 100%;
     text-align: center;
     background-color: #282828;
     color: #b6b6b6;
@@ -11,6 +8,19 @@ p {
     font-size: 120%;
     padding: 0 10px;
     margin: 0;
+}
+
+.Link {
+    color: #b6b6b6;
+    font-size: 130%;
+    text-decoration: none;
+    padding: 0 2%;
+}
+
+.Link:hover {
+    color: #cccccc;
+    font-size: 130%;
+    text-decoration: none;
 }
 
 .ServerConnected {

@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import style from '../styles/Header.module.css'
-import { DefaultURL } from '../api/DefaultURL';
+import { Link } from 'react-router-dom';
+import { APIURL } from '../api/APIURL';
+
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 const Header = () => {
   const [online, setOnline] = useState(false)
@@ -10,16 +15,16 @@ const Header = () => {
   useEffect(() => {
     const checkServer = async () => {
       console.log('Check server called')
-      const response = await fetch(`${DefaultURL}/api/notes/`)
+      const response = await fetch(`${APIURL}/api/notes/`)
       const data = await response.json()
       console.log(response)
       if (response.status === 200) {
         setOnline(true)
         setNoteCount(data.length)
-        document.getElementById('status').className = style.ServerConnected
+
       } else {
         setOnline(false)
-        document.getElementById('status').className = style.ServerNotConnected
+
       }
     }
 
@@ -40,11 +45,11 @@ const Header = () => {
   }, [])
 
   const connectedText = (
-      <p>Connected: <i className="fa-solid fa-dice-d20"></i></p>
+    <h3 className={style.ServerConnected}>Connected: <i className="fa-solid fa-dice-d20"></i></h3>
   )
 
   const notConnectedText = (
-    <p>Not Connected: <i className="fa-solid fa-dice-d20"></i></p>
+    <h3 className={style.ServerNotConnected}>Not Connected: <i className="fa-solid fa-dice-d20"></i></h3>
   )
 
   const minute = () => {
@@ -57,21 +62,24 @@ const Header = () => {
 
 
   return (
-    <div className={style.Header}>
-      <p>Home</p>
-      <p>Connected for: {count} {minute()}</p>
-      <p>Notes: {noteCount}</p>
-      <p id='status' className={style.ServerNotConnected}> 
-      {online ? (
-        <>
-          {connectedText}
-        </>
-        ) : (
+    <Container className={style.Header}>
+      <Row>
+        <Link className={style.Link} to={'/'}>Home</Link>
+        <Link className={style.Link} to={'notes/'}>Notes</Link>
+        <Link className={style.Link} to={'lists/'}>Lists</Link>
+        {/* <p>Connected for: {count} {minute()}</p> */}
+        {/* <p>Notes: {noteCount}</p> */}
+        {online ? (
           <>
-          {notConnectedText}
+            {connectedText}
           </>
-        )}</p>
-    </div>
+          ) : (
+            <>
+            {notConnectedText}
+            </>
+          )}
+      </Row>
+    </Container>
 
   )
 }

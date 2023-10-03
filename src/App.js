@@ -3,15 +3,21 @@ import NoteListPage from './pages/NoteListPage'
 import { Route, Routes } from 'react-router-dom'
 import NotePage from './pages/NotePage';
 import NoteCreate from './pages/NoteCreate';
+import ListPage from './pages/ListPage';
+import HomePage from './pages/HomePage';
+import ListDetailPage from './pages/ListDetailPage';
 
 function App() {
   return (
     <div>
       <Header />
       <Routes>
-        <Route path='/' element={<NoteListPage />} />
-        <Route path='note/:id' element={<NotePage />} />
-        <Route path='note/create' element={<NoteCreate />} />
+        <Route exact path='/' element={<HomePage />} />
+        <Route exact path='notes/' element={<NoteListPage />} />
+        <Route exact path='notes/note/:id' element={<NotePage />} />
+        <Route exact path='notes/note/create' element={<NoteCreate />} />
+        <Route path='lists/' element={<ListPage />} />
+        <Route path='lists/list/:id' element={<ListDetailPage />} />
       </Routes>
     </div>
   );
