@@ -29,21 +29,21 @@ const NoteItem = ( props ) => {
   }
 
   const listPage = (
-    <div>
+    <Col className={style.Text}>
       <p>Title: {title}</p>
-      <p>Created on: {created}</p>
+      <p>Created: {created}</p>
       <img src={image} className={style.ImageListPage} />
       <br/>
-    </div>
+    </Col>
   )
 
   const detailsPage = (
-    <div>
+    <Col className={style.Text}>
       <p>Title: {title}</p>
-      <p>Created on: {created}</p>
+      <p>Created: {created}</p>
       <img src={image} className={style.ImageDetailPage} />
-      <br/>
-    </div>
+      <p>Details:</p>
+    </Col>
   )
 
   return (
@@ -51,9 +51,7 @@ const NoteItem = ( props ) => {
         {notePage ? (
           <Container>
             <Row className={style.ContainerDetail}>
-              <Col>
               {detailsPage}
-              </Col>
             </Row>
             <Row className={style.ButtonContainer}> 
               <Col>
@@ -66,11 +64,13 @@ const NoteItem = ( props ) => {
             </Row>
           </Container>
         ) : (
-          <div className={style.Container}>
+          <Container className={style.Container}>
             <Link to={`note/${id}`} className={style.Link}>
-              {listPage}
+              <Row>
+                {listPage}
+              </Row>
             </Link>
-          </div>
+          </Container>
         )}
     </Container>
   )

@@ -24,7 +24,6 @@
     width: 100%;
 }
 
-
 .Link:hover > div {
     text-decoration: none;
     background-color: #470307;
@@ -44,6 +43,26 @@
     color: #9d0913;
 }
 
+.Text {
+    font-size: 70%;
+    text-align: left;
+}
+
+@media  screen and (max-width: 413px) {
+    .Text {
+        font-size: 100%;
+    }
+
+    .ImageDetailPage {
+        height: auto;
+        width: 95%;
+        margin-bottom: 10%;
+        object-fit: contain;
+    
+    }
+}
+
+
 /* .ButtonContainer {
     background-color: #100000;
     display: block;
@@ -61,3 +80,4 @@
     color: #9d0913;
     border: 1px solid #100000;
 } */
+
