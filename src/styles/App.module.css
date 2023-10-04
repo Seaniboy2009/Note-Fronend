@@ -13,15 +13,16 @@
     min-height: 100vh;
 }
 
-.Button {
+.Button, .ButtonLink {
     background-color: #9d0913;
     color: #100000;
     border: 2px solid #9d0913;
     font-size: 100%;
-    margin: 2px;
+    margin-bottom: 15px;
+    padding: 5px;
 }
 
-.Button:hover {
+.Button:hover, .ButtonLink:hover {
     background-color: #100000;
     color: #9d0913;
     border: 2px solid #9d0913;

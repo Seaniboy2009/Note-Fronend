@@ -4,6 +4,10 @@ import Form from 'react-bootstrap/Form';
 import axios from 'axios';
 import appStyle from '../styles/App.module.css'
 
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
 const NoteCreate = () => {
     const navigate = useNavigate()
     const imageInput = useRef(null)
@@ -40,17 +44,19 @@ const NoteCreate = () => {
     })}
 
   return (
-    <div className={appStyle.Container}>
-        <div>
-            <Form.Group className="mb-3">
-            <Form.Label htmlFor="title">Title</Form.Label>
+    <Container fluid className={appStyle.Container}>
+      <Container>
+      <Row fluid>
+          <Col>
+          <Form.Group className="mb-3">
+            <Form.Label htmlFor="title"><h4>Title</h4></Form.Label>
             <Form.Control
                 type="text"
                 id="title"
                 aria-describedby="title"
                 onChange={updateNote}
             />
-            <Form.Label htmlFor="image">Image</Form.Label>
+            <Form.Label htmlFor="image"><h4>Image</h4></Form.Label>
             <Form.Control
                 type="file"
                 id='image'
@@ -58,12 +64,20 @@ const NoteCreate = () => {
                 ref={imageInput}
             />
             </Form.Group>
-            <button onClick={createNote}>Create</button>
-            <Link to={'/'}>
-             <button>Back</button>
-            </Link>
-        </div>
-    </div>
+          </Col>
+        </Row>
+        <Row fluid>
+          <Col md={1}>
+            <button onClick={createNote} className={appStyle.Button}>Create</button>
+          </Col>
+        </Row>
+        <Row fluid>
+          <Col md={1}>
+            <Link to={'/'} className={appStyle.ButtonLink}>Back</Link>
+          </Col>
+        </Row>
+      </Container>
+    </Container>
   )
 }
 

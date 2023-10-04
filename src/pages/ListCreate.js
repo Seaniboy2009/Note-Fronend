@@ -5,6 +5,10 @@ import Form from 'react-bootstrap/Form';
 import axios from 'axios';
 import appStyle from '../styles/App.module.css'
 
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
 const ListCreate = () => {
     const navigate = useNavigate()
     const [formData, setFormData] = useState({
@@ -13,7 +17,7 @@ const ListCreate = () => {
 
     const { title } = formData;
 
-    const createNote = async () => {
+    const createList = async () => {
         const formData  = new FormData()
   
         formData.append('title', title)
@@ -26,28 +30,38 @@ const ListCreate = () => {
         }
     }
 
-    const updateNote = (event) => {
+    const updateList = (event) => {
         setFormData({...formData, title: event.target.value})
     }
   
   return (
-    <div className={appStyle.Container}>
-        <div>
-            <Form.Group className="mb-3">
-            <Form.Label htmlFor="title">Title</Form.Label>
+    <Container fluid className={appStyle.Container}>
+      <Container>
+      <Row fluid>
+          <Col>
+          <Form.Group className="mb-3">
+            <Form.Label htmlFor="title"><h4>Title</h4></Form.Label>
             <Form.Control
                 type="text"
                 id="title"
                 aria-describedby="title"
-                onChange={updateNote}
+                onChange={updateList}
             />
             </Form.Group>
-            <button onClick={createNote}>Create</button>
-            <Link to={'/'}>
-             <button>Back</button>
-            </Link>
-        </div>
-    </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={1}>
+            <button onClick={createList} className={appStyle.Button}>Create</button>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={1}>
+            <Link to={'/'} className={appStyle.ButtonLink}>Back</Link>
+          </Col>
+        </Row>
+      </Container>
+    </Container>
   )
 }
 
