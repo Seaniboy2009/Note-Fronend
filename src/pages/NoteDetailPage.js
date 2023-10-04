@@ -6,7 +6,7 @@ import style from '../styles/NotePage.module.css'
 import appStyle from '../styles/App.module.css'
 import { Container } from 'react-bootstrap';
 
-const NotePage = () => {
+const NoteDetailPage = () => {
   const { id } = useParams()
   const [note, setNote] = useState({})
 
@@ -36,4 +36,4 @@ const NotePage = () => {
   )
 }
 
-export default NotePage
+export default NoteDetailPage

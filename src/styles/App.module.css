@@ -1,7 +1,7 @@
 .Container {
     background-color: #100000;
     color: #9d0913;
-    height: 100vh;
+    min-height: 100vh;
     bottom: 0;
 }
 
@@ -10,7 +10,7 @@
 }
 
 .Max {
-    height: 100vh;
+    min-height: 100vh;
 }
 
 .Button {
@@ -18,7 +18,7 @@
     color: #100000;
     border: 2px solid #9d0913;
     font-size: 100%;
-    padding: 2px;
+    margin: 2px;
 }
 
 .Button:hover {

@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
-import NoteItem from '../components/NoteItem'
-import appStyle from '../styles/App.module.css'
-import style from '../styles/NoteListPage.module.css'
 import { APIURL } from '../api/APIURL';
+import NoteItem from '../components/NoteItem'
+
+import style from '../styles/NoteListPage.module.css'
+import appStyle from '../styles/App.module.css'
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 const NoteListPage = () => {
+
     const [notes, setNotes] = useState([])
     const [hasLoaded, setHasLoaded] = useState(false)
   
-
     useEffect(() => {
       const getNotes = async () => {
         const response = await fetch(`${APIURL}/api/notes/`)
@@ -35,15 +36,15 @@ const NoteListPage = () => {
 
   return (
     <Container fluid className={appStyle.Container}>
-      <Container fluid className={style.Container}>
+      <Container>
         <Row>
-          <Col>
-            <h4>Notes</h4>
+          <Col md={1}>
+            <h3>Notes</h3>
           </Col>
           {hasLoaded ? (
             <Col>
               <Link to={'note/create'}>
-                <button className={appStyle.Button}>Create</button>
+                <button className={appStyle.Button}>Create<i className="fa-sharp fa-solid fa-plus" /></button>
               </Link>
             </Col>
           ) : (<></>)}
@@ -53,7 +54,7 @@ const NoteListPage = () => {
       {hasLoaded ? (
         <Row>
           {notes?.map((note, index) => (
-                <Col key={index} md="auto">
+                <Col key={index} xl={3}>
                   <NoteItem key={index} {...note} />
                 </Col>
           ))}
@@ -61,7 +62,7 @@ const NoteListPage = () => {
           ) : (
             <Row>
               <Col>
-                <h4>Loading...</h4>
+                <h3>Loading...</h3>
               </Col>
           </Row>
       )}

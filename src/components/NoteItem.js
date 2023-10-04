@@ -58,10 +58,10 @@ const NoteItem = ( props ) => {
             <Row className={style.ButtonContainer}> 
               <Col>
               <Link to={'/notes/'}>
-                <button className={style.Button}>Back</button>
+                <button className={appStyle.Button}>Back</button>
               </Link>
-              <button className={style.Button} onClick={handleDelete}>Delete</button>
-              <button className={style.Button}>Edit</button>
+              <button className={appStyle.Button} onClick={handleDelete}>Delete</button>
+              <button className={appStyle.Button}>Edit</button>
               </Col>
             </Row>
           </Container>

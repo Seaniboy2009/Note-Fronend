@@ -1,15 +1,14 @@
 import React, { useRef, useState} from 'react'
 import { Link, useNavigate } from 'react-router-dom';
+import { APIURL } from '../api/APIURL';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
 import appStyle from '../styles/App.module.css'
 
-const NoteCreate = () => {
+const ListCreate = () => {
     const navigate = useNavigate()
-    const imageInput = useRef(null)
     const [formData, setFormData] = useState({
       title: '',
-      image: '',
     });
 
     const { title } = formData;
@@ -18,10 +17,9 @@ const NoteCreate = () => {
         const formData  = new FormData()
   
         formData.append('title', title)
-        formData.append('image', imageInput.current.files[0])
   
         try {
-          await axios.post("https://note-backend-api-19a13319c6ea.herokuapp.com/api/notes/create/", formData)
+          await axios.post(`${APIURL}/api/list/`, formData)
           navigate('/')
         } catch (error) {
           console.log(error)
@@ -32,13 +30,6 @@ const NoteCreate = () => {
         setFormData({...formData, title: event.target.value})
     }
   
-    const handleChangeImage = (event) => {
-  
-        setFormData({
-            ...formData,
-            image: URL.createObjectURL(event.target.files[0]),
-    })}
-
   return (
     <div className={appStyle.Container}>
         <div>
@@ -50,13 +41,6 @@ const NoteCreate = () => {
                 aria-describedby="title"
                 onChange={updateNote}
             />
-            <Form.Label htmlFor="image">Image</Form.Label>
-            <Form.Control
-                type="file"
-                id='image'
-                onChange={handleChangeImage}
-                ref={imageInput}
-            />
             </Form.Group>
             <button onClick={createNote}>Create</button>
             <Link to={'/'}>
@@ -67,4 +51,4 @@ const NoteCreate = () => {
   )
 }
 
-export default NoteCreate
+export default ListCreate
