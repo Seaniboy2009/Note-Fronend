@@ -14,6 +14,7 @@ const NoteItem = ( props ) => {
     title,
     created,
     image,
+    details,
     notePage,
   } = props
   const navigate = useNavigate()
@@ -42,17 +43,33 @@ const NoteItem = ( props ) => {
       <p>Title: {title}</p>
       <p>Created: {created}</p>
       <img src={image} className={style.ImageDetailPage} />
-      <p>Details:</p>
+      <p>Details: {details}</p>
     </Col>
+  )
+
+  const detailsPageNew = (
+    <>
+      <Row>
+        <Col xs={5}>
+          <Link to={'/notes/'}><i class="fa-solid fa-arrow-left" />&nbsp; Notes</Link>
+        </Col>
+      </Row>
+      <Row>
+        <Col >
+          <p>Title: {title}</p>
+          <p>Created: {created}</p>
+          <p>Details:</p>
+          <img src={image} className={style.ImageDetailPage} />
+        </Col>
+      </Row>
+    </>
   )
 
   return (
     <Container>
         {notePage ? (
-          <Container>
-            <Row className={style.ContainerDetail}>
-              {detailsPage}
-            </Row>
+          <>
+            {detailsPageNew}
             <Row className={style.ButtonContainer}> 
               <Col>
               <Link to={'/notes/'}>
@@ -62,9 +79,9 @@ const NoteItem = ( props ) => {
               <button className={appStyle.Button}>Edit</button>
               </Col>
             </Row>
-          </Container>
+          </>
         ) : (
-          <Container className={style.Container}>
+          <Container className={appStyle.Container}>
             <Link to={`note/${id}`} className={style.Link}>
               <Row>
                 {listPage}

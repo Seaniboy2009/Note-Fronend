@@ -52,13 +52,16 @@ const NoteListPage = () => {
       </Container>
       <Container>
       {hasLoaded ? (
-        <Row>
+        <Container className={appStyle.Container}>
+          <Row>
           {notes?.map((note, index) => (
-                <Col key={index} xl={3}>
+                <Col key={index}  xl={3}>
                   <NoteItem key={index} {...note} />
                 </Col>
           ))}
+
           </Row>
+          </Container>
           ) : (
             <Row>
               <Col>

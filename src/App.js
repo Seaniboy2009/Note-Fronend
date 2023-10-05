@@ -11,7 +11,7 @@ import ListCreate from './pages/ListCreate';
 
 function App() {
   return (
-    <div className={appStyle.Max}>
+    <div id='theme' className={appStyle.Main}>
       <Header />
       <Routes>
         <Route exact path='/' element={<HomePage />} />

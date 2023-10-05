@@ -1,16 +1,20 @@
 .Container {
     background-color: #100000;
     color: #9d0913;
-    min-height: 100vh;
+    /* min-height: 100vh; */
     bottom: 0;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .Notes {
     display: flex;
 }
 
-.Max {
-    min-height: 100vh;
+.Main {
+    min-height: 140vh;
+    padding: 70px 0;
+    background-color: #100000;
 }
 
 .Button, .ButtonLink {
@@ -22,8 +26,8 @@
     padding: 5px;
 }
 
-.Button:hover, .ButtonLink:hover {
-    background-color: #100000;
-    color: #9d0913;
-    border: 2px solid #9d0913;
+.Button:hover, .Button:active,.Button:focus, .ButtonLink:hover {
+    background-color: #100000 !important;
+    color: #9d0913 !important;
+    border: 2px solid #9d0913 !important;
 }
