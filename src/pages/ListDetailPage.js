@@ -71,7 +71,7 @@ const ListDetailPage = () => {
         console.log(formData)
   
         try {
-        await axios.post("https://note-backend-api-19a13319c6ea.herokuapp.com/api/listitem/", formData)
+        await axios.post(`${APIURL}/api/listitem/`, formData)
         navigate('/')
         } catch (error) {
           console.log(error)
@@ -98,7 +98,7 @@ const ListDetailPage = () => {
                 </Col>
             </Row>
             {items?.results?.map((item, index) => (
-                <Row key={index + 1}>
+                <Row key={index + 1} className={style.ListContainer}>
                     <Col xs={2}>
                         <button onClick={() => handleDelete(item.id)} className={appStyle.Button}>Delete</button>
                     </Col>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import { APIURL } from '../api/APIURL';
+import { DEVAPIURL } from '../api/APIURL';
 import NoteItem from '../components/NoteItem'
 
 import style from '../styles/NoteListPage.module.css'
@@ -9,16 +10,25 @@ import appStyle from '../styles/App.module.css'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import axiosInstance from '../api/axiosDefaults';
 
 const NoteListPage = () => {
 
-    const [notes, setNotes] = useState([])
+    const [notes, setNotes] = useState({ results: []})
     const [hasLoaded, setHasLoaded] = useState(false)
   
     useEffect(() => {
+      // const getNotes = async () => {
+      //   const response = await fetch(`${DEVAPIURL}/api/notes/`)
+      //   const data = await response.json()
+      //   setNotes(data)
+      //   setHasLoaded(true)
+
       const getNotes = async () => {
-        const response = await fetch(`${APIURL}/api/notes/`)
-        const data = await response.json()
+        const {data} = await axiosInstance.get('/api/notes/',)
+        // const response = await fetch(`${DEVAPIURL}/api/notes/`)
+        // const data = await response.json()
+        console.log(data)
         setNotes(data)
         setHasLoaded(true)
      }
@@ -54,7 +64,7 @@ const NoteListPage = () => {
       {hasLoaded ? (
         <Container className={appStyle.Container}>
           <Row>
-          {notes?.map((note, index) => (
+          {notes?.results?.map((note, index) => (
                 <Col key={index}  xl={3}>
                   <NoteItem key={index} {...note} />
                 </Col>
