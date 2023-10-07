@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom';
 import { APIURL } from '../api/APIURL';
+import { useNavigate } from "react-router-dom"
 
 import style from '../styles/ListPage.module.css'
 import appStyle from '../styles/App.module.css'
@@ -11,6 +12,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 const ListPage = () => {
+    const navigate = useNavigate()
 
     const [lists, setLists] = useState({ results: []})
     const [hasLoaded, setHasLoaded] = useState(false)

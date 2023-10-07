@@ -18,20 +18,13 @@ const NoteListPage = () => {
     const [hasLoaded, setHasLoaded] = useState(false)
   
     useEffect(() => {
-      // const getNotes = async () => {
-      //   const response = await fetch(`${DEVAPIURL}/api/notes/`)
-      //   const data = await response.json()
-      //   setNotes(data)
-      //   setHasLoaded(true)
 
       const getNotes = async () => {
         const {data} = await axiosInstance.get('/api/notes/',)
-        // const response = await fetch(`${DEVAPIURL}/api/notes/`)
-        // const data = await response.json()
         console.log(data)
         setNotes(data)
         setHasLoaded(true)
-     }
+      }
       
       const timer = setTimeout(() => {
         getNotes()
@@ -42,6 +35,7 @@ const NoteListPage = () => {
       return () => {
         clearTimeout(timer)
       }
+
     }, [])
 
   return (
@@ -69,9 +63,8 @@ const NoteListPage = () => {
                   <NoteItem key={index} {...note} />
                 </Col>
           ))}
-
           </Row>
-          </Container>
+        </Container>
           ) : (
             <Row>
               <Col>

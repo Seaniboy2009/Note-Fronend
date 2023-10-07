@@ -18,13 +18,13 @@ const ListCreate = () => {
     const { title } = formData;
 
     const createList = async () => {
+      
         const formData  = new FormData()
-  
         formData.append('title', title)
   
         try {
           await axios.post(`${APIURL}/api/list/`, formData)
-          navigate('/')
+          navigate('/lists/')
         } catch (error) {
           console.log(error)
         }

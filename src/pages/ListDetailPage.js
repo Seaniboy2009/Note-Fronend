@@ -18,6 +18,7 @@ const ListDetailPage = () => {
     const [list, setList] = useState({ results: []})
     const [items, setItems] = useState({ results: []})
     const [hasLoaded, setHasLoaded] = useState(false)
+    const [confirm, setConfirm] = useState(false)
 
     const [formData, setFormData] = useState({
         list: '',
@@ -26,19 +27,31 @@ const ListDetailPage = () => {
 
     const { content } = formData;
 
+    const getLists = async () => {
+        console.log('Get list detail called')
+        const [ {data: list}, {data: items}] = await Promise.all([
+            axios.get(`${APIURL}/api/list/${id}`),
+            axios.get(`${APIURL}/api/listitem/?list=${id}`)
+        ])
+        console.log(list, items)
+        setList(list)
+        setItems(items)
+        setHasLoaded(true)
+    }
+
     const handleCreateItem = async () => {
+
         console.log('Create item called')
         const formData  = new FormData()
-  
         formData.append('content', content)
         formData.append('list', list.id)
-
         console.log(formData)
   
         try {
             console.log('Form data before create' + formData.FormData)
             await axios.post(`${APIURL}/api/listitem/`, formData)
             setFormData(prevData => ({...prevData, list: ''}))
+            getLists()
             console.log('Form data after create' + formData)
         } catch (error) {
             console.log(error)
@@ -54,12 +67,18 @@ const ListDetailPage = () => {
         console.log('Handle delete called')
         try {
             await axios.delete(`${APIURL}/api/list/${list.id}`)
-            // const newList = list.results.filter(item => item.id !== list.id)
             console.log(`List ${list.title} deleted`)
-            // setItems(newList)
             navigate('/lists/')
         } catch (error) {
             
+        }
+    }
+
+    const handleConfirm = (event) => {
+        if (confirm == false) {
+            setConfirm(true)
+        } else {
+            setConfirm(false)
         }
     }
 
@@ -76,18 +95,20 @@ const ListDetailPage = () => {
     }
 
     useEffect(() => {
-        console.log('useeffect called')
-        const getLists = async () => {
-            console.log('Get list detail called')
-            const [ {data: list}, {data: items}] = await Promise.all([
-                axios.get(`${APIURL}/api/list/${id}`),
-                axios.get(`${APIURL}/api/listitem/?list=${id}`)
-            ])
-            console.log(list, items)
-            setList(list)
-            setItems(items)
-            setHasLoaded(true)
-        }
+        console.log('use effect called')
+        // const getLists = async () => {
+        //     console.log('Get list detail called')
+        //     const [ {data: list}, {data: items}] = await Promise.all([
+        //         axios.get(`${APIURL}/api/list/${id}`),
+        //         axios.get(`${APIURL}/api/listitem/?list=${id}`)
+        //     ])
+        //     console.log(list, items)
+        //     setList(list)
+        //     setItems(items)
+        //     setHasLoaded(true)
+        // }
+
+
 
         const timer = setTimeout(() => {
             getLists()
@@ -120,16 +141,18 @@ const ListDetailPage = () => {
             </Row>
             {items?.results?.map((item, index) => (
                 <Row key={index + 1} className={style.ListContainer}>
-                    <Col xs={2}>
-                        <button onClick={() => handleDeleteItem(item)} className={appStyle.Button}>Delete</button>
-                    </Col>
                     <Col >
                         <p>#{index + 1}:{item.content}</p>
+                    </Col>
+                    <Col xs={3}>
+                        <button onClick={() => handleDeleteItem(item)} className={appStyle.Button}>Delete</button>
                     </Col>
                 </Row>
             ))}
             </>
-        ) : (<h3 key='loading'>Loading...</h3>)}
+            ) : (
+                <h3 key='loading'>Loading...</h3>
+        )}
             <Row>
                 <Col md={2}>
                     <Dropdown>
