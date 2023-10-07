@@ -20,12 +20,13 @@ const NoteItem = ( props ) => {
   const navigate = useNavigate()
 
   const handleDelete = async () => {
-    fetch(`${APIURL}/api/notes/${id}/detail/`, {
+    fetch(`${APIURL}/api/notes/${id}`, {
       method: 'DELETE',
       'headers': {
         'Content-Type': 'application/json'
       }
     })
+    console.log('Note deleted')
     navigate('/')
   }
 

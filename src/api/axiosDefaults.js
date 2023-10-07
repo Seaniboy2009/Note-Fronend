@@ -3,9 +3,6 @@ import axios from "axios";
 const baseURL = 'https://note-backend-api-19a13319c6ea.herokuapp.com'
 const DEVbaseURL = 'http://127.0.0.1:8000'
 
-// axios.defaults.baseURL = 'https://note-backend-api-19a13319c6ea.herokuapp.com'
-// axios.defaults.headers.post['Content-Type'] = 'multipart/form-data'
-
 const axiosInstance = axios.create({
     baseURL: baseURL,
     timeout: 5000,
@@ -23,6 +20,7 @@ axiosInstance.interceptors.response.use(
 		return response;
 	},
 	async function (error) {
+		console.log('Axios interceptors called: axiosdefaults.js: line 23')
 		const originalRequest = error.config;
 
 		if (typeof error.response === 'undefined') {

@@ -26,17 +26,57 @@ const ListDetailPage = () => {
 
     const { content } = formData;
 
-    const handleDelete = async (itemToDelete) => {
+    const handleCreateItem = async () => {
+        console.log('Create item called')
+        const formData  = new FormData()
+  
+        formData.append('content', content)
+        formData.append('list', list.id)
+
+        console.log(formData)
+  
         try {
-            await axios.delete(`${APIURL}/api/listitem/${itemToDelete}`)
-            const newItems = items.results.filter(item => item.id !== itemToDelete)
-            setItems(newItems)
+            console.log('Form data before create' + formData.FormData)
+            await axios.post(`${APIURL}/api/listitem/`, formData)
+            setFormData(prevData => ({...prevData, list: ''}))
+            console.log('Form data after create' + formData)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handleChange = (event) => {
+        console.log('Handle change called')
+        setFormData({...formData, content: event.target.value})
+    }
+
+    const handleDelete = async (e) => {
+        console.log('Handle delete called')
+        try {
+            await axios.delete(`${APIURL}/api/list/${list.id}`)
+            // const newList = list.results.filter(item => item.id !== list.id)
+            console.log(`List ${list.title} deleted`)
+            // setItems(newList)
+            navigate('/lists/')
+        } catch (error) {
+            
+        }
+    }
+
+    const handleDeleteItem = async (itemToDelete) => {
+        console.log('Handle delete item called')
+        try {
+            await axios.delete(`${APIURL}/api/listitem/${itemToDelete.id}`)
+            const newItems = items.results.filter(item => item.id !== itemToDelete.id)
+            console.log(`Item ${itemToDelete} deleted from ${list.title}`)
+            setList(newItems)
         } catch (error) {
             
         }
     }
 
     useEffect(() => {
+        console.log('useeffect called')
         const getLists = async () => {
             console.log('Get list detail called')
             const [ {data: list}, {data: items}] = await Promise.all([
@@ -60,27 +100,8 @@ const ListDetailPage = () => {
             clearTimeout(timer)
         }
 
-    }, [setItems])
+    }, [])
 
-    const createItem = async () => {
-        const formData  = new FormData()
-  
-        formData.append('content', content)
-        formData.append('list', list.id)
-
-        console.log(formData)
-  
-        try {
-        await axios.post(`${APIURL}/api/listitem/`, formData)
-        navigate('/')
-        } catch (error) {
-          console.log(error)
-        }
-    }
-
-    const handleChange = (event) => {
-        setFormData({...formData, content: event.target.value})
-    }
 
   return (
     <Container fluid className={appStyle.Container}>
@@ -100,7 +121,7 @@ const ListDetailPage = () => {
             {items?.results?.map((item, index) => (
                 <Row key={index + 1} className={style.ListContainer}>
                     <Col xs={2}>
-                        <button onClick={() => handleDelete(item.id)} className={appStyle.Button}>Delete</button>
+                        <button onClick={() => handleDeleteItem(item)} className={appStyle.Button}>Delete</button>
                     </Col>
                     <Col >
                         <p>#{index + 1}:{item.content}</p>
@@ -110,7 +131,7 @@ const ListDetailPage = () => {
             </>
         ) : (<h3 key='loading'>Loading...</h3>)}
             <Row>
-                <Col>
+                <Col md={2}>
                     <Dropdown>
                         <Dropdown.Toggle className={appStyle.Button} id="dropdown-basic">
                             New
@@ -126,10 +147,13 @@ const ListDetailPage = () => {
                                 />
                             </Form.Group>
                             <Col>
-                                <button onClick={createItem} className={appStyle.Button}>Add item</button>
+                                <button onClick={handleCreateItem} className={appStyle.Button}>Add item</button>
                             </Col>
                         </Dropdown.Menu>
                     </Dropdown>
+                </Col>
+                <Col>
+                    <button onClick={handleDelete} className={appStyle.Button}>Delete List</button>
                 </Col>
             </Row>
         </Container>
