@@ -43,7 +43,7 @@ const NoteItem = ( props ) => {
     <>
       <Row>
         <Col xs={5}>
-          <Link to={'/notes/'}><i class="fa-solid fa-arrow-left" />&nbsp; Notes</Link>
+          <Link to={'/notes/'}><i className="fa-solid fa-arrow-left" />&nbsp; Notes</Link>
         </Col>
       </Row>
       <Row>

@@ -36,12 +36,10 @@ export const AuthProvider = ({children}) => {
     }
 
     const handleChange = (event) => {
-        console.log(event.target.name)
         setFormData({
             ...formData,
             [event.target.name]: event.target.value,
         })
-        console.log(formData)
     }
 
     const handleLogOut = () => {
