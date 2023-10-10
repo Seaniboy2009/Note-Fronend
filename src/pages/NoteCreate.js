@@ -6,63 +6,64 @@ import appStyle from '../styles/App.module.css'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import axiosInstance from '../api/axiosDefaults';
 
 const NoteCreate = () => {
-
-    const navigate = useNavigate()
-    const imageInput = useRef(null)
-    const [formData, setFormData] = useState({
-      title: '',
-      image: '',
-    });
-
-    const { title } = formData;
-    const [submit, setSubmit] = useState(false)
-
-    const createNote = async () => {
-        const formData  = new FormData()
   
-        formData.append('title', title)
-        formData.append('image', imageInput.current.files[0])
-  
-        try {
-          setSubmit(true)
-          const response = await axios.post("http://127.0.0.1:8000/api/notes/", formData, {
-            headers: {
-              Authorization: localStorage.getItem('access_token')
-                ? "Bearer " + localStorage.getItem('access_token')
-                : null,
-              'Content-Type': 'multipart/form-data', // Use 'multipart/form-data' for FormData
-            },
-          });
-          setSubmit(false)
-          navigate('/')
-        } catch (error) {
-          console.log(error)
-        }
-    }
+  const navigate = useNavigate()
+  const imageInput = useRef(null)
+  const [formData, setFormData] = useState({
+    title: '',
+    image: '',
+  });
 
-    const updateNote = (event) => {
-        setFormData({...formData, title: event.target.value})
-    }
-  
-    const handleChangeImage = (event) => {
-        setFormData({
-            ...formData,
-            image: URL.createObjectURL(event.target.files[0]),
-    })}
+  const { title } = formData;
+  const [submit, setSubmit] = useState(false)
 
-    const submittingText = (
-      <Container>
-        <Row>
-          <Col>
-            <h4>Please wait..Submitting</h4>
-          </Col>
-        </Row>
-      </Container>
-    )
+  const createNote = async () => {
+      const formData  = new FormData()
 
-    const defaultText = (
+      formData.append('title', title)
+      formData.append('image', imageInput.current.files[0])
+
+      try {
+        setSubmit(true)
+        const response = await axiosInstance.post("/api/notes/", formData, {
+          headers: {
+            // Authorization: localStorage.getItem('access_token')
+            //   ? "Bearer " + localStorage.getItem('access_token')
+            //   : null,
+            'Content-Type': 'multipart/form-data', // Use 'multipart/form-data' for FormData
+          },
+        });
+        setSubmit(false)
+        navigate('/notes/')
+      } catch (error) {
+        console.log(error)
+      }
+  }
+
+  const updateNote = (event) => {
+      setFormData({...formData, title: event.target.value})
+  }
+
+  const handleChangeImage = (event) => {
+      setFormData({
+          ...formData,
+          image: URL.createObjectURL(event.target.files[0]),
+  })}
+
+  const submittingText = (
+    <Container>
+      <Row>
+        <Col>
+          <h4>Please wait..Submitting</h4>
+        </Col>
+      </Row>
+    </Container>
+  )
+
+  const defaultText = (
     <Container>
       <Row fluid>
         <Col>
@@ -95,7 +96,7 @@ const NoteCreate = () => {
         </Col>
       </Row>
     </Container>
-    )
+  )
 
   return (
     <Container fluid className={appStyle.Container}>

@@ -4,6 +4,7 @@ import { APIURL } from '../api/APIURL';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
 import appStyle from '../styles/App.module.css'
+import axiosInstance from '../api/axiosDefaults';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -20,15 +21,22 @@ const ListCreate = () => {
 
     const createList = async () => {
       
-        const formData  = new FormData()
-        formData.append('title', title)
+      const formData  = new FormData()
+      formData.append('title', title)
   
-        try {
-          await axios.post(`${APIURL}/api/list/`, formData)
-          navigate('/lists/')
-        } catch (error) {
-          console.log(error)
-        }
+      try {
+        const response = await axiosInstance.post("/api/lists/", formData, {
+          headers: {
+            // Authorization: localStorage.getItem('access_token')
+            //   ? "Bearer " + localStorage.getItem('access_token')
+            //   : null,
+            'Content-Type': 'multipart/form-data', // Use 'multipart/form-data' for FormData
+          },
+        });
+        navigate('/lists/')
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     const updateList = (event) => {
