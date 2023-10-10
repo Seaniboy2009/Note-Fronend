@@ -8,3 +8,9 @@
     margin-bottom: 10px;
     padding: 10px;
 }
+
+.Modal {
+    background-color: #100000;
+    color: #9d0913;
+    border: 1px solid #9d0913;
+}

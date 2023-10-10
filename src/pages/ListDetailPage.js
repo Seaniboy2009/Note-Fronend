@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { APIURL } from '../api/APIURL';
 import React, { useEffect, useState } from 'react'
 import style from '../styles/ListDetailPage.module.css'
@@ -11,6 +10,10 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Link } from 'react-router-dom';
+import axiosInstance from '../api/axiosDefaults';
+
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 const ListDetailPage = () => {
     
@@ -20,6 +23,11 @@ const ListDetailPage = () => {
     const [items, setItems] = useState({ results: []})
     const [hasLoaded, setHasLoaded] = useState(false)
     const [confirm, setConfirm] = useState(false)
+
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     const [formData, setFormData] = useState({
         list: '',
@@ -31,10 +39,9 @@ const ListDetailPage = () => {
     const getLists = async () => {
         console.log('Get list detail called')
         const [ {data: list}, {data: items}] = await Promise.all([
-            axios.get(`${APIURL}/api/lists/${id}`),
-            axios.get(`${APIURL}/api/listitems/?list=${id}`)
+            axiosInstance.get(`/api/lists/${id}`),
+            axiosInstance.get(`/api/listitems/?list=${id}`)
         ])
-        console.log(list, items)
         setList(list)
         setItems(items)
         setHasLoaded(true)
@@ -42,18 +49,14 @@ const ListDetailPage = () => {
 
     const handleCreateItem = async () => {
 
-        console.log('Create item called')
         const formData  = new FormData()
         formData.append('content', content)
         formData.append('list', list.id)
-        console.log(formData)
   
         try {
-            console.log('Form data before create' + formData.FormData)
-            await axios.post(`${APIURL}/api/listitems/`, formData)
+            await axiosInstance.post(`/api/listitems/`, formData)
             setFormData(prevData => ({...prevData, list: ''}))
             getLists()
-            console.log('Form data after create' + formData)
         } catch (error) {
             console.log(error)
         }
@@ -67,30 +70,17 @@ const ListDetailPage = () => {
     const handleDelete = async (e) => {
         console.log('Handle delete called')
         try {
-            await axios.delete(`${APIURL}/api/lists/${list.id}`)
-            console.log(`List ${list.title} deleted`)
-            window.location.reload()
+            await axiosInstance.delete(`/api/lists/${list.id}`)
             navigate('/lists/')
         } catch (error) {
             
         }
     }
 
-    const handleConfirm = (event) => {
-        if (confirm == false) {
-            setConfirm(true)
-        } else {
-            setConfirm(false)
-        }
-    }
-
     const handleDeleteItem = async (itemToDelete) => {
         console.log('Handle delete item called')
         try {
-            await axios.delete(`${APIURL}/api/listitems/${itemToDelete.id}`)
-            const newItems = items.results.filter(item => item.id !== itemToDelete.id)
-            console.log(`Item ${itemToDelete} deleted from ${list.title}`)
-            // window.location.reload()
+            await axiosInstance.delete(`/api/listitems/${itemToDelete.id}`)
             getLists()
         } catch (error) {
             
@@ -98,7 +88,6 @@ const ListDetailPage = () => {
     }
 
     useEffect(() => {
-        console.log('use effect called')
 
         const timer = setTimeout(() => {
             getLists()
@@ -112,9 +101,30 @@ const ListDetailPage = () => {
 
     }, [])
 
+    const modelShow = (
+        <>
+        <Modal show={show} onHide={handleClose} className={style.Modal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Confirm Delete</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Please confirm you want to delete this list</Modal.Body>
+          <Modal.Footer>
+            <button className={appStyle.Button} onClick={handleClose}>
+              Close
+            </button>
+            <button className={appStyle.Button} onClick={handleDelete}>
+              Delete
+            </button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    )
 
   return (
     <Container fluid className={appStyle.Container}>
+            <>
+                {modelShow}
+            </>
         <Container>
         {hasLoaded ? (
             <>
@@ -165,7 +175,7 @@ const ListDetailPage = () => {
                     </Dropdown>
                 </Col>
                 <Col>
-                    <button onClick={handleDelete} className={appStyle.Button}>Delete List</button>
+                    <button onClick={handleShow} className={appStyle.Button}>Delete List</button>
                 </Col>
             </Row>
         </Container>
