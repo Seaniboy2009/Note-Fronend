@@ -13,6 +13,7 @@ import Col from 'react-bootstrap/Col';
 import { Link } from 'react-router-dom';
 
 const ListDetailPage = () => {
+    
     const navigate = useNavigate()
     const { id } = useParams()
     const [list, setList] = useState({ results: []})
@@ -30,8 +31,8 @@ const ListDetailPage = () => {
     const getLists = async () => {
         console.log('Get list detail called')
         const [ {data: list}, {data: items}] = await Promise.all([
-            axios.get(`${APIURL}/api/list/${id}`),
-            axios.get(`${APIURL}/api/listitem/?list=${id}`)
+            axios.get(`${APIURL}/api/lists/${id}`),
+            axios.get(`${APIURL}/api/listitems/?list=${id}`)
         ])
         console.log(list, items)
         setList(list)
@@ -49,7 +50,7 @@ const ListDetailPage = () => {
   
         try {
             console.log('Form data before create' + formData.FormData)
-            await axios.post(`${APIURL}/api/listitem/`, formData)
+            await axios.post(`${APIURL}/api/listitems/`, formData)
             setFormData(prevData => ({...prevData, list: ''}))
             getLists()
             console.log('Form data after create' + formData)
@@ -66,8 +67,9 @@ const ListDetailPage = () => {
     const handleDelete = async (e) => {
         console.log('Handle delete called')
         try {
-            await axios.delete(`${APIURL}/api/list/${list.id}`)
+            await axios.delete(`${APIURL}/api/lists/${list.id}`)
             console.log(`List ${list.title} deleted`)
+            window.location.reload()
             navigate('/lists/')
         } catch (error) {
             
@@ -85,10 +87,11 @@ const ListDetailPage = () => {
     const handleDeleteItem = async (itemToDelete) => {
         console.log('Handle delete item called')
         try {
-            await axios.delete(`${APIURL}/api/listitem/${itemToDelete.id}`)
+            await axios.delete(`${APIURL}/api/listitems/${itemToDelete.id}`)
             const newItems = items.results.filter(item => item.id !== itemToDelete.id)
             console.log(`Item ${itemToDelete} deleted from ${list.title}`)
-            setList(newItems)
+            // window.location.reload()
+            getLists()
         } catch (error) {
             
         }
@@ -96,26 +99,12 @@ const ListDetailPage = () => {
 
     useEffect(() => {
         console.log('use effect called')
-        // const getLists = async () => {
-        //     console.log('Get list detail called')
-        //     const [ {data: list}, {data: items}] = await Promise.all([
-        //         axios.get(`${APIURL}/api/list/${id}`),
-        //         axios.get(`${APIURL}/api/listitem/?list=${id}`)
-        //     ])
-        //     console.log(list, items)
-        //     setList(list)
-        //     setItems(items)
-        //     setHasLoaded(true)
-        // }
-
-
 
         const timer = setTimeout(() => {
             getLists()
         }, 1000)
 
         setHasLoaded(false)
-    
 
         return () => {
             clearTimeout(timer)

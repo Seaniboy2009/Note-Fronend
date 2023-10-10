@@ -34,21 +34,12 @@ const NoteItem = ( props ) => {
     <Col className={style.Text}>
       <p>Title: {title}</p>
       <p>Created: {created}</p>
-      <img src={image} className={style.ImageListPage} />
+      <img src={image} className={style.ImageListPage} alt='note image'/>
       <br/>
     </Col>
   )
 
   const detailsPage = (
-    <Col className={style.Text}>
-      <p>Title: {title}</p>
-      <p>Created: {created}</p>
-      <img src={image} className={style.ImageDetailPage} />
-      <p>Details: {details}</p>
-    </Col>
-  )
-
-  const detailsPageNew = (
     <>
       <Row>
         <Col xs={5}>
@@ -60,7 +51,7 @@ const NoteItem = ( props ) => {
           <p>Title: {title}</p>
           <p>Created: {created}</p>
           <p>Details:</p>
-          <img src={image} className={style.ImageDetailPage} />
+          <img src={image} className={style.ImageDetailPage} alt='note image'/>
         </Col>
       </Row>
     </>
@@ -70,7 +61,7 @@ const NoteItem = ( props ) => {
     <Container>
         {notePage ? (
           <>
-            {detailsPageNew}
+            {detailsPage}
             <Row className={style.ButtonContainer}> 
               <Col>
               <Link to={'/notes/'}>

@@ -3,12 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
 import appStyle from '../styles/App.module.css'
-
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 const NoteCreate = () => {
+
     const navigate = useNavigate()
     const imageInput = useRef(null)
     const [formData, setFormData] = useState({
@@ -17,6 +17,7 @@ const NoteCreate = () => {
     });
 
     const { title } = formData;
+    const [submit, setSubmit] = useState(false)
 
     const createNote = async () => {
         const formData  = new FormData()
@@ -25,7 +26,16 @@ const NoteCreate = () => {
         formData.append('image', imageInput.current.files[0])
   
         try {
-          await axios.post("https://note-backend-api-19a13319c6ea.herokuapp.com/api/notes/create/", formData)
+          setSubmit(true)
+          const response = await axios.post("http://127.0.0.1:8000/api/notes/", formData, {
+            headers: {
+              Authorization: localStorage.getItem('access_token')
+                ? "Bearer " + localStorage.getItem('access_token')
+                : null,
+              'Content-Type': 'multipart/form-data', // Use 'multipart/form-data' for FormData
+            },
+          });
+          setSubmit(false)
           navigate('/')
         } catch (error) {
           console.log(error)
@@ -37,46 +47,59 @@ const NoteCreate = () => {
     }
   
     const handleChangeImage = (event) => {
-  
         setFormData({
             ...formData,
             image: URL.createObjectURL(event.target.files[0]),
     })}
 
-  return (
-    <Container fluid className={appStyle.Container}>
+    const submittingText = (
       <Container>
-      <Row fluid>
+        <Row>
           <Col>
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="title"><h4>Title</h4></Form.Label>
-            <Form.Control
-                type="text"
-                id="title"
-                aria-describedby="title"
-                onChange={updateNote}
-            />
-            <Form.Label htmlFor="image"><h4>Image</h4></Form.Label>
-            <Form.Control
-                type="file"
-                id='image'
-                onChange={handleChangeImage}
-                ref={imageInput}
-            />
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row fluid>
-          <Col md={1}>
-            <button onClick={createNote} className={appStyle.Button}>Create</button>
-          </Col>
-        </Row>
-        <Row fluid>
-          <Col md={1}>
-            <Link to={'/'} className={appStyle.ButtonLink}>Back</Link>
+            <h4>Please wait..Submitting</h4>
           </Col>
         </Row>
       </Container>
+    )
+
+    const defaultText = (
+    <Container>
+      <Row fluid>
+        <Col>
+        <Form.Group className="mb-3">
+          <Form.Label htmlFor="title"><h4>Title</h4></Form.Label>
+          <Form.Control
+              type="text"
+              id="title"
+              aria-describedby="title"
+              onChange={updateNote}
+          />
+          <Form.Label htmlFor="image"><h4>Image</h4></Form.Label>
+          <Form.Control
+              type="file"
+              id='image'
+              onChange={handleChangeImage}
+              ref={imageInput}
+          />
+          </Form.Group>
+        </Col>
+      </Row>
+      <Row fluid>
+        <Col md={1}>
+          <button onClick={createNote} className={appStyle.Button}>Create</button>
+        </Col>
+      </Row>
+      <Row fluid>
+        <Col md={1}>
+          <Link to={'/'} className={appStyle.ButtonLink}>Back</Link>
+        </Col>
+      </Row>
+    </Container>
+    )
+
+  return (
+    <Container fluid className={appStyle.Container}>
+      {submit ? ((submittingText)) : ((defaultText))}
     </Container>
   )
 }

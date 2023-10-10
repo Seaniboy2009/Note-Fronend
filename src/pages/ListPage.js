@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom';
 import { APIURL } from '../api/APIURL';
-import { useNavigate } from "react-router-dom"
 
 import style from '../styles/ListPage.module.css'
 import appStyle from '../styles/App.module.css'
@@ -12,14 +11,13 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 const ListPage = () => {
-    const navigate = useNavigate()
 
     const [lists, setLists] = useState({ results: []})
     const [hasLoaded, setHasLoaded] = useState(false)
 
     useEffect(() => {
         const getLists = async () => {
-            const {data} = await axios.get(`${APIURL}/api/list/`)
+            const {data} = await axios.get(`${APIURL}/api/lists/`)
             setLists(data)
             setHasLoaded(true)
         }
@@ -40,7 +38,7 @@ const ListPage = () => {
   return (
     <Container fluid className={appStyle.Container}>
         <Container>
-            <Row fluid>
+            <Row>
                 <Col md={1}>
                     <h3>Lists</h3>
                 </Col>
@@ -57,8 +55,8 @@ const ListPage = () => {
             {hasLoaded ? (
                 <>
                 {lists?.results.map((list, index) => (
-                    <Link to={`list/${list.id}`}>
-                        <Row key={index} className={style.List}>
+                    <Link key={index} to={`list/${list.id}`}>
+                        <Row className={style.List}>
                             <Col xs={3}>
                                 <h5 className={style.ListDetails}># {list.id}</h5>
                             </Col>

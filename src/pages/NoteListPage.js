@@ -1,29 +1,42 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
-import { APIURL } from '../api/APIURL';
-import { DEVAPIURL } from '../api/APIURL';
 import NoteItem from '../components/NoteItem'
-
-import style from '../styles/NoteListPage.module.css'
 import appStyle from '../styles/App.module.css'
-
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import axiosInstance from '../api/axiosDefaults';
+import { useNavigate } from 'react-router-dom';
 
 const NoteListPage = () => {
 
     const [notes, setNotes] = useState({ results: []})
     const [hasLoaded, setHasLoaded] = useState(false)
+    const [errors, setErrors] = useState({})
+    const navigate = useNavigate()
   
     useEffect(() => {
 
       const getNotes = async () => {
-        const {data} = await axiosInstance.get('/api/notes/',)
-        console.log(data)
-        setNotes(data)
-        setHasLoaded(true)
+        try {
+          const {data} = await axiosInstance.get('/api/notes/')
+          console.log('Notes Response data: ')
+          console.log(data.results)
+          setNotes(data)
+          setHasLoaded(true)
+        } catch (error) {
+          const access = localStorage.getItem('access_token')
+          if (error.response.status == 401 && access) {
+            console.log('401 re-rendering page')
+            window.location.reload()
+          } else if (!access) {
+            console.log('No token re-direct to home page')
+            navigate('/')
+          } else {
+            console.log('Other error')
+          }
+          setErrors(errors)
+        }
       }
       
       const timer = setTimeout(() => {
