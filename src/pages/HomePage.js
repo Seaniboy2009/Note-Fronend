@@ -1,5 +1,6 @@
 import React from 'react'
 import appStyle from '../styles/App.module.css'
+import style from '../styles/Home.module.css'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -17,12 +18,14 @@ const HomePage = () => {
         <Row>
             <Col>
                 <Link to={'notes/'}>
-                <button className={appStyle.Button}>Notes</button>
+                <button className={`${appStyle.Button} ${appStyle.ButtonLarge}`}>Notes</button>
                 </Link>
             </Col>
+        </Row>
+        <Row>
             <Col>
                 <Link to={'lists/'}>
-                <button className={appStyle.Button}>Lists</button>
+                <button className={`${appStyle.Button} ${appStyle.ButtonLarge}`}>Lists</button>
                 </Link>
             </Col>
         </Row>

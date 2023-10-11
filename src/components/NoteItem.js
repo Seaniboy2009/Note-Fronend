@@ -64,9 +64,6 @@ const NoteItem = ( props ) => {
             {detailsPage}
             <Row className={style.ButtonContainer}> 
               <Col>
-              <Link to={'/notes/'}>
-                <button className={appStyle.Button}>Back</button>
-              </Link>
               <button className={appStyle.Button} onClick={handleDelete}>Delete</button>
               <button className={appStyle.Button}>Edit</button>
               </Col>

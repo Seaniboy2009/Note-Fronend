@@ -31,3 +31,7 @@
     color: #9d0913 !important;
     border: 2px solid #9d0913 !important;
 }
+
+.ButtonLarge {
+    width: 50%;
+}
