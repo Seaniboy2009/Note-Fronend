@@ -87,17 +87,13 @@ axiosInstance.interceptors.response.use(
 						})
 				} else {
 					console.log('Refresh token is expired', tokenParts, now)
-					alert(
-						'Refresh token is expired.'
-					)
-					// window.location.href = '/'
+					localStorage.removeItem('access_token')
+					localStorage.removeItem('refresh_token')
+					window.location.href = '/'
 				}
 			} else {
 				console.log('Refresh token not available.')
-				alert(
-					'Refresh token not available.'
-				)
-				// window.location.href = '/'
+				window.location.href = '/'
 			}
 		}
 

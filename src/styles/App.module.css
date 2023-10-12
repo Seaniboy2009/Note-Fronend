@@ -11,9 +11,10 @@
     display: flex;
 }
 
+/* This is to separe the header and rest of app */
 .Main {
     min-height: 140vh;
-    padding: 70px 0;
+    padding: 90px 0;
     background-color: #100000;
 }
 

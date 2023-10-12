@@ -9,6 +9,7 @@ import appStyle from '../styles/App.module.css'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import axiosInstance from '../api/axiosDefaults';
 
 const ListPage = () => {
 
@@ -17,7 +18,7 @@ const ListPage = () => {
 
     useEffect(() => {
         const getLists = async () => {
-            const {data} = await axios.get(`${APIURL}/api/lists/`)
+            const {data} = await axiosInstance.get(`/api/lists/`)
             setLists(data)
             setHasLoaded(true)
         }
@@ -54,7 +55,7 @@ const ListPage = () => {
         <Container>
             {hasLoaded ? (
                 <>
-                {lists?.results.map((list, index) => (
+                {lists?.results?.map((list, index) => (
                     <Link key={index} to={`list/${list.id}`}>
                         <Row className={style.List}>
                             <Col xs={3}>

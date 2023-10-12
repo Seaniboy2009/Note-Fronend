@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Link } from 'react-router-dom';
 import NoteItem from '../components/NoteItem'
 import appStyle from '../styles/App.module.css'
@@ -8,18 +8,23 @@ import Col from 'react-bootstrap/Col';
 import axiosInstance from '../api/axiosDefaults';
 import { useNavigate } from 'react-router-dom';
 
+import AuthContext from '../contexts/AuthContext'
+
 const NoteListPage = () => {
 
     const [notes, setNotes] = useState({ results: []})
     const [hasLoaded, setHasLoaded] = useState(false)
     const [errors, setErrors] = useState({})
+    let {user} = useContext(AuthContext)
     const navigate = useNavigate()
   
     useEffect(() => {
+      console.log(user.user_id)
 
       const getNotes = async () => {
         try {
           const {data} = await axiosInstance.get('/api/notes/')
+          // const {data} = await axiosInstance.get(`/api/notes/?owner=${user.user_id}`)
           console.log('Notes Response data: ')
           console.log(data.results)
           setNotes(data)

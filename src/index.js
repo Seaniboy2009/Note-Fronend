@@ -10,8 +10,8 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <Router>
       <AuthProvider>
-          <ScrollToTop />
-          <App />
+        <ScrollToTop />
+        <App />
       </AuthProvider>
     </Router>
 );

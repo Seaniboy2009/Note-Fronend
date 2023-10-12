@@ -30,15 +30,16 @@ p {
 
 .Link {
     color: #9d0913;
-    font-size: 130%;
+    /* font-size: 115%; */
     text-decoration: none;
-    padding: 0 2%;
+    line-height: inherit;
+    border-bottom: #9d0913 solid 1px;
 }
 
 .Link:hover {
     color: #470307;
-    font-size: 130%;
     text-decoration: none;
+    border-bottom: #470307 solid 1px;
 }
 
 .ServerConnected {

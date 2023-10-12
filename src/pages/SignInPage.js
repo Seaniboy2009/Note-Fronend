@@ -18,7 +18,9 @@ const SignInForm = () => {
             {!user ? (
                 <form onSubmit={handleLogIn}>
                 <Row>
-                    <h3>Please sign in to access to app.</h3>
+                    <Col>
+                        <h3>Please sign in to access the app.</h3>
+                    </Col>
                 </Row>
                 <Row>
                     <Col>

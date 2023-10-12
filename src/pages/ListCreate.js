@@ -18,6 +18,7 @@ const ListCreate = () => {
     });
 
     const { title } = formData;
+    const [submit, setSubmit] = useState(false)
 
     const createList = async () => {
       
@@ -25,6 +26,7 @@ const ListCreate = () => {
       formData.append('title', title)
   
       try {
+        setSubmit(true)
         const response = await axiosInstance.post("/api/lists/", formData, {
           headers: {
             // Authorization: localStorage.getItem('access_token')
@@ -33,6 +35,7 @@ const ListCreate = () => {
             'Content-Type': 'multipart/form-data', // Use 'multipart/form-data' for FormData
           },
         });
+        setSubmit(false)
         navigate('/lists/')
       } catch (error) {
         console.log(error)
@@ -43,10 +46,20 @@ const ListCreate = () => {
         setFormData({...formData, title: event.target.value})
     }
   
-  return (
-    <Container fluid className={appStyle.Container}>
+
+    const submittingText = (
       <Container>
-      <Row fluid>
+        <Row>
+          <Col>
+            <h4>Please wait..Submitting</h4>
+          </Col>
+        </Row>
+      </Container>
+    )
+  
+    const defaultText = (
+      <Container>
+        <Row fluid>
           <Col>
           <Form.Group className="mb-3">
             <Form.Label htmlFor="title"><h4>Title</h4></Form.Label>
@@ -70,6 +83,10 @@ const ListCreate = () => {
           </Col>
         </Row>
       </Container>
+    )
+  return (
+    <Container fluid className={appStyle.Container}>
+      {submit ? ((submittingText)) : ((defaultText))}
     </Container>
   )
 }
