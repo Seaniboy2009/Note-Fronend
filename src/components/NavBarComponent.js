@@ -33,7 +33,7 @@ const NavBarComponent = () => {
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
     <Container>
-    <Col md="auto"><Nav.Link className={appStyle.MainText} href="/">Home</Nav.Link></Col>
+    <Col><Nav.Link className={appStyle.MainText} href="/">Home</Nav.Link></Col>
       <Navbar.Toggle className={`${appStyle.ContrastBackground} ${appStyle.MainBorder}`} aria-controls="basic-navbar-nav" />
       <Navbar.Collapse className={appStyle.MainText} id="basic-navbar-nav">
         <Nav className="me-auto">
