@@ -1,30 +1,37 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import React, { useEffect, useState, useContext } from 'react'
 import { Link } from 'react-router-dom';
-import { APIURL } from '../api/APIURL';
-
 import style from '../styles/ListPage.module.css'
 import appStyle from '../styles/App.module.css'
-
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import axiosInstance from '../api/axiosDefaults';
 
+import AuthContext from '../contexts/AuthContext'
+
 const ListPage = () => {
 
     const [lists, setLists] = useState({ results: []})
     const [hasLoaded, setHasLoaded] = useState(false)
+    let {user} = useContext(AuthContext)
 
     useEffect(() => {
-        const getLists = async () => {
+        const getMyLists = async () => {
+            const {data} = await axiosInstance.get(`/api/lists/?owner=${user.user_id}`)
+            console.log(data)
+            setLists(data)
+            setHasLoaded(true)
+        }
+
+        const getAllLists = async () => {
             const {data} = await axiosInstance.get(`/api/lists/`)
             setLists(data)
             setHasLoaded(true)
         }
 
         const timer = setTimeout(() => {
-            getLists()
+            getMyLists()
+            // getAllLists()
         }, 1000)
         
         setHasLoaded(false)

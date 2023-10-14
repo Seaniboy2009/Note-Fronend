@@ -36,3 +36,19 @@
 .ButtonLarge {
     width: 50%;
 }
+
+.MainText {
+    color: #9d0913 !important;
+}
+
+.MainBackground {
+    background-color: #100000 !important;
+}
+
+.ContrastBackground {
+    background-color: #9d0913 !important;
+}
+
+.MainBorder {
+    border: 1px solid #9d0913 !important;
+}

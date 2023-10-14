@@ -19,23 +19,18 @@ const NoteListPage = () => {
     const navigate = useNavigate()
   
     useEffect(() => {
-      console.log(user.user_id)
 
-      const getNotes = async () => {
+      const getMyNotes = async () => {
         try {
           const {data} = await axiosInstance.get('/api/notes/')
           // const {data} = await axiosInstance.get(`/api/notes/?owner=${user.user_id}`)
-          console.log('Notes Response data: ')
-          console.log(data.results)
           setNotes(data)
           setHasLoaded(true)
         } catch (error) {
           const access = localStorage.getItem('access_token')
           if (error.response.status == 401 && access) {
-            console.log('401 re-rendering page')
             window.location.reload()
           } else if (!access) {
-            console.log('No token re-direct to home page')
             navigate('/')
           } else {
             console.log('Other error')
@@ -45,7 +40,7 @@ const NoteListPage = () => {
       }
       
       const timer = setTimeout(() => {
-        getNotes()
+        getMyNotes()
       }, 1000)
 
       setHasLoaded(false)
@@ -77,7 +72,7 @@ const NoteListPage = () => {
         <Container className={appStyle.Container}>
           <Row>
           {notes?.results?.map((note, index) => (
-                <Col key={index}  xl={3}>
+                <Col key={index}  md={4}>
                   <NoteItem key={index} {...note} />
                 </Col>
           ))}
