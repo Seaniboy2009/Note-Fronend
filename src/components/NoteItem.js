@@ -12,6 +12,7 @@ const NoteItem = ( props ) => {
   const {
     id,
     title,
+    owner,
     created,
     image,
     details,
@@ -34,6 +35,7 @@ const NoteItem = ( props ) => {
     <Col className={style.Text}>
       <p>Title: {title}</p>
       <p>Created: {created}</p>
+      <p>Created By: {owner}</p>
       <img src={image} className={style.ImageListPage} alt='note image'/>
       <br/>
     </Col>

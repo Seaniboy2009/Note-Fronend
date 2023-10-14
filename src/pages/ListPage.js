@@ -11,6 +11,7 @@ import AuthContext from '../contexts/AuthContext'
 
 const ListPage = () => {
 
+    const [myLists, setMyLists] = useState({ results: []})
     const [lists, setLists] = useState({ results: []})
     const [hasLoaded, setHasLoaded] = useState(false)
     let {user} = useContext(AuthContext)
@@ -19,19 +20,20 @@ const ListPage = () => {
         const getMyLists = async () => {
             const {data} = await axiosInstance.get(`/api/lists/?owner=${user.user_id}`)
             console.log(data)
-            setLists(data)
+            setMyLists(data)
             setHasLoaded(true)
         }
 
         const getAllLists = async () => {
             const {data} = await axiosInstance.get(`/api/lists/`)
-            setLists(data)
+            const filteredData = data.results.filter(item => item.owner !== user.name);
+            setLists({ results: filteredData });
             setHasLoaded(true)
         }
 
         const timer = setTimeout(() => {
             getMyLists()
-            // getAllLists()
+            getAllLists()
         }, 1000)
         
         setHasLoaded(false)
@@ -62,6 +64,23 @@ const ListPage = () => {
         <Container>
             {hasLoaded ? (
                 <>
+                <Row>My lists</Row>
+                {myLists?.results?.map((list, index) => (
+                    <Link key={index} to={`list/${list.id}`}>
+                        <Row className={style.List}>
+                            <Col xs={3}>
+                                <h5 className={style.ListDetails}># {list.id}</h5>
+                            </Col>
+                            <Col xs={7}>
+                                <h5 className={style.ListDetails}>{list.title}</h5>
+                            </Col>
+                            <Col>
+                                <i className='fa-solid fa-bars'/>
+                            </Col>
+                        </Row>
+                    </Link>
+                ))}
+                <Row>All lists</Row>
                 {lists?.results?.map((list, index) => (
                     <Link key={index} to={`list/${list.id}`}>
                         <Row className={style.List}>
