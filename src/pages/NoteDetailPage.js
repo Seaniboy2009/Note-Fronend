@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from "react-router-dom"
 import NoteItem from '../components/NoteItem'
-import { APIURL } from '../api/APIURL';
 import appStyle from '../styles/App.module.css'
 import { Container } from 'react-bootstrap';
+import axiosInstance from '../api/axiosDefaults';
 
 const NoteDetailPage = () => {
 
@@ -12,8 +12,9 @@ const NoteDetailPage = () => {
 
   useEffect(() => {
     const getNotes = async () => {
-      const response = await fetch(`${APIURL}/api/notes/${id}`)
-      const data = await response.json()
+      // const response = await fetch(`${APIURL}/api/notes/${id}`)
+      const {data} = await axiosInstance.get(`/api/notes/${id}`)
+      // const data = await response.json()
       setNote(data)
       console.log(data)
    }

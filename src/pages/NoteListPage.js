@@ -93,17 +93,21 @@ const NoteListPage = () => {
           <Row><h4>My notes</h4></Row>
           <Row>
           {myNotes?.results?.map((note, index) => (
-                <Col key={index}  md={4}>
-                  <NoteItem key={index} {...note} />
-                </Col>
+            <Col key={index}  md={4}>
+              <NoteItem key={index} {...note} />
+            </Col>
           ))}
           </Row>
           <Row><h4>All notes</h4></Row>
           <Row>
           {notes?.results?.map((note, index) => (
-                <Col key={index}  md={4}>
-                  <NoteItem key={index} {...note} />
-                </Col>
+            <>
+            {note.is_private ? null : (
+              <Col key={index}  md={4}>
+                <NoteItem key={index} {...note} />
+              </Col>
+            )}
+            </>
           ))}
           </Row>
         </Container>

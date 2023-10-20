@@ -1,6 +1,4 @@
-import React, { useState, useContext } from 'react'
-import style from '../styles/Header.module.css'
-import { Link } from 'react-router-dom';
+import React, { useContext } from 'react'
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
@@ -18,7 +16,7 @@ const NavBarComponent = () => {
       <Col md="auto"><Nav.Link className={appStyle.MainText} href="/notes/">Notes</Nav.Link></Col>
       <Col md="auto"><Nav.Link className={appStyle.MainText} href="/lists/">Lists</Nav.Link></Col>
       <Col md="auto">
-        <Nav.Link className={appStyle.MainText} href="/">User: {user?.name}</Nav.Link>
+        <Nav.Link className={appStyle.MainText} href="/">{user?.name}</Nav.Link>
       </Col>
       </Row>
     )

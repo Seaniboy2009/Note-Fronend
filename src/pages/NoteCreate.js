@@ -14,24 +14,23 @@ const NoteCreate = () => {
   const [formData, setFormData] = useState({
     title: '',
     image: '',
-  });
+    is_private: false,
+  })
 
-  const { title } = formData;
+  const { title, is_private } = formData
   const [submit, setSubmit] = useState(false)
 
   const createNote = async () => {
       const formData  = new FormData()
 
       formData.append('title', title)
+      formData.append('is_private', is_private)
       formData.append('image', imageInput.current.files[0])
 
       try {
         setSubmit(true)
-        const response = await axiosInstance.post("/api/notes/", formData, {
+        await axiosInstance.post("/api/notes/", formData, {
           headers: {
-            // Authorization: localStorage.getItem('access_token')
-            //   ? "Bearer " + localStorage.getItem('access_token')
-            //   : null,
             'Content-Type': 'multipart/form-data', // Use 'multipart/form-data' for FormData
           },
         });
@@ -42,8 +41,14 @@ const NoteCreate = () => {
       }
   }
 
-  const updateNote = (event) => {
-      setFormData({...formData, title: event.target.value})
+  const handleChange = (event) => {
+      setFormData({...formData, [event.target.name]: event.target.value})
+      console.log(formData)
+  }
+
+  const handleChecked = (event) => {
+    setFormData({...formData, is_private: event.target.checked})
+    console.log(formData)
   }
 
   const handleChangeImage = (event) => {
@@ -70,16 +75,26 @@ const NoteCreate = () => {
           <Form.Label htmlFor="title"><h4>Title</h4></Form.Label>
           <Form.Control
               type="text"
+              name='title'
               id="title"
               aria-describedby="title"
-              onChange={updateNote}
+              onChange={handleChange}
           />
           <Form.Label htmlFor="image"><h4>Image</h4></Form.Label>
           <Form.Control
               type="file"
+              name='image'
               id='image'
               onChange={handleChangeImage}
               ref={imageInput}
+          />
+          <br/>
+          <Form.Check
+            type="checkbox"
+            name='is_private'
+            id="is_private"
+            label="Set Private?"
+            onChange={handleChecked}
           />
           </Form.Group>
         </Col>

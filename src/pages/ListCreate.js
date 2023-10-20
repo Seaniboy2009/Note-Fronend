@@ -15,26 +15,21 @@ const ListCreate = () => {
     const navigate = useNavigate()
     const [formData, setFormData] = useState({
       title: '',
+      is_private: false,
     });
 
-    const { title } = formData;
+    const { title, is_private } = formData;
     const [submit, setSubmit] = useState(false)
 
     const createList = async () => {
       
       const formData  = new FormData()
       formData.append('title', title)
+      formData.append('is_private', is_private)
   
       try {
         setSubmit(true)
-        const response = await axiosInstance.post("/api/lists/", formData, {
-          headers: {
-            // Authorization: localStorage.getItem('access_token')
-            //   ? "Bearer " + localStorage.getItem('access_token')
-            //   : null,
-            'Content-Type': 'multipart/form-data', // Use 'multipart/form-data' for FormData
-          },
-        });
+        await axiosInstance.post("/api/lists/", formData,)
         setSubmit(false)
         navigate('/lists/')
       } catch (error) {
@@ -42,8 +37,14 @@ const ListCreate = () => {
       }
     }
 
-    const updateList = (event) => {
-        setFormData({...formData, title: event.target.value})
+    const handleChecked = (event) => {
+      setFormData({...formData, is_private: event.target.checked})
+      console.log(formData)
+    }
+
+    const handleChange = (event) => {
+        setFormData({...formData, [event.target.name]: event.target.value})
+        console.log(formData)
     }
   
 
@@ -64,10 +65,19 @@ const ListCreate = () => {
           <Form.Group className="mb-3">
             <Form.Label htmlFor="title"><h4>Title</h4></Form.Label>
             <Form.Control
-                type="text"
-                id="title"
-                aria-describedby="title"
-                onChange={updateList}
+              type="text"
+              id="title"
+              name='title'
+              aria-describedby="title"
+              onChange={handleChange}
+            />
+            <br/>
+            <Form.Check
+              type="checkbox"
+              name='is_private'
+              id="is_private"
+              label="Set Private?"
+              onChange={handleChecked}
             />
             </Form.Group>
           </Col>
