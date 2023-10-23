@@ -5,8 +5,6 @@ import appStyle from '../styles/App.module.css'
 import Form from 'react-bootstrap/Form';
 
 import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 
 const TestPage = () => {
 
@@ -55,16 +53,16 @@ const TestPage = () => {
     <Container>
         <div>TestPage</div>
         <Form 
-                onSubmit={(event) => event.preventDefault()}
-              >
-                <Form.Control
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  type='text'
-                  className='mr-sm-2'
-                  placeholder='Search Movies'
-                >
-                </Form.Control>
+            onSubmit={(event) => event.preventDefault()}
+        >
+            <Form.Control
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                type='text'
+                className='mr-sm-2'
+                placeholder='Search Movies'
+            >
+            </Form.Control>
         </Form>
         <button onClick={testGet} className={appStyle.Button}>TestGet</button>
         <div>

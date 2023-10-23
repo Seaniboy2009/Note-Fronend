@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import style from '../styles/NoteItem.module.css'
 import appStyle from '../styles/App.module.css'
@@ -25,13 +25,21 @@ const NoteItem = ( props ) => {
 
   let {user} = useContext(AuthContext)
 
+  useEffect(() => {
+    
+  })
+
   const [formData, setFormData] = useState({
     formTitle: title,
-    formis_private: is_private,
-    imageForm: '',
+    formis_private: true,
+    imageForm: image,
   })
 
   const { formTitle, formis_private } = formData
+
+  console.log(props)
+  console.log(formData)
+  
 
   const navigate = useNavigate()
 
@@ -122,8 +130,8 @@ const NoteItem = ( props ) => {
               name='is_private'
               id="is_private"
               label="Set Private?"
-              defaultChecked={is_private}
-              defaultValue={is_private}
+              defaultChecked={true}
+              defaultValue={true}
               onChange={handleChecked}
             />
             </Form.Group>

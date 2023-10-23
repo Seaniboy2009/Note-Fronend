@@ -1,9 +1,8 @@
 import axios from "axios";
-import jwtDecode from "jwt-decode";
 import jwt_decode from "jwt-decode";
 
 const baseURL = 'https://note-backend-api-19a13319c6ea.herokuapp.com'
-const DEVbaseURL = 'http://127.0.0.1:8000'
+// const DEVbaseURL = 'http://127.0.0.1:8000'
 
 const axiosInstance = axios.create({
     baseURL: baseURL,
@@ -22,7 +21,7 @@ axiosInstance.interceptors.response.use(
 		return response;
 	},
 	async function (error) {
-		console.log('Axios interceptors called: axiosdefaults.js: line 23')
+		// console.log('Axios interceptors called: axiosdefaults.js: line 23')
 		const originalRequest = error.config;
 
 		if (typeof error.response === 'undefined') {
@@ -48,30 +47,30 @@ axiosInstance.interceptors.response.use(
 			error.response.status === 401 &&
 			error.response.statusText === 'Unauthorized'
 		) {
-			console.log('401 error and token not valid get new token')
+			// console.log('401 error and token not valid get new token')
 			const refreshToken = localStorage.getItem('refresh_token')
 
 			if (refreshToken) {
 				// const tokenParts = JSON.parse(atob(refreshToken.split('.')[1]))
-				const tokenParts = refreshToken.split('.')[1]
+				// const tokenParts = refreshToken.split('.')[1]
 				const dataRef = jwt_decode(localStorage.getItem('refresh_token'))
 
 				// exp date in token is expressed in seconds, while now() returns milliseconds:
 				const now = Math.ceil(Date.now() / 1000);
-				console.log(refreshToken);
-				console.log(dataRef);
-				console.log(dataRef.exp);
-				console.log(now);
+				// console.log(refreshToken);
+				// console.log(dataRef);
+				// console.log(dataRef.exp);
+				// console.log(now);
 
 
 				if (dataRef.exp > now) {
-					console.log('Refresh token not expired', tokenParts, now)
+					// console.log('Refresh token not expired', tokenParts, now)
 					return axiosInstance
 						.post('api/token/refresh/', { refresh: refreshToken })
 						.then((response) => {
-							console.log('new tokens assigned')
-							console.log('new access token', response.data.access)
-							console.log('new refresh token', response.data.refresh)
+							// console.log('new tokens assigned')
+							// console.log('new access token', response.data.access)
+							// console.log('new refresh token', response.data.refresh)
 							localStorage.setItem('access_token', response.data.access);
 							// localStorage.setItem('refresh_token', response.data.refresh);
 
@@ -86,13 +85,13 @@ axiosInstance.interceptors.response.use(
 							console.log(err)
 						})
 				} else {
-					console.log('Refresh token is expired', tokenParts, now)
+					// console.log('Refresh token is expired', tokenParts, now)
 					localStorage.removeItem('access_token')
 					localStorage.removeItem('refresh_token')
 					window.location.href = '/'
 				}
 			} else {
-				console.log('Refresh token not available.')
+				// console.log('Refresh token not available.')
 				window.location.href = '/'
 			}
 		}

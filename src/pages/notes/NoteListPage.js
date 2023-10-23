@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Link } from 'react-router-dom';
-import NoteItem from '../components/NoteItem'
-import appStyle from '../styles/App.module.css'
+import NoteItem from '../../components/NoteItem'
+import appStyle from '../../styles/App.module.css'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import axiosInstance from '../api/axiosDefaults';
+import axiosInstance from '../../api/axiosDefaults';
 import { useNavigate } from 'react-router-dom';
 
-import AuthContext from '../contexts/AuthContext'
+import AuthContext from '../../contexts/AuthContext'
+import Loader from '../../components/Loader';
 
 const NoteListPage = () => {
 
@@ -72,10 +73,10 @@ const NoteListPage = () => {
     }, [])
 
   return (
-    <Container fluid className={appStyle.Container}>
-      <Container>
+    <Container fluid className={`text-center ${appStyle.Container}`}>
+      <Container fluid className={`text-center ${appStyle.Container}`}>
         <Row>
-          <Col md={1}>
+          <Col>
             <h3>Notes</h3>
           </Col>
           {hasLoaded ? (
@@ -89,11 +90,11 @@ const NoteListPage = () => {
       </Container>
       <Container>
       {hasLoaded ? (
-        <Container className={appStyle.Container}>
+        <Container fluid className={appStyle.Container}>
           <Row><h4>My notes</h4></Row>
           <Row>
           {myNotes?.results?.map((note, index) => (
-            <Col key={index}  md={4}>
+            <Col key={index + 1}  md={4}>
               <NoteItem key={index} {...note} />
             </Col>
           ))}
@@ -103,7 +104,7 @@ const NoteListPage = () => {
           {notes?.results?.map((note, index) => (
             <>
             {note.is_private ? null : (
-              <Col key={index}  md={4}>
+              <Col key={index + 1}  md={4}>
                 <NoteItem key={index} {...note} />
               </Col>
             )}
@@ -111,12 +112,8 @@ const NoteListPage = () => {
           ))}
           </Row>
         </Container>
-          ) : (
-            <Row>
-              <Col>
-                <h3>Loading...</h3>
-              </Col>
-          </Row>
+      ) : (
+        <Loader spinner text='Loading notes, please wait' />
       )}
       </Container>
     </Container>

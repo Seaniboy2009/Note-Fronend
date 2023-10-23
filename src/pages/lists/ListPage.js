@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { Link } from 'react-router-dom';
-import style from '../styles/ListPage.module.css'
-import appStyle from '../styles/App.module.css'
+import style from '../../styles/ListPage.module.css'
+import appStyle from '../../styles/App.module.css'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import axiosInstance from '../api/axiosDefaults';
+import axiosInstance from '../../api/axiosDefaults';
 
-import AuthContext from '../contexts/AuthContext'
+import AuthContext from '../../contexts/AuthContext'
+import Loader from '../../components/Loader';
 
 const ListPage = () => {
 
@@ -46,10 +47,10 @@ const ListPage = () => {
 
 
   return (
-    <Container fluid className={appStyle.Container}>
-        <Container>
+    <Container fluid className={`text-center ${appStyle.Container}`}>
+        <Container fluid className={`text-center ${appStyle.Container}`}>
             <Row>
-                <Col md={1}>
+                <Col>
                     <h3>Lists</h3>
                 </Col>
                 {hasLoaded ? (
@@ -107,11 +108,7 @@ const ListPage = () => {
                 ))}
                 </>
             ) : (
-                <Row>
-                    <Col>
-                        <h3>Loading...</h3>
-                    </Col>
-                </Row>
+                <Loader spinner text='Loading lists, please wait' />
             )}
         </Container>
     </Container>

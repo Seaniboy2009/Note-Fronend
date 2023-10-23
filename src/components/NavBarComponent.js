@@ -23,8 +23,8 @@ const NavBarComponent = () => {
   
     const notSignedIn = (
       <>
-        <Nav.Link className={appStyle.MainText} href="/notes/">Sign in</Nav.Link>
-        <Nav.Link className={appStyle.MainText} href="/lists/">Sign up</Nav.Link>
+        <Nav.Link className={appStyle.MainText} href="/">Sign in</Nav.Link>
+        <Nav.Link className={appStyle.MainText} href="/register/">Sign up</Nav.Link>
       </>
     )
 

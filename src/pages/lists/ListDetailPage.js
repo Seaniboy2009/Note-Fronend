@@ -1,8 +1,7 @@
-import { APIURL } from '../api/APIURL';
 import React, { useEffect, useState } from 'react'
-import style from '../styles/ListDetailPage.module.css'
+import style from '../../styles/ListDetailPage.module.css'
 import { useParams, useNavigate } from "react-router-dom"
-import appStyle from '../styles/App.module.css'
+import appStyle from '../../styles/App.module.css'
 import Form from 'react-bootstrap/Form';
 import Dropdown from 'react-bootstrap/Dropdown'
 
@@ -10,10 +9,10 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Link } from 'react-router-dom';
-import axiosInstance from '../api/axiosDefaults';
+import axiosInstance from '../../api/axiosDefaults';
 
 import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
+import Loader from '../../components/Loader';
 
 const ListDetailPage = () => {
     
@@ -22,7 +21,7 @@ const ListDetailPage = () => {
     const [list, setList] = useState({ results: []})
     const [items, setItems] = useState({ results: []})
     const [hasLoaded, setHasLoaded] = useState(false)
-    const [confirm, setConfirm] = useState(false)
+    // const [confirm, setConfirm] = useState(false)
 
     const [show, setShow] = useState(false);
 
@@ -34,7 +33,7 @@ const ListDetailPage = () => {
         content: '',
     });
 
-    const { content } = formData;
+    const { content } = formData
 
     const getLists = async () => {
         console.log('Get list detail called')
@@ -128,29 +127,29 @@ const ListDetailPage = () => {
         <Container>
         {hasLoaded ? (
             <>
-            <Row>
-                <Col md={2}>
-                    <Link to={'/lists/'}><i className="fa-solid fa-arrow-left" />&nbsp; Lists</Link>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <h3>{list.title}</h3>
-                </Col>
-            </Row>
-            {items?.results?.map((item, index) => (
-                <Row key={index + 1} className={style.ListContainer}>
-                    <Col >
-                        <p>#{index + 1}:{item.content}</p>
-                    </Col>
-                    <Col xs={3}>
-                        <button onClick={() => handleDeleteItem(item)} className={appStyle.Button}>Delete</button>
+                <Row>
+                    <Col md={2}>
+                        <Link to={'/lists/'}><i className="fa-solid fa-arrow-left" />&nbsp; Lists</Link>
                     </Col>
                 </Row>
-            ))}
+                <Row>
+                    <Col>
+                        <h3>{list.title}</h3>
+                    </Col>
+                </Row>
+                {items?.results?.map((item, index) => (
+                    <Row key={index + 1} className={style.ListContainer}>
+                        <Col >
+                            <p>#{index + 1}:{item.content}</p>
+                        </Col>
+                        <Col xs={3}>
+                            <button onClick={() => handleDeleteItem(item)} className={appStyle.Button}>Delete</button>
+                        </Col>
+                    </Row>
+                ))}
             </>
-            ) : (
-                <h3 key='loading'>Loading...</h3>
+        ) : (
+            <Loader spinner text='Loading lists, please wait' />
         )}
             <Row>
                 <Col md={2}>

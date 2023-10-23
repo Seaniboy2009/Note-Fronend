@@ -1,10 +1,8 @@
 import React, { useState} from 'react'
 import { Link, useNavigate } from 'react-router-dom';
-import { APIURL } from '../api/APIURL';
 import Form from 'react-bootstrap/Form';
-import axios from 'axios';
-import appStyle from '../styles/App.module.css'
-import axiosInstance from '../api/axiosDefaults';
+import appStyle from '../../styles/App.module.css'
+import axiosInstance from '../../api/axiosDefaults';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -46,7 +44,6 @@ const ListCreate = () => {
         setFormData({...formData, [event.target.name]: event.target.value})
         console.log(formData)
     }
-  
 
     const submittingText = (
       <Container>
