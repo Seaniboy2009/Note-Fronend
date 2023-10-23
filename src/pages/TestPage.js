@@ -5,6 +5,7 @@ import appStyle from '../styles/App.module.css'
 import Form from 'react-bootstrap/Form';
 
 import Container from 'react-bootstrap/Container';
+import { Col, Row } from 'react-bootstrap';
 
 const TestPage = () => {
 
@@ -50,41 +51,50 @@ const TestPage = () => {
     }
     
   return (
-    <Container>
-        <div>TestPage</div>
-        <Form 
-            onSubmit={(event) => event.preventDefault()}
-        >
-            <Form.Control
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                type='text'
-                className='mr-sm-2'
-                placeholder='Search Movies'
-            >
-            </Form.Control>
-        </Form>
-        <button onClick={testGet} className={appStyle.Button}>TestGet</button>
-        <div>
-            {hasLoaded ? (
-                <Table striped bordered>
-                <thead>
-                    <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.results.map((data, index) => (
-                        <tr>
-                        <td key={index}>{index}</td>
-                        <td key={data.id}>{data.titleText.text}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </Table>
-            ) : (<>Loading...</>)}
-        </div>
+    <Container fluid className={`text-center ${appStyle.Container}`}>
+        <Row className="justify-content-md-center">
+            <Col>TestPage</Col>
+        </Row>
+        <Row className="justify-content-md-center">
+            <Col md={6}>
+            <Form onSubmit={(event) => event.preventDefault()}>
+                <Form.Control
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                    type='text'
+                    // className='mr-sm-2'
+                    placeholder='Search Movies'
+                ></Form.Control>
+            </Form>
+            </Col>
+        </Row>
+        <Row>
+            <Col>
+                <button onClick={testGet} className={appStyle.Button}>TestGet</button>
+            </Col>
+        </Row>
+        <Row className="justify-content-md-center">
+            <Col md={6}>
+                {hasLoaded ? (
+                    <Table className={appStyle.Table}>
+                        <thead>
+                            <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.results.map((data, index) => (
+                                <tr>
+                                <td key={index}>{index}</td>
+                                <td key={data.id}>{data.titleText.text}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                ) : (<>Loading...</>)}
+            </Col>
+        </Row>
     </Container>
   )
 }

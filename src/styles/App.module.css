@@ -52,3 +52,8 @@
 .MainBorder {
     border: 1px solid #9d0913 !important;
 }
+
+.Table, .Table > tbody > tr > td {
+    border: 1px solid #9d0913 !important;
+    color: #9d0913;
+}
