@@ -49,7 +49,7 @@ const ListPage = () => {
   return (
     <Container fluid className={`text-center ${appStyle.Container}`}>
         <Container fluid className={`text-center ${appStyle.Container}`}>
-            <Row>
+            <Row fluid xl={1}>
                 <Col>
                     <h3>Lists</h3>
                 </Col>

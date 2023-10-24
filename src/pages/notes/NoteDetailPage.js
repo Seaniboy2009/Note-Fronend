@@ -5,34 +5,35 @@ import appStyle from '../../styles/App.module.css'
 import { Container } from 'react-bootstrap';
 import axiosInstance from '../../api/axiosDefaults';
 
+import Loader from '../../components/Loader';
+
 const NoteDetailPage = () => {
 
   const { id } = useParams()
   const [note, setNote] = useState({})
+  const [hasLoaded, setHasLoaded] = useState(false)
 
   useEffect(() => {
-    const getNotes = async () => {
-      // const response = await fetch(`${APIURL}/api/notes/${id}`)
+    
+    const getNote = async () => {
       const {data} = await axiosInstance.get(`/api/notes/${id}`)
-      // const data = await response.json()
       setNote(data)
+      setHasLoaded(true)
       console.log(data)
    }
     
-    // Set a timer to call the get notes after x seconds
     const timer = setTimeout(() => {
-      getNotes()
-    },)
+      getNote()
+    }, 500)
 
-    // clear the timer
     return () => {
       clearTimeout(timer)
     }
-  }, [])
+  }, [id])
 
   return (
-    <Container fluid className={appStyle.Container}>
-      <NoteItem key={id} {...note} notePage />
+    <Container className={appStyle.Container}>
+      {hasLoaded ? (<NoteItem key={id} {...note} notePage />) : (<><Loader spinner text='loading note' /></>)}
     </Container>
   )
 }

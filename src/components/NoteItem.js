@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import style from '../styles/NoteItem.module.css'
 import appStyle from '../styles/App.module.css'
@@ -25,21 +25,12 @@ const NoteItem = ( props ) => {
 
   let {user} = useContext(AuthContext)
 
-  useEffect(() => {
-    
-  })
-
   const [formData, setFormData] = useState({
-    formTitle: title,
-    formis_private: true,
-    imageForm: image,
+    newTitle: title,
+    newIs_private: is_private,
+    image: image,
   })
-
-  const { formTitle, formis_private } = formData
-
-  console.log(props)
-  console.log(formData)
-  
+  const { newTitle, newIs_private } = formData
 
   const navigate = useNavigate()
 
@@ -49,59 +40,65 @@ const NoteItem = ( props ) => {
   }
 
   const handleUpdate = (event) => {
-    setFormData({...formData, formTitle: event.target.value})
+    setFormData({...formData, newTitle: event.target.value})
+    console.log(formData)
   }
 
   const handleChecked = (event) => {
-    setFormData({...formData, formis_private: event.target.checked})
+    setFormData({...formData, newIs_private: event.target.checked})
     console.log(formData)
   }
 
   const handleSend = async () => {
 
     const formData  = new FormData()
-    formData.append('title', formTitle)
-    formData.append('is_private', formis_private)
+    formData.append('title', newTitle)
+    formData.append('is_private', newIs_private)
 
     try {
-      await axiosInstance.put(`/api/notes/${id}`, formData)
-      window.location.reload()
+      await axiosInstance.put(`/api/notes/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Use 'multipart/form-data' for FormData
+        },
+      })
+      console.log(formData)
+      // window.location.reload()
     } catch (error) {
-      
+      console.log(error)
     }
 
   }
 
   const listPage = (
     <Col className={style.Text}>
+      {is_private ? <i className={`fa-solid fa-lock ${style.Private}`}></i> : null}
       <p>Title: {title}</p>
-      <p>Created: {created}</p>
-      <p>Created By: {owner}</p>
-      <p>updated: {updated}</p>
       <img src={image} className={style.ImageListPage} alt='note image'/>
       <br/>
     </Col>
   )
 
   const detailsPage = (
-    <>
-    <Row>
-      <Col xs={5}>
-        <Link to={'/notes/'}><i className="fa-solid fa-arrow-left" />&nbsp; Notes</Link>
-      </Col>
-    </Row>
-    <Row>
-      <Col>
-        <p>Title: {title}</p>
-        <p>Created: {created}</p>
-        <p>Created By: {owner}</p>
-        <p>updated: {updated}</p>
-        <p>details: {details}</p>
-        <p>private: {is_private ? 'private' : 'not private'}</p>
-        <img src={image} className={style.ImageDetailPage} alt='note image'/>
-      </Col>
-    </Row>
-    </>
+    <Container>
+      <Row className={`text-left ${appStyle.Container}`}>
+        <Col>
+          <Link to={'/notes/'}><i className="fa-solid fa-arrow-left" />&nbsp;</Link>
+        </Col>
+      </Row>
+      <Row className={`text-left ${appStyle.Container}`}>
+        <Col className={style.TextDetail}>
+          <p>Title: {title}</p>
+          <p>Created: {created}</p>
+          <p>Updated: {updated}</p>
+          <p>Details: {details}</p>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <img src={image} className={style.ImageDetailPage} alt='note image'/>
+        </Col>
+      </Row>
+    </Container>
   )
 
   const isOwner = (
@@ -130,7 +127,7 @@ const NoteItem = ( props ) => {
               name='is_private'
               id="is_private"
               label="Set Private?"
-              defaultChecked={true}
+              defaultChecked={is_private}
               defaultValue={true}
               onChange={handleChecked}
             />
@@ -147,13 +144,13 @@ const NoteItem = ( props ) => {
   )
 
   return (
-    <Container>
+    <Container fluid className={`text-center ${appStyle.Container}`}>
         {notePage ? (
           <>
-            {owner == user.name ? (<>{isOwner}</>) : (<>{notOwner}</>)}
+            {owner === user.name ? (<>{isOwner}</>) : (<>{notOwner}</>)}
           </>
         ) : (
-          <Container className={appStyle.Container}>
+          <Container fluid className={`text-center ${appStyle.Container}`}>
             <Link to={`note/${id}`} className={style.Link}>
               <Row>
                 {listPage}

@@ -29,14 +29,14 @@ const NoteListPage = () => {
           setHasLoaded(true)
         } catch (error) {
           const access = localStorage.getItem('access_token')
-          if (error.response.status == 401 && access) {
+          if (error.response.status === 401 && access) {
             window.location.reload()
           } else if (!access) {
             navigate('/')
           } else {
             console.log('Other error')
           }
-          setErrors(errors)
+          setErrors(error)
         }
       }
 
@@ -48,14 +48,14 @@ const NoteListPage = () => {
           setHasLoaded(true)
         } catch (error) {
           const access = localStorage.getItem('access_token')
-          if (error.response.status == 401 && access) {
+          if (error.response.status === 401 && access) {
             window.location.reload()
           } else if (!access) {
             navigate('/')
           } else {
             console.log('Other error')
           }
-          setErrors(errors)
+          setErrors(error)
         }
       }
       
@@ -70,12 +70,12 @@ const NoteListPage = () => {
         clearTimeout(timer)
       }
 
-    }, [])
+    }, [user, navigate])
 
   return (
-    <Container fluid className={`text-center ${appStyle.Container}`}>
-      <Container fluid className={`text-center ${appStyle.Container}`}>
-        <Row>
+    <Container fluid className={`${appStyle.Container}`}>
+      <Container className={`text-center ${appStyle.Container}`}>
+        <Row fluid xl={1}>
           <Col>
             <h3>Notes</h3>
           </Col>
@@ -88,27 +88,25 @@ const NoteListPage = () => {
           ) : (<></>)}
         </Row>
       </Container>
-      <Container>
+      <Container className={`text-center ${appStyle.Container}`}>
       {hasLoaded ? (
         <Container fluid className={appStyle.Container}>
           <Row><h4>My notes</h4></Row>
           <Row>
           {myNotes?.results?.map((note, index) => (
-            <Col key={index + 1}  md={4}>
-              <NoteItem key={index} {...note} />
+            <Col key={index}  md={4}>
+              <NoteItem key={note.id} {...note} />
             </Col>
           ))}
           </Row>
           <Row><h4>All notes</h4></Row>
           <Row>
           {notes?.results?.map((note, index) => (
-            <>
+            <Col key={index}  md={4}>
             {note.is_private ? null : (
-              <Col key={index + 1}  md={4}>
-                <NoteItem key={index} {...note} />
-              </Col>
+              <NoteItem key={note.id} {...note} />
             )}
-            </>
+            </Col>
           ))}
           </Row>
         </Container>
