@@ -11,10 +11,10 @@ const SignInForm = () => {
     let {handleLogIn} = useContext(AuthContext)
     let {handleLogOut} = useContext(AuthContext)
     let {handleChange} = useContext(AuthContext)
-    let {user} = useContext(AuthContext)
+    let {user, signInErrors} = useContext(AuthContext)
     
     return (
-        <Container fluid className={`text-center ${appStyle.Container}`}>
+        <Container className={`text-center ${appStyle.Container}`}>
             {!user ? (
                 <form onSubmit={handleLogIn}>
                 <Row>
@@ -22,6 +22,7 @@ const SignInForm = () => {
                         <h3>Please sign in to access the app.</h3>
                     </Col>
                 </Row>
+                <Row><Col>{signInErrors != null ? (<p>{signInErrors}</p>) : null}</Col></Row>
                 <Row>
                     <Col>
                         <input className={`${style.Form} ${appStyle.ButtonLarge}`} type="text" name="username" placeholder="Enter Username" onChange={handleChange}/>

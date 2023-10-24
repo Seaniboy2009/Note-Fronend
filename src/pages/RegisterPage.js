@@ -1,6 +1,10 @@
 import React, { useState } from 'react'
-import { Container } from 'react-bootstrap'
 import axiosInstance from '../api/axiosDefaults'
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import appStyle from '../styles/App.module.css'
+import style from '../styles/SignInPage.module.css'
 
 const RegisterPage = () => {
 
@@ -11,6 +15,7 @@ const RegisterPage = () => {
     })
 
     const { username, password1, password2 } = formData
+    const [errors, setErrors] = useState({})
 
     const handleChange = (event) => {
         setFormData({
@@ -37,20 +42,46 @@ const RegisterPage = () => {
             })
         } catch (error) {
             console.log(error.response.request.responseText)
+            setErrors(error?.response.data)
         }
 
     }
 
 
   return (
-    <Container>
-        <form onSubmit={handleSubmit}>
-            <input type='text' name='username' onChange={handleChange} placeholder="Enter Username" />
-            <input type='password' name='password1' onChange={handleChange} placeholder="Enter Password" />
-            <input type='password' name='password2' onChange={handleChange} placeholder="Confirm Password" />
-            <button type='submit'>Submit</button>
-        </form>
-    </Container>
+            <Container className={`text-center ${appStyle.Container}`}>
+                <form onSubmit={handleSubmit}>
+                <Row>
+                    <Col>
+                        <h3>Please complete the below to create an account.</h3>
+                    </Col>
+                </Row>
+                <Row><Col>{errors?.username?.map((error, index) => (<p key={index}>{error}</p>))}</Col></Row>
+                <Row>
+                    <Col>
+                        <input className={`${style.Form} ${appStyle.ButtonLarge}`} type='text' name='username' onChange={handleChange} placeholder="Enter Username (Case sensitive)" />
+                    </Col>
+                </Row>
+                <Row><Col>{errors?.password1?.map((error, index) => (<p key={index}>{error}</p>))}</Col></Row>
+                <Row>
+                    <Col>
+                        <input className={`${style.Form} ${appStyle.ButtonLarge}`} type='password' name='password1' onChange={handleChange} placeholder="Enter Password" />
+                    </Col>
+                </Row>
+                <Row><Col>{errors?.password2?.map((error, index) => (<p key={index}>{error}</p>))}</Col></Row>
+                <Row>
+                    <Col>
+                        <input className={`${style.Form} ${appStyle.ButtonLarge}`} type='password' name='password2' onChange={handleChange} placeholder="Confirm Password" />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <input className={`${appStyle.Button} ${appStyle.ButtonLarge}`} type="submit"/>
+                    </Col>
+                </Row>
+                </form>
+
+        </Container>
   )
 }
 

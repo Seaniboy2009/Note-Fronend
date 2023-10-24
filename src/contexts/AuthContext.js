@@ -17,22 +17,29 @@ export const AuthProvider = ({children}) => {
     })
 
     const [user, setUser] = useState(() => localStorage.getItem('access_token') ? jwt_decode(localStorage.getItem('access_token')) : null)
+    const [signInErrors, setSignInErrors] = useState('')
 
     const handleLogIn = async (event) => {
+
         event.preventDefault();
 
-        await axiosInstance.post('api/token/', {
-            username: formData.username,
-            password: formData.password,
-        }).then((res) => {
-            localStorage.setItem('access_token', res.data.access)
-            localStorage.setItem('refresh_token', res.data.refresh)
-            axiosInstance.defaults.headers['Authorization'] = 'JWT ' + localStorage.getItem('access_token')
-            const data = jwt_decode(res.data.access)
-            setUser(data.name.toString())
-            window.location.reload()
-            navigate('/')
-        })
+        try {
+            await axiosInstance.post('api/token/', {
+                username: formData.username,
+                password: formData.password,
+            }).then((res) => {
+                localStorage.setItem('access_token', res.data.access)
+                localStorage.setItem('refresh_token', res.data.refresh)
+                axiosInstance.defaults.headers['Authorization'] = 'JWT ' + localStorage.getItem('access_token')
+                const data = jwt_decode(res.data.access)
+                setUser(data.name.toString())
+                window.location.reload()
+                navigate('/')
+            })
+        } catch (error) {
+            setSignInErrors(error?.response.data.detail)
+            console.log(error?.response.data.detail)
+        }
     }
 
     const handleChange = (event) => {
@@ -51,6 +58,7 @@ export const AuthProvider = ({children}) => {
 
     let contextData = {
         user:user,
+        signInErrors:signInErrors,
         handleLogIn:handleLogIn,
         handleLogOut:handleLogOut,
         handleChange:handleChange,

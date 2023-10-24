@@ -27,6 +27,7 @@ const NoteListPage = () => {
           const {data} = await axiosInstance.get(`/api/notes/?owner=${user.user_id}`)
           setMyNotes(data)
           setHasLoaded(true)
+          console.log(data)
         } catch (error) {
           const access = localStorage.getItem('access_token')
           if (error.response.status === 401 && access) {
@@ -46,6 +47,7 @@ const NoteListPage = () => {
           const filteredData = data.results.filter(item => item.owner !== user.name);
           setNotes({ results: filteredData });
           setHasLoaded(true)
+          console.log(filteredData)
         } catch (error) {
           const access = localStorage.getItem('access_token')
           if (error.response.status === 401 && access) {

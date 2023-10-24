@@ -80,7 +80,6 @@ const HomePage = () => {
             </>
                 ) : (null)}
                 {<SignInForm />}
-                {<TestPage />}
             </>
         ) : (<Loader spinner text='Loading App, Please wait' />)}
     </Container>

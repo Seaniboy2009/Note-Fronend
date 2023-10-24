@@ -13,10 +13,13 @@ const NavBarComponent = () => {
   
     const signedIn = (
       <Row xs={12}>
-      <Col md="auto"><Nav.Link className={appStyle.MainText} href="/notes/">Notes</Nav.Link></Col>
-      <Col md="auto"><Nav.Link className={appStyle.MainText} href="/lists/">Lists</Nav.Link></Col>
-      <Col md="auto">
-        <Nav.Link className={appStyle.MainText} href="/">{user?.name}</Nav.Link>
+      <Col><Nav.Link className={appStyle.MainText} href="/notes/">Notes</Nav.Link></Col>
+      <Col><Nav.Link className={appStyle.MainText} href="/lists/">Lists</Nav.Link></Col>
+      <Col>
+        <Nav.Link className={appStyle.MainText} href="/test/">test</Nav.Link>
+      </Col>
+      <Col>
+        <Nav.Link className={appStyle.MainText} href="/account/">{user?.name}</Nav.Link>
       </Col>
       </Row>
     )
