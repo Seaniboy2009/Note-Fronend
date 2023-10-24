@@ -22,7 +22,17 @@
 
 .Private {
     position: fixed;
-    right: 3%;
+    right: .5%;
+}
+.Watched {
+    position: fixed;
+    right: .5%;
+    top: 6%;
+}
+
+.NoteDetails {
+    border: #9d0913 1px solid;
+    background-color: #1b0000;
 }
 
 .Link > div {

@@ -21,6 +21,7 @@ const NoteItem = ( props ) => {
     details,
     notePage,
     is_private,
+    toggle,
   } = props
 
   let {user} = useContext(AuthContext)
@@ -28,9 +29,10 @@ const NoteItem = ( props ) => {
   const [formData, setFormData] = useState({
     newTitle: title,
     newIs_private: is_private,
+    newToggle: toggle,
     image: image,
   })
-  const { newTitle, newIs_private } = formData
+  const { newTitle, newIs_private, newToggle } = formData
 
   const navigate = useNavigate()
 
@@ -45,7 +47,7 @@ const NoteItem = ( props ) => {
   }
 
   const handleChecked = (event) => {
-    setFormData({...formData, newIs_private: event.target.checked})
+    setFormData({...formData, [event.target.name]: event.target.checked})
     console.log(formData)
   }
 
@@ -54,6 +56,7 @@ const NoteItem = ( props ) => {
     const formData  = new FormData()
     formData.append('title', newTitle)
     formData.append('is_private', newIs_private)
+    formData.append('toggle', newToggle)
 
     try {
       await axiosInstance.put(`/api/notes/${id}`, formData, {
@@ -62,7 +65,7 @@ const NoteItem = ( props ) => {
         },
       })
       console.log(formData)
-      // window.location.reload()
+      window.location.reload()
     } catch (error) {
       console.log(error)
     }
@@ -72,7 +75,16 @@ const NoteItem = ( props ) => {
   const listPage = (
     <Col className={style.Text}>
       {is_private ? <i className={`fa-solid fa-lock ${style.Private}`}></i> : null}
+      {toggle ? <i className={`fa-solid fa-eye ${style.Watched}`}></i> : null}
       <p>Title: {title}</p>
+      {/* <Row>
+          <Col className={style.NoteDetails}><p>Title: {title}</p></Col>
+      </Row>
+      <Row>
+          <Col className={style.NoteDetails}>
+          <img src={image} className={style.ImageListPage} alt='note image'/>
+          </Col>
+      </Row> */}
       <img src={image} className={style.ImageListPage} alt='note image'/>
       <br/>
     </Col>
@@ -85,13 +97,21 @@ const NoteItem = ( props ) => {
           <Link to={'/notes/'}><i className="fa-solid fa-arrow-left" />&nbsp;</Link>
         </Col>
       </Row>
-      <Row className={`text-left ${appStyle.Container}`}>
+      {/* <Row className={`text-left ${appStyle.Container}`}>
         <Col className={style.TextDetail}>
           <p>Title: {title}</p>
           <p>Created: {created}</p>
           <p>Updated: {updated}</p>
           <p>Details: {details}</p>
         </Col>
+      </Row> */}
+      <Row className={`text-left ${appStyle.Container}`}>
+          <Col md={3} className={style.NoteDetails}><p>Title: {title}</p></Col>
+          <Col md={3} className={style.NoteDetails}><p>Created: {created}</p></Col>
+          <Col md={3} className={style.NoteDetails}><p>Updated: {updated}</p></Col>
+          <Col md={3} className={style.NoteDetails}><p>Details: {details}</p></Col>
+          <Col md={3} className={style.NoteDetails}><p>Private: {is_private ? 'Yes' : 'No'}</p></Col>
+          <Col md={3} className={style.NoteDetails}><p>Watched: {toggle ? 'Yes' : 'No'}</p></Col>
       </Row>
       <Row>
         <Col>
@@ -124,11 +144,20 @@ const NoteItem = ( props ) => {
             <br/>
             <Form.Check
               type="checkbox"
-              name='is_private'
-              id="is_private"
+              name='newIs_private'
+              id="newIs_private"
               label="Set Private?"
               defaultChecked={is_private}
               defaultValue={true}
+              onChange={handleChecked}
+            />
+            <Form.Check
+              type="checkbox"
+              name='newToggle'
+              id="newToggle"
+              label="Set toggle?"
+              defaultChecked={toggle}
+              defaultValue={false}
               onChange={handleChecked}
             />
             </Form.Group>
