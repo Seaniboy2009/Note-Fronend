@@ -73,21 +73,15 @@ const NoteItem = ( props ) => {
   }
 
   const listPage = (
-    <Col className={style.Text}>
+    <Row className={style.ImageListPage}>
+      <Col>
       {is_private ? <i className={`fa-solid fa-lock ${style.Private}`}></i> : null}
       {toggle ? <i className={`fa-solid fa-eye ${style.Watched}`}></i> : null}
-      <p>Title: {title}</p>
-      {/* <Row>
-          <Col className={style.NoteDetails}><p>Title: {title}</p></Col>
-      </Row>
-      <Row>
-          <Col className={style.NoteDetails}>
-          <img src={image} className={style.ImageListPage} alt='note image'/>
-          </Col>
-      </Row> */}
-      <img src={image} className={style.ImageListPage} alt='note image'/>
-      <br/>
-    </Col>
+      </Col>
+
+      <Col><img src={image} className={style.ImageDetailPage} alt='note image'/></Col>
+      <Col>{title}</Col>
+    </Row>
   )
 
   const detailsPage = (
@@ -97,14 +91,6 @@ const NoteItem = ( props ) => {
           <Link to={'/notes/'}><i className="fa-solid fa-arrow-left" />&nbsp;</Link>
         </Col>
       </Row>
-      {/* <Row className={`text-left ${appStyle.Container}`}>
-        <Col className={style.TextDetail}>
-          <p>Title: {title}</p>
-          <p>Created: {created}</p>
-          <p>Updated: {updated}</p>
-          <p>Details: {details}</p>
-        </Col>
-      </Row> */}
       <Row className={`text-left ${appStyle.Container}`}>
           <Col md={3} className={style.NoteDetails}><p>Title: {title}</p></Col>
           <Col md={3} className={style.NoteDetails}><p>Created: {created}</p></Col>
@@ -179,13 +165,9 @@ const NoteItem = ( props ) => {
             {owner === user.name ? (<>{isOwner}</>) : (<>{notOwner}</>)}
           </>
         ) : (
-          <Container fluid className={`text-center ${appStyle.Container}`}>
-            <Link to={`note/${id}`} className={style.Link}>
-              <Row>
-                {listPage}
-              </Row>
-            </Link>
-          </Container>
+          <Link to={`note/${id}`} className={style.Link}>
+            {listPage}
+          </Link>
         )}
     </Container>
   )

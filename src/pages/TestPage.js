@@ -3,6 +3,7 @@ import axios from 'axios';
 import Table from 'react-bootstrap/Table';
 import appStyle from '../styles/App.module.css'
 import Form from 'react-bootstrap/Form';
+import style from '../styles/Test.module.css'
 
 import Container from 'react-bootstrap/Container';
 import { Col, Row } from 'react-bootstrap';
@@ -81,6 +82,8 @@ const TestPage = () => {
                             <tr>
                             <th>#</th>
                             <th>Name</th>
+                            <th>Release Year</th>
+                            <th>Image</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -88,6 +91,8 @@ const TestPage = () => {
                                 <tr>
                                 <td key={index}>{index}</td>
                                 <td key={data.id}>{data.titleText.text}</td>
+                                <td key={data.id}>{data.releaseYear.year}</td>
+                                <td key={data.id}><img className={style.Image} src={data.primaryImage?.url ? data.primaryImage.url : null} /></td>
                                 </tr>
                             ))}
                         </tbody>

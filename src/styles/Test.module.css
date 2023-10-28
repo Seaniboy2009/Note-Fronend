@@ -1,0 +1,16 @@
+.Image {
+    margin-bottom: 10%;
+    object-fit: cover;
+    width: 100%;
+    height: 350px;
+}
+
+@media  screen and (max-width: 768px) {
+
+    .Image {
+        margin-bottom: 10%;
+        object-fit: cover;
+        width: 80%;
+        height: 200px;
+    }
+}
