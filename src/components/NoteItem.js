@@ -73,15 +73,17 @@ const NoteItem = ( props ) => {
   }
 
   const listPage = (
-    <Row className={style.ImageListPage}>
-      <Col>
-      {is_private ? <i className={`fa-solid fa-lock ${style.Private}`}></i> : null}
-      {toggle ? <i className={`fa-solid fa-eye ${style.Watched}`}></i> : null}
-      </Col>
+    <>
+      <Row className={style.ImageListPage}>
+        <Col xs={5}><img src={image} className={style.ImageDetailPage} alt='note image'/></Col>
+        <Col xs={5}>{title}</Col>
+        <Col xs={2}>
+        {is_private ? <i className={`fa-solid fa-lock ${style.Private}`}></i> : null}
+        {toggle ? <i className={`fa-solid fa-eye ${style.Watched}`}></i> : null}
+        </Col>
+      </Row>
+    </>
 
-      <Col><img src={image} className={style.ImageDetailPage} alt='note image'/></Col>
-      <Col>{title}</Col>
-    </Row>
   )
 
   const detailsPage = (
