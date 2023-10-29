@@ -27,7 +27,7 @@ const NoteListPage = () => {
           const {data} = await axiosInstance.get(`/api/notes/?owner=${user.user_id}`)
           setMyNotes(data)
           setHasLoaded(true)
-          console.log(data)
+          console.log('Get my notes data:', data)
         } catch (error) {
           const access = localStorage.getItem('access_token')
           if (error.response.status === 401 && access) {
@@ -47,7 +47,7 @@ const NoteListPage = () => {
           const filteredData = data.results.filter(item => item.owner !== user.name);
           setNotes({ results: filteredData });
           setHasLoaded(true)
-          console.log(filteredData)
+          console.log('Get other notes data:', filteredData)
         } catch (error) {
           const access = localStorage.getItem('access_token')
           if (error.response.status === 401 && access) {
@@ -77,7 +77,7 @@ const NoteListPage = () => {
   return (
     <Container fluid className={`${appStyle.Container}`}>
       <Container className={`text-center ${appStyle.Container}`}>
-        <Row fluid xl={1}>
+        <Row xl={1}>
           <Col>
             <h3>Notes</h3>
           </Col>
@@ -87,30 +87,24 @@ const NoteListPage = () => {
                 <button className={appStyle.Button}>Create<i className="fa-sharp fa-solid fa-plus" /></button>
               </Link>
             </Col>
-          ) : (<></>)}
+          ) : null}
         </Row>
       </Container>
       <Container className={`text-center ${appStyle.Container}`}>
       {hasLoaded ? (
         <Container fluid className={appStyle.Container}>
           <Row><h4>My notes</h4></Row>
-          <Row>
-          {myNotes?.results?.map((note, index) => (
-            <>
-              <NoteItem key={note.id} {...note} />
-            </>
-          ))}
-          </Row>
+            <Row>
+            {myNotes?.results?.map((note, index) => (
+              <NoteItem key={index} {...note} />
+            ))}
+            </Row>
           <Row><h4>All notes</h4></Row>
-          <Row>
           {notes?.results?.map((note, index) => (
-            <>
-            {note.is_private ? null : (
-              <NoteItem key={note.id} {...note} />
-            )}
-            </>
+            <Row key={index}>
+              {note.is_private ? null : (<NoteItem key={index} {...note} />)}
+            </Row>
           ))}
-          </Row>
         </Container>
       ) : (
         <Loader spinner text='Loading notes, please wait' />

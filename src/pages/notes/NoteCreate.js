@@ -69,7 +69,7 @@ const NoteCreate = () => {
 
   const defaultText = (
     <Container>
-      <Row fluid>
+      <Row>
         <Col>
         <Form.Group className="mb-3">
           <Form.Label htmlFor="title"><h4>Title</h4></Form.Label>
@@ -99,12 +99,12 @@ const NoteCreate = () => {
           </Form.Group>
         </Col>
       </Row>
-      <Row fluid>
+      <Row>
         <Col md={1}>
           <button onClick={createNote} className={appStyle.Button}>Create</button>
         </Col>
       </Row>
-      <Row fluid>
+      <Row>
         <Col md={1}>
           <Link to={'/'} className={appStyle.ButtonLink}>Back</Link>
         </Col>

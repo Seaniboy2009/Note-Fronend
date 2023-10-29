@@ -23,6 +23,7 @@ axiosInstance.interceptors.response.use(
 	async function (error) {
 		// console.log('Axios interceptors called: axiosdefaults.js: line 23')
 		const originalRequest = error.config;
+		console.log('Token errors', error.response)
 
 		if (typeof error.response === 'undefined') {
 			alert(
@@ -57,10 +58,10 @@ axiosInstance.interceptors.response.use(
 
 				// exp date in token is expressed in seconds, while now() returns milliseconds:
 				const now = Math.ceil(Date.now() / 1000);
-				// console.log(refreshToken);
-				// console.log(dataRef);
-				// console.log(dataRef.exp);
-				// console.log(now);
+				console.log(refreshToken);
+				console.log(dataRef);
+				console.log(dataRef.exp);
+				console.log(now);
 
 
 				if (dataRef.exp > now) {

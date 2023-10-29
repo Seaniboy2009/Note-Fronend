@@ -43,12 +43,12 @@ const NoteItem = ( props ) => {
 
   const handleUpdate = (event) => {
     setFormData({...formData, newTitle: event.target.value})
-    console.log(formData)
+    console.log('Form data updating:', formData)
   }
 
   const handleChecked = (event) => {
     setFormData({...formData, [event.target.name]: event.target.checked})
-    console.log(formData)
+    console.log('Form data updating:', formData)
   }
 
   const handleSend = async () => {
@@ -64,18 +64,18 @@ const NoteItem = ( props ) => {
           'Content-Type': 'multipart/form-data', // Use 'multipart/form-data' for FormData
         },
       })
-      console.log(formData)
+      console.log('Form data sent:', formData)
       window.location.reload()
     } catch (error) {
-      console.log(error)
+      console.log('Error:', error)
     }
 
   }
 
   const listPage = (
     <>
-      <Row className={style.ImageListPage}>
-        <Col xs={5}><img src={image} className={style.ImageDetailPage} alt='note image'/></Col>
+      <Row className={style.ListPage}>
+        <Col xs={5}><img src={image} className={style.Image} alt='note image'/></Col>
         <Col xs={5}>{title}</Col>
         <Col xs={2}>
         {is_private ? <i className={`fa-solid fa-lock ${style.Private}`}></i> : null}
@@ -103,7 +103,7 @@ const NoteItem = ( props ) => {
       </Row>
       <Row>
         <Col>
-          <img src={image} className={style.ImageDetailPage} alt='note image'/>
+          <img src={image} className={style.Image} alt='note image'/>
         </Col>
       </Row>
     </Container>

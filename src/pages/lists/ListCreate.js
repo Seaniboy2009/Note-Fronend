@@ -57,7 +57,7 @@ const ListCreate = () => {
   
     const defaultText = (
       <Container>
-        <Row fluid>
+        <Row>
           <Col>
           <Form.Group className="mb-3">
             <Form.Label htmlFor="title"><h4>Title</h4></Form.Label>

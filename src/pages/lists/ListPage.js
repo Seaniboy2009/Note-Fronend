@@ -49,7 +49,7 @@ const ListPage = () => {
   return (
     <Container fluid className={`text-center ${appStyle.Container}`}>
         <Container fluid className={`text-center ${appStyle.Container}`}>
-            <Row fluid xl={1}>
+            <Row xl={1}>
                 <Col>
                     <h3>Lists</h3>
                 </Col>
@@ -86,25 +86,26 @@ const ListPage = () => {
                 ))}
                 <Row>All lists</Row>
                 {lists?.results?.map((list, index) => (
-                    <>{list.is_private ? null : (
-                        <Link key={index} to={`list/${list.id}`}>
-                            <Row className={style.List}>
-                                <Col xs={3}>
-                                    <h5 className={style.ListDetails}>#{list.id}</h5>
-                                </Col>
-                                <Col xs={4}>
-                                    <h5 className={style.ListDetails}>{list.title}</h5>
-                                </Col>
-                                <Col xs={3}>
-                                    <h5 className={style.ListDetails}>{list.is_private ? 'private' : 'not private'}</h5>
-                                </Col>
-                                <Col>
-                                    <i className='fa-solid fa-bars'/>
-                                </Col>
-                            </Row>
-                        </Link>
-                    )}</>
-
+                    <div key={index}>
+                        {list.is_private ? null : (
+                            <Link key={index} to={`list/${list.id}`}>
+                                <Row className={style.List}>
+                                    <Col xs={3}>
+                                        <h5 className={style.ListDetails}>#{list.id}</h5>
+                                    </Col>
+                                    <Col xs={4}>
+                                        <h5 className={style.ListDetails}>{list.title}</h5>
+                                    </Col>
+                                    <Col xs={3}>
+                                        <h5 className={style.ListDetails}>{list.is_private ? 'private' : 'not private'}</h5>
+                                    </Col>
+                                    <Col>
+                                        <i className='fa-solid fa-bars'/>
+                                    </Col>
+                                </Row>
+                            </Link>
+                        )}
+                    </div>
                 ))}
                 </>
             ) : (

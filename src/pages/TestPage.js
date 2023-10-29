@@ -88,11 +88,11 @@ const TestPage = () => {
                         </thead>
                         <tbody>
                             {data.results.map((data, index) => (
-                                <tr>
-                                <td key={index}>{index}</td>
-                                <td key={data.id}>{data.titleText.text}</td>
-                                <td key={data.id}>{data.releaseYear.year}</td>
-                                <td key={data.id}><img className={style.Image} src={data.primaryImage?.url ? data.primaryImage.url : null} /></td>
+                                <tr key={index}>
+                                    <td>{index}</td>
+                                    <td>{data.titleText.text}</td>
+                                    <td>{data.releaseYear.year}</td>
+                                    <td><img className={style.Image} src={data.primaryImage?.url ? data.primaryImage.url : null} /></td>
                                 </tr>
                             ))}
                         </tbody>

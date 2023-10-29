@@ -138,8 +138,8 @@ const ListDetailPage = () => {
                     </Col>
                 </Row>
                 {items?.results?.map((item, index) => (
-                    <Row key={index + 1} className={style.ListContainer}>
-                        <Col >
+                    <Row key={index} className={style.ListContainer}>
+                        <Col>
                             <p>#{index + 1}:{item.content}</p>
                         </Col>
                         <Col xs={3}>
