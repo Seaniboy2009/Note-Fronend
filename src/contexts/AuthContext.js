@@ -17,6 +17,15 @@ export const AuthProvider = ({children}) => {
     })
 
     const [user, setUser] = useState(() => localStorage.getItem('access_token') ? jwt_decode(localStorage.getItem('access_token')) : null)
+    const [expire, setExpire] = useState(() => {
+        if (localStorage.getItem('refresh_token')) {
+          const dataRef = jwt_decode(localStorage.getItem('refresh_token'));
+          const expire = new Date(dataRef.exp * 1000).toDateString();
+          return expire;
+        } else {
+          return ''; // Provide a default value if 'refresh_token' doesn't exist
+        }
+    });
     const [signInErrors, setSignInErrors] = useState('')
 
     const handleLogIn = async (event) => {
@@ -58,6 +67,7 @@ export const AuthProvider = ({children}) => {
 
     let contextData = {
         user:user,
+        expire:expire,
         signInErrors:signInErrors,
         handleLogIn:handleLogIn,
         handleLogOut:handleLogOut,
