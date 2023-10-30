@@ -18,6 +18,7 @@
     object-fit: cover;
     width: 100%;
     height: 120px;
+    border-radius: 10%;
 }
 
 .ListPage {
@@ -118,6 +119,8 @@
 
     .Image {
         height: 300px;
+        width: 50%;
+        border-radius: 10%;
     }
 
     .ListPage {
@@ -134,6 +137,4 @@
     .Text, .TextDetail {
         font-size: 60%;
     }
-
-
 }
