@@ -90,8 +90,8 @@ const TestPage = () => {
                             {data.results.map((data, index) => (
                                 <tr key={index}>
                                     <td>{index}</td>
-                                    <td>{data.titleText.text}</td>
-                                    <td>{data.releaseYear.year}</td>
+                                    <td>{data.titleText?.text}</td>
+                                    <td>{data.releaseYear?.year}</td>
                                     <td><img className={style.Image} src={data.primaryImage?.url ? data.primaryImage.url : null} /></td>
                                 </tr>
                             ))}
