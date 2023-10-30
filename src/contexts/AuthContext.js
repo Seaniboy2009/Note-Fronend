@@ -37,8 +37,8 @@ export const AuthProvider = ({children}) => {
                 navigate('/')
             })
         } catch (error) {
-            setSignInErrors(error?.response.data.detail)
-            console.log(error?.response.data.detail)
+            setSignInErrors(error?.response?.data?.detail)
+            console.log(error?.response?.data?.detail)
         }
     }
 

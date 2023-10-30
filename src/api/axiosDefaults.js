@@ -2,7 +2,11 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 
 const baseURL = 'https://note-backend-api-19a13319c6ea.herokuapp.com'
-// const DEVbaseURL = 'http://127.0.0.1:8000'
+
+const urls = {
+	Main: 'https://note-backend-api-19a13319c6ea.herokuapp.com',
+	dev: 'http://127.0.0.1:8000',
+}
 
 const axiosInstance = axios.create({
     baseURL: baseURL,
