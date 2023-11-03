@@ -12,11 +12,12 @@ import NoteEditPage from './pages/notes/NoteEditPage';
 import RegisterPage from './pages/RegisterPage';
 import AccountPage from './pages/account/AccountPage';
 import TestPage from './pages/TestPage';
+import NavBarComponent from './components/NavBarComponent';
 
 function App() {
   return (
     <div id='theme' className={appStyle.Main}>
-      <Header />
+      <NavBarComponent />
       <Routes>
         <Route exact path='/' element={<HomePage />} />
         <Route exact path='/register' element={<RegisterPage />} />

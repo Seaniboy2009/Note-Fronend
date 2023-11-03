@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import Table from 'react-bootstrap/Table';
 import appStyle from '../styles/App.module.css'
@@ -7,15 +7,30 @@ import style from '../styles/Test.module.css'
 
 import Container from 'react-bootstrap/Container';
 import { Col, Row } from 'react-bootstrap';
+import Loader from '../components/Loader';
 
-const TestPage = () => {
+const TestPage = ( { search, searchPage } ) => {
+
 
     const [hasLoaded, setHasLoaded] = useState(false);
     const [data, setData] = useState({ results: [] })
-    const [query, setQuery] = useState("");
+    const [query, setQuery] = useState('');
 
 
-    const options = {
+    const optionsSearch = {
+        method: 'GET',
+        url: `https://moviesdatabase.p.rapidapi.com/titles/search/title/${search}`,
+        params: {
+            exact: 'false',
+            titleType: 'movie'
+        },
+        headers: {
+          'X-RapidAPI-Key': '2c53ff4e4fmshe49848acaec3f07p1e278ajsn6f3e8b171bbf',
+          'X-RapidAPI-Host': 'moviesdatabase.p.rapidapi.com'
+        }
+    }
+
+    const optionsQuary = {
         method: 'GET',
         url: `https://moviesdatabase.p.rapidapi.com/titles/search/title/${query}`,
         params: {
@@ -26,22 +41,56 @@ const TestPage = () => {
           'X-RapidAPI-Key': '2c53ff4e4fmshe49848acaec3f07p1e278ajsn6f3e8b171bbf',
           'X-RapidAPI-Host': 'moviesdatabase.p.rapidapi.com'
         }
-      };
+    }
 
-    const testGet = () => {
+    //   Get api date once confirm button is pressed
+    // const testGet = () => {
 
+    //     const getData = async () => {
+    //         try {
+    //             const response = await axios.request(options);
+    //             console.log('Search list: ', response.data);
+    //             setData(response.data)
+    //             setHasLoaded(true)
+    //         } catch (error) {
+    //             console.error(error);
+    //         }
+    //     }
+
+    //     setHasLoaded(false)
+    //     const timer = setTimeout(() => {
+    //         getData()
+    //     }, 1000);
+
+    //     return () => {
+    //         clearTimeout(timer);
+    //     };
+    // }
+
+    // Get api data after query is updated
+    useEffect(() => {
         const getData = async () => {
             try {
-                const response = await axios.request(options);
-                console.log(response.data);
-                setData(response.data)
-                setHasLoaded(true)
+                if(searchPage) {
+                    const response = await axios.request(optionsSearch);
+                    console.log('Search list: ', response.data);
+                    setData(response.data)
+                    setHasLoaded(true)
+                } else {
+                    const response = await axios.request(optionsQuary);
+                    console.log('Search list: ', response.data);
+                    setData(response.data)
+                    setHasLoaded(true)
+                }
+                // const response = await axios.request(options);
+                // console.log('Search list: ', response.data);
+                // setData(response.data)
+                // setHasLoaded(true)
             } catch (error) {
                 console.error(error);
             }
         }
 
-        setHasLoaded(false)
         const timer = setTimeout(() => {
             getData()
         }, 1000);
@@ -49,33 +98,45 @@ const TestPage = () => {
         return () => {
             clearTimeout(timer);
         };
+
+    }, [query, search])
+
+    const handleChange = (event) => {
+        setQuery(event.target.value)
     }
+
+    console.log('Search: ', search)
+    console.log('Quary: ', query)
     
   return (
-    <Container fluid className={`text-center ${appStyle.Container}`}>
-        <Row className="justify-content-md-center">
-            <Col>TestPage</Col>
-        </Row>
-        <Row className="justify-content-md-center">
+    <Container className={`text-center ${appStyle.Container}`}>
+        {searchPage ? (
+            ''
+        ) : (
+            <Container className={`text-center ${appStyle.Container}`}>
+            <Row className="justify-content-md-center">
             <Col md={6}>
             <Form onSubmit={(event) => event.preventDefault()}>
                 <Form.Control
                     value={query}
-                    onChange={(event) => setQuery(event.target.value)}
+                    // onChange={(event) => setQuery(event.target.value)}
+                    onChange={handleChange}
                     type='text'
                     // className='mr-sm-2'
                     placeholder='Search Movies'
                 ></Form.Control>
             </Form>
             </Col>
-        </Row>
-        <Row>
+            </Row>
+            <Row>
+                <Col>
+                    <button onClick={'testGet'} className={appStyle.Button}>TestGet</button>
+                </Col>
+            </Row>
+            </Container>
+        )}
+        <Container className={`text-center ${appStyle.Container}`}>
             <Col>
-                <button onClick={testGet} className={appStyle.Button}>TestGet</button>
-            </Col>
-        </Row>
-        <Row className="justify-content-md-center">
-            <Col md={6}>
                 {hasLoaded ? (
                     <Table className={appStyle.Table}>
                         <thead>
@@ -87,7 +148,7 @@ const TestPage = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {data.results.map((data, index) => (
+                            {data.results?.map((data, index) => (
                                 <tr key={index}>
                                     <td>{index}</td>
                                     <td>{data.titleText?.text}</td>
@@ -97,9 +158,9 @@ const TestPage = () => {
                             ))}
                         </tbody>
                     </Table>
-                ) : (<>Loading...</>)}
+                ) : (<Loader spinner />)}
             </Col>
-        </Row>
+        </Container>
     </Container>
   )
 }

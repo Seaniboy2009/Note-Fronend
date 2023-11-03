@@ -6,14 +6,6 @@
     padding: 10px 10px;
 }
 
-.ThemePurple {
-    background-color: #403280;
-}
-
-.ThemeRed {
-    background-color: #100000;
-}
-
 .FixedTop {
     position: fixed;
     top: 0;
@@ -22,15 +14,37 @@
     z-index: 1030;
 }
 
-p {
+.Active {
+    /* background-color: #3d0000; */
+    /* border-top: 1px solid #3d0000;
+    border-left: 1px solid #3d0000;
+    border-right: 1px solid #3d0000; */
+    border: 1px solid #3d0000;
+}
+
+.NavBarItem {
+    color: #9d0913 !important;
+}
+
+/* .ThemePurple {
+    background-color: #403280;
+}
+
+.ThemeRed {
+    background-color: #100000;
+} */
+
+
+
+/* p {
     font-size: 120%;
     padding: 0 10px;
     margin: 0;
-}
+} */
 
-.Link {
+/* .Link {
     color: #9d0913;
-    /* font-size: 115%; */
+    font-size: 115%;
     text-decoration: none;
     line-height: inherit;
     border-bottom: #9d0913 solid 1px;
@@ -40,12 +54,13 @@ p {
     color: #470307;
     text-decoration: none;
     border-bottom: #470307 solid 1px;
-}
+} */
 
-.ServerConnected {
+/* .ServerConnected {
     color: #9d0913;
 }
 
 .ServerNotConnected {
     color: #231672;
-}
+} */
+

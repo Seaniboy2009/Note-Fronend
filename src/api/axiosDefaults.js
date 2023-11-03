@@ -30,11 +30,15 @@ axiosInstance.interceptors.response.use(
 		console.log('Token errors', error.response)
 
 		if (typeof error.response === 'undefined') {
-			alert(
-				'A server/network error occurred. ' +
-					'Looks like CORS might be the problem. ' +
-					'Sorry about this - we will get it fixed shortly.'
-			)
+			// alert(
+			// 	'A server/network error occurred. ' +
+			// 		'Looks like CORS might be the problem. ' +
+			// 		'Sorry about this - we will get it fixed shortly.'
+			// )
+
+			console.log('API still booting')
+			// Reload the page after 5 seconds
+			setTimeout(() => {window.location.reload()}, 5000)
 			return Promise.reject(error)
 		}
 
@@ -42,6 +46,7 @@ axiosInstance.interceptors.response.use(
 			error.response.status === 401 &&
 			originalRequest.url === baseURL + 'api/token/refresh/'
 		) {
+			// 401 not authorised redirect to home page and no refresh token
 			console.log('401 error redirect to login page')
 			window.location.href = '/'
 			return Promise.reject(error)

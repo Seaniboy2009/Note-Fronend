@@ -6,6 +6,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import axiosInstance from '../../api/axiosDefaults';
+import TestPage from '../TestPage';
 
 const NoteCreate = () => {
   
@@ -19,6 +20,7 @@ const NoteCreate = () => {
 
   const { title, is_private } = formData
   const [submit, setSubmit] = useState(false)
+  const [search, setQueryGlobal] = useState('');
 
   const createNote = async () => {
       const formData  = new FormData()
@@ -43,6 +45,9 @@ const NoteCreate = () => {
 
   const handleChange = (event) => {
       setFormData({...formData, [event.target.name]: event.target.value})
+      if (event.target.name == title) {
+        setQueryGlobal(event.target.value)
+      }
       console.log(formData)
   }
 
@@ -108,6 +113,9 @@ const NoteCreate = () => {
         <Col md={1}>
           <Link to={'/'} className={appStyle.ButtonLink}>Back</Link>
         </Col>
+      </Row>
+      <Row>
+        <TestPage search={title} searchPage />
       </Row>
     </Container>
   )
