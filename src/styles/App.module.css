@@ -1,11 +1,3 @@
-.Container {
-    background-color: #100000;
-    color: #9d0913;
-    bottom: 0;
-    margin-left: auto;
-    margin-right: auto;
-}
-
 .Notes {
     display: flex;
 }
@@ -14,7 +6,6 @@
 .Main {
     min-height: 140vh;
     padding: 90px 0;
-    background-color: #100000;
 }
 
 .Button, .ButtonLink {
@@ -36,23 +27,108 @@
     width: 50%;
 }
 
-.MainText {
+
+
+
+/*  *********************************THEME************************************ */
+/* ***************************************Dark********************************* */
+
+.TextRed, .BodyRed {
     color: #9d0913 !important;
 }
 
-.MainBackground {
+.BorderRed {
+    border: 1px solid #9d0913 !important;
+}
+
+.BorderRedBottom {
+    border-bottom: 1px solid #9d0913;
+}
+
+.BackgroundRed, .BodyRed {
     background-color: #100000 !important;
 }
 
-.ContrastBackground {
-    background-color: #9d0913 !important;
+/* For the header and border */
+.HeaderThemeRed {
+    background-color: #240000 !important;
+    border-bottom: 1px solid #410004;
 }
 
-.MainBorder {
-    border: 1px solid #9d0913 !important;
+.BackgroundRedContrast {
+    background-color: #240000 !important;
+    border-radius: 10px;
+    border: 1px solid #410004;
+    margin-top: 12px;
 }
 
-.Table, .Table > tbody > tr > td {
+.TableRed, .TableRed > tbody > tr > td {
     border: 1px solid #9d0913 !important;
     color: #9d0913;
+}
+
+.ButtonRed, .ButtonLinkRed {
+    background-color: #9d0913;
+    color: #100000;
+    border: 2px solid #9d0913;
+    font-size: 100%;
+    margin-bottom: 15px;
+    padding: 5px;
+}
+
+.ButtonRed:hover, .ButtonRed:active,.ButtonRed:focus, .ButtonLinkRed:hover {
+    background-color: #100000 !important;
+    color: #9d0913 !important;
+    border: 2px solid #9d0913 !important;
+}
+
+/* *********************************Light************************************* */
+
+.TextTest, .BodyTest {
+    color: #000000 !important;
+}
+
+.BorderTest {
+    border: 1px solid #000000 !important;
+}
+
+.BorderTestBottom {
+    border-bottom: 1px solid #000000;
+}
+
+.BackgroundTest, .BodyTest {
+    background-color: #ffffff !important;
+}
+
+/* For the header and border */
+.HeaderThemeTest {
+    background-color: #bebebe !important;
+    border-bottom: 1px solid #000000;
+}
+
+.BackgroundTestContrast {
+    background-color: #bebebe !important;
+    border-radius: 10px;
+    border: 1px solid #000000;
+    margin-top: 12px;
+}
+
+.TableTest, .TableTest > tbody > tr > td {
+    border: 1px solid #000000 !important;
+    color: #000000;
+}
+
+.ButtonTest, .ButtonLinkTest {
+    background-color: #ffffff;
+    color: #000000;
+    border: 2px solid #000000;
+    font-size: 100%;
+    margin-bottom: 15px;
+    padding: 5px;
+}
+
+.ButtonTest:hover, .ButtonTest:active,.ButtonTest:focus, .ButtonLinkTest:hover {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border: 2px solid #000000 !important;
 }

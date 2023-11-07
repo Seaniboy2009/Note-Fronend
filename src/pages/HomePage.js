@@ -8,12 +8,14 @@ import AuthContext from '../contexts/AuthContext'
 import axiosInstance from '../api/axiosDefaults';
 
 import SignInForm from './SignInPage';
-import TestPage from './TestPage';
 import Loader from '../components/Loader';
+import { useTheme } from '../utils/ThemeSelection';
 
 const HomePage = () => {
     let {user} = useContext(AuthContext)
     const [loaded, setLoaded] = useState(false)
+
+    const {isDarkMode} = useTheme()
 
     useEffect(() => {
         const loadApp = async () => {
@@ -55,28 +57,28 @@ const HomePage = () => {
     }, [])
 
   return (
-    <Container fluid className={`text-center ${appStyle.Container}`}>
+    <Container fluid className={`text-center ${''}`}>
         {loaded ? (
             <>
             {user ? (
             <>
-                <Row>
-                    <Col><h3>Home</h3></Col>
-                    </Row>
-                    <Row>
-                    <Col>
-                    <Link to={'notes/'}>
-                    <button className={`${appStyle.Button} ${appStyle.ButtonLarge}`}>Notes</button>
-                    </Link>
-                    </Col>
-                    </Row>
-                    <Row>
-                    <Col>
-                    <Link to={'lists/'}>
-                    <button className={`${appStyle.Button} ${appStyle.ButtonLarge}`}>Lists</button>
-                    </Link>
-                    </Col>
-                </Row>
+              <Row>
+                <Col><h3>Home</h3></Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Link to={'notes/'}>
+                    <button className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`}>Notes</button>
+                  </Link>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Link to={'lists/'}>
+                    <button className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`}>Lists</button>
+                  </Link>
+                </Col>
+              </Row>
             </>
                 ) : (null)}
                 {<SignInForm />}

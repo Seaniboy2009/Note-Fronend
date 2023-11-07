@@ -3,6 +3,7 @@ import jwt_decode from "jwt-decode";
 
 const baseURL = 'https://note-backend-api-19a13319c6ea.herokuapp.com'
 
+// Used for testing
 const urls = {
 	Main: 'https://note-backend-api-19a13319c6ea.herokuapp.com',
 	dev: 'http://127.0.0.1:8000',

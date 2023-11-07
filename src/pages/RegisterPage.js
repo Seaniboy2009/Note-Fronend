@@ -4,7 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import appStyle from '../styles/App.module.css'
-import style from '../styles/SignInPage.module.css'
+import { useTheme } from '../utils/ThemeSelection';
 
 const RegisterPage = () => {
 
@@ -16,6 +16,7 @@ const RegisterPage = () => {
 
     const { username, password1, password2 } = formData
     const [errors, setErrors] = useState({})
+    const {isDarkMode} = useTheme()
 
     const handleChange = (event) => {
         setFormData({
@@ -59,24 +60,24 @@ const RegisterPage = () => {
                 <Row><Col>{errors?.username?.map((error, index) => (<p key={index}>{error}</p>))}</Col></Row>
                 <Row>
                     <Col>
-                        <input className={`${style.Form} ${appStyle.ButtonLarge}`} type='text' name='username' onChange={handleChange} placeholder="Enter Username (Case sensitive)" />
+                        <input className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`} type='text' name='username' onChange={handleChange} placeholder="Enter Username (Case sensitive)" />
                     </Col>
                 </Row>
                 <Row><Col>{errors?.password1?.map((error, index) => (<p key={index}>{error}</p>))}</Col></Row>
                 <Row>
                     <Col>
-                        <input className={`${style.Form} ${appStyle.ButtonLarge}`} type='password' name='password1' onChange={handleChange} placeholder="Enter Password" />
+                        <input className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`} type='password' name='password1' onChange={handleChange} placeholder="Enter Password" />
                     </Col>
                 </Row>
                 <Row><Col>{errors?.password2?.map((error, index) => (<p key={index}>{error}</p>))}</Col></Row>
                 <Row>
                     <Col>
-                        <input className={`${style.Form} ${appStyle.ButtonLarge}`} type='password' name='password2' onChange={handleChange} placeholder="Confirm Password" />
+                        <input className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`} type='password' name='password2' onChange={handleChange} placeholder="Confirm Password" />
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <input className={`${appStyle.Button} ${appStyle.ButtonLarge}`} type="submit"/>
+                        <input className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`} type="submit"/>
                     </Col>
                 </Row>
                 </form>

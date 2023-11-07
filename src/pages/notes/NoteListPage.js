@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 import AuthContext from '../../contexts/AuthContext'
 import Loader from '../../components/Loader';
+import { useTheme } from '../../utils/ThemeSelection';
 
 const NoteListPage = () => {
 
@@ -19,6 +20,7 @@ const NoteListPage = () => {
     const [errors, setErrors] = useState({})
     let {user} = useContext(AuthContext)
     const navigate = useNavigate()
+    const {isDarkMode} = useTheme()
   
     useEffect(() => {
 
@@ -84,15 +86,15 @@ const NoteListPage = () => {
           {hasLoaded ? (
             <Col>
               <Link to={'note/create'}>
-                <button className={appStyle.Button}>Create<i className="fa-sharp fa-solid fa-plus" /></button>
+                <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}>Create<i className="fa-sharp fa-solid fa-plus" /></button>
               </Link>
             </Col>
           ) : null}
         </Row>
       </Container>
-      <Container className={`text-center ${appStyle.Container}`}>
+      <Container className={`text-center`}>
       {hasLoaded ? (
-        <Container fluid className={appStyle.Container}>
+        <Container fluid>
           <Row><h4>My notes</h4></Row>
             <Row>
             {myNotes?.results?.map((note, index) => (

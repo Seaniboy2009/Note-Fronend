@@ -9,6 +9,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import AuthContext from '../contexts/AuthContext'
+import { useTheme } from '../utils/ThemeSelection';
 
 const NoteItem = ( props ) => {
   const {
@@ -25,6 +26,7 @@ const NoteItem = ( props ) => {
   } = props
 
   let {user} = useContext(AuthContext)
+  const {isDarkMode} = useTheme()
 
   const [formData, setFormData] = useState({
     newTitle: title,
@@ -72,34 +74,20 @@ const NoteItem = ( props ) => {
 
   }
 
-  const listPage = (
-    <>
-      <Row className={style.ListPage}>
-        <Col xs={5}><img src={image} className={style.Image} alt='note image'/></Col>
-        <Col xs={5}>{title}</Col>
-        <Col xs={2}>
-        {is_private ? <i className={`fa-solid fa-lock ${style.Private}`}></i> : null}
-        {toggle ? <i className={`fa-solid fa-eye ${style.Watched}`}></i> : null}
-        </Col>
-      </Row>
-    </>
-
-  )
-
   const detailsPage = (
     <Container>
-      <Row className={`text-left ${appStyle.Container}`}>
+      <Row className={`text-left`}>
         <Col>
           <Link to={'/notes/'}><i className="fa-solid fa-arrow-left" />&nbsp;</Link>
         </Col>
       </Row>
-      <Row className={`text-left ${appStyle.Container}`}>
-          <Col md={3} className={style.NoteDetails}><p>Title: {title}</p></Col>
-          <Col md={3} className={style.NoteDetails}><p>Created: {created}</p></Col>
-          <Col md={3} className={style.NoteDetails}><p>Updated: {updated}</p></Col>
-          <Col md={3} className={style.NoteDetails}><p>Details: {details}</p></Col>
-          <Col md={3} className={style.NoteDetails}><p>Private: {is_private ? 'Yes' : 'No'}</p></Col>
-          <Col md={3} className={style.NoteDetails}><p>Watched: {toggle ? 'Yes' : 'No'}</p></Col>
+      <Row className={isDarkMode ? appStyle.NoteDetailsTest : appStyle.NoteDetailsRed}>
+          <Col md={3}><p>Title: {title}</p></Col>
+          <Col md={3}><p>Created: {created}</p></Col>
+          <Col md={3}><p>Updated: {updated}</p></Col>
+          <Col md={3}><p>Details: {details}</p></Col>
+          <Col md={3}><p>Private: {is_private ? 'Yes' : 'No'}</p></Col>
+          <Col md={3}><p>Watched: {toggle ? 'Yes' : 'No'}</p></Col>
       </Row>
       <Row>
         <Col>
@@ -161,14 +149,21 @@ const NoteItem = ( props ) => {
   )
 
   return (
-    <Container fluid className={`text-center ${appStyle.Container}`}>
+    <Container className={`text-center`}>
         {notePage ? (
           <>
             {owner === user.name ? (<>{isOwner}</>) : (<>{notOwner}</>)}
           </>
         ) : (
           <Link to={`note/${id}`} className={style.Link}>
-            {listPage}
+            <Row className={isDarkMode ? style.NoteTest : style.NoteRed}>
+              <Col xs={5}><img src={image} className={style.Image} alt='note image'/></Col>
+              <Col xs={5}>{title}</Col>
+              <Col xs={2}>
+              {is_private ? <i className={`fa-solid fa-lock ${style.Private}`}></i> : null}
+              {toggle ? <i className={`fa-solid fa-eye ${style.Watched}`}></i> : null}
+              </Col>
+            </Row>
           </Link>
         )}
     </Container>

@@ -1,4 +1,3 @@
-import Header from './components/Header'
 import NoteListPage from './pages/notes/NoteListPage'
 import { Route, Routes } from 'react-router-dom'
 import NoteDetailPage from './pages/notes/NoteDetailPage';
@@ -13,6 +12,7 @@ import RegisterPage from './pages/RegisterPage';
 import AccountPage from './pages/account/AccountPage';
 import TestPage from './pages/TestPage';
 import NavBarComponent from './components/NavBarComponent';
+import ListAllPage from './utils/ListAllPage';
 
 function App() {
   return (
@@ -30,6 +30,7 @@ function App() {
         <Route path='lists/' element={<ListPage />} />
         <Route path='lists/list/:id' element={<ListDetailPage />} />
         <Route path='/lists/list/create' element={<ListCreate />} />
+        <Route path='/all' element={<ListAllPage />} />
       </Routes>
     </div>
   );

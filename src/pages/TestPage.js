@@ -8,6 +8,7 @@ import style from '../styles/Test.module.css'
 import Container from 'react-bootstrap/Container';
 import { Col, Row } from 'react-bootstrap';
 import Loader from '../components/Loader';
+import { useTheme } from '../utils/ThemeSelection';
 
 const TestPage = ( { search, searchPage } ) => {
 
@@ -15,6 +16,7 @@ const TestPage = ( { search, searchPage } ) => {
     const [hasLoaded, setHasLoaded] = useState(false);
     const [data, setData] = useState({ results: [] })
     const [query, setQuery] = useState('');
+    const {isDarkMode} = useTheme()
 
 
     const optionsSearch = {
@@ -109,36 +111,30 @@ const TestPage = ( { search, searchPage } ) => {
     console.log('Quary: ', query)
     
   return (
-    <Container className={`text-center ${appStyle.Container}`}>
+    <Container>
         {searchPage ? (
-            ''
+            null
         ) : (
-            <Container className={`text-center ${appStyle.Container}`}>
-            <Row className="justify-content-md-center">
-            <Col md={6}>
-            <Form onSubmit={(event) => event.preventDefault()}>
-                <Form.Control
-                    value={query}
-                    // onChange={(event) => setQuery(event.target.value)}
-                    onChange={handleChange}
-                    type='text'
-                    // className='mr-sm-2'
-                    placeholder='Search Movies'
-                ></Form.Control>
-            </Form>
-            </Col>
-            </Row>
+        <Container>
             <Row>
                 <Col>
-                    <button onClick={'testGet'} className={appStyle.Button}>TestGet</button>
+                    <Form onSubmit={(event) => event.preventDefault()}>
+                        <Form.Control
+                            value={query}
+                            // onChange={(event) => setQuery(event.target.value)}
+                            onChange={handleChange}
+                            type='text'
+                            placeholder='Start typing to search movies'
+                        ></Form.Control>
+                    </Form>
                 </Col>
             </Row>
-            </Container>
+        </Container>
         )}
-        <Container className={`text-center ${appStyle.Container}`}>
-            <Col>
+        <Container>
+            <Row>
                 {hasLoaded ? (
-                    <Table className={appStyle.Table}>
+                    <Table className={isDarkMode ? appStyle.TableTest : appStyle.TableRed}>
                         <thead>
                             <tr>
                             <th>#</th>
@@ -158,8 +154,8 @@ const TestPage = ( { search, searchPage } ) => {
                             ))}
                         </tbody>
                     </Table>
-                ) : (<Loader spinner />)}
-            </Col>
+                ) : null}
+            </Row>
         </Container>
     </Container>
   )
