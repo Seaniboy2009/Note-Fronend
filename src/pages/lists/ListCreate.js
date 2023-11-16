@@ -86,7 +86,7 @@ const ListCreate = () => {
         </Row>
         <Row>
           <Col md={1}>
-            <Link to={'/'} className={appStyle.ButtonLink}>Back</Link>
+            <Link to={'/lists/'} className={appStyle.ButtonLink}>Back</Link>
           </Col>
         </Row>
       </Container>

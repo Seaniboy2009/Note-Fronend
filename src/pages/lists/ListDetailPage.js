@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import style from '../../styles/ListDetailPage.module.css'
 import { useParams, useNavigate } from "react-router-dom"
 import appStyle from '../../styles/App.module.css'
-import Form from 'react-bootstrap/Form';
-import Dropdown from 'react-bootstrap/Dropdown'
-
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Link } from 'react-router-dom';
 import axiosInstance from '../../api/axiosDefaults';
-
 import Modal from 'react-bootstrap/Modal';
 import Loader from '../../components/Loader';
+import AuthContext from '../../contexts/AuthContext'
+import { useTheme } from '../../utils/ThemeSelection';
+import ListItem from '../../components/ListItem';
 
 const ListDetailPage = () => {
     
@@ -21,9 +20,11 @@ const ListDetailPage = () => {
     const [list, setList] = useState({ results: []})
     const [items, setItems] = useState({ results: []})
     const [hasLoaded, setHasLoaded] = useState(false)
-    // const [confirm, setConfirm] = useState(false)
-
     const [show, setShow] = useState(false);
+    const [edit, setEdit] = useState(false)
+
+    let {user} = useContext(AuthContext)
+    const {isDarkMode} = useTheme()
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -88,6 +89,10 @@ const ListDetailPage = () => {
         }
     }
 
+    const toggleEditMode = () => {
+        setEdit(!edit);
+      };
+
     useEffect(() => {
 
         const timer = setTimeout(() => {
@@ -129,36 +134,30 @@ const ListDetailPage = () => {
     {hasLoaded ? (
         <>
             <Row>
-                <Col xs={9}>
-                    <Link to={'/lists/'}><i className="fa-solid fa-arrow-left" />&nbsp; Lists</Link>
-                </Col>
                 <Col>
+                    <Link to={'/lists/'}><i className="fa-solid fa-arrow-left" /></Link>
+                </Col>
+                <Col xs={7}>
+                    <h5>{list.title}</h5>
+                </Col>
+                <Col xs={2}>
                     <button onClick={handleShow} className={appStyle.Button}><i className="fa-solid fa-trash" /></button>
+                    <button onClick={toggleEditMode} className={`${appStyle.Button} fa-solid fa-pen-to-square`}></button>
+                    {/* <input className={isDarkMode ? appStyle.TextTest : appStyle.TextRed} type="checkbox" checked={edit} onChange={toggleEditMode} /> */}
                 </Col>
             </Row>
-            <Row>
-                <Col>
-                    <h3>{list.title}</h3>
-                </Col>
-            </Row>
-            <Row className={style.ListContainer}>
-                <Col>
-                    <textarea id="textInput" onChange={handleChange} className={style.InputArea} autofocus placeholder="new item" rows="1"></textarea>
-                </Col>
-                <Col xs={3}>
-                    <button onClick={handleCreateItem} className={appStyle.Button}>Add</button>
-                </Col>
-            </Row>
-            {/* List Item */}
-            {items?.results?.map((item, index) => (
-                <Row key={index} className={style.ListContainer}>
+            {edit ? (
+                <Row className={style.ListContainer}>
                     <Col>
-                        <p>{item.content}</p>
+                        <textarea id="textInput" onChange={handleChange} className={style.InputArea} autofocus placeholder="Type here" rows="1"></textarea>
                     </Col>
                     <Col xs={3}>
-                        <button onClick={() => handleDeleteItem(item)} className={appStyle.Button}>Delete</button>
+                    <button onClick={handleCreateItem} className={appStyle.Button}>Add</button>
                     </Col>
                 </Row>
+            ) : null}
+            {items?.results?.map((item, index) => (
+                <ListItem getLists={getLists} key={index} {...item} edit={edit}/>
             ))}
         </>
         ) : (
