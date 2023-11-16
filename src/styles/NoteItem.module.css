@@ -1,8 +1,13 @@
-.Image {
+.ImageDetail {
     object-fit: cover;
     width: 100%;
-    height: 120px;
-    border-radius: 10%;
+    min-height: 120px;
+}
+
+.ImageList {
+    object-fit: cover;
+    width: 100%;
+    min-height: 120px;
 }
 
 .NoteRed, .NoteTest {
@@ -26,14 +31,21 @@
 
 /* Red */
 .NoteDetailsRed {
-    border: 1px solid #9d0913;
+    border: 1px solid #410004;
+    text-align: left;
 }
 
 .NoteRed {
     color: #9d0913;
-    background-color: #1d0000;
-    border: 1px solid #9d0913;
-    border-radius: 25px;
+    background-color: #240000;
+    border: 1px solid #410004;
+    border-radius: 5px;
+}
+
+.NoteInputRed {
+    background-color: #240000;
+    color: #9d0913;
+    border: 1px solid #410004;
 }
 
 /* Test */
@@ -52,7 +64,7 @@
 /* Large screens */
 @media  screen and (min-width: 768px) {
 
-    .Image {
+    .ImageDetail {
         height: 170px;
         width: 50%;
         border-radius: 10%;

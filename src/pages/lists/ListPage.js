@@ -49,14 +49,14 @@ const ListPage = () => {
 
 
   return (
-    <Container className={`text-center ${appStyle.Container}`}>
+    <Container className={`${appStyle.Container}`}>
         <Container className={`text-center ${appStyle.Container}`}>
-            <Row xl={1}>
-                <Col>
-                    <h3>Lists</h3>
+            <Row>
+                <Col xs={3}>
+                    <h4>Lists</h4>
                 </Col>
                 {hasLoaded ? (
-                    <Col>
+                    <Col xs={9}>
                         <Link to={'list/create'}>
                             <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}>Create<i className="fa-sharp fa-solid fa-plus" /></button>
                         </Link>

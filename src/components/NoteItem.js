@@ -19,7 +19,7 @@ const NoteItem = ( props ) => {
     updated,
     image,
     details,
-    notePage,
+    detailPage,
     is_private,
     toggle,
   } = props
@@ -73,32 +73,80 @@ const NoteItem = ( props ) => {
 
   }
 
-  const detailsPage = (
-    <Container>
+  const noteDetailPage = (
+    <>
       <Row className={`text-left`}>
         <Col>
           <Link to={'/notes/'}><i className="fa-solid fa-arrow-left" />&nbsp;</Link>
         </Col>
       </Row>
-      <Row className={isDarkMode ? appStyle.NoteDetailsTest : appStyle.NoteDetailsRed}>
+      {owner.id === user.id ? (
+        <Row className={isDarkMode ? appStyle.NoteDetailsTest : appStyle.NoteDetailsRed}>
+          <Col md={3}>
+            <p>Title: <input type='text' defaultValue={title} onChange={handleUpdate} className={style.NoteInputRed} /></p>
+          </Col>
+          <Col md={3}>
+            <p>Details: {details}</p>
+          </Col>
+          <Col md={3}>
+            <p>Private: <input
+              type="checkbox"
+              name='newIs_private'
+              defaultChecked={is_private}
+              defaultValue={true}
+              onChange={handleChecked}
+              className={appStyle.CheckBoxRed}
+            /> {is_private ? 'Yes' : 'No'}</p>
+          </Col>
+          <Col md={3}>
+            <p>Watched: <input
+              type="checkbox"
+              name='newToggle'
+              defaultChecked={toggle}
+              defaultValue={true}
+              onChange={handleChecked}
+            /> {toggle ? 'Yes' : 'No'}</p>
+          </Col>
+          <Col md={3}>
+            <p>Created: {created}</p>
+          </Col>
+          <Col md={3}>
+            <p>Updated: {updated}</p>
+          </Col>
+          <Col>
+            <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleDelete}>Delete</button>
+            <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleSend}>Edit</button>
+          </Col>
+        </Row>
+      ) : (
+        <Row className={isDarkMode ? appStyle.NoteDetailsTest : appStyle.NoteDetailsRed}>
           <Col md={3}><p>Title: {title}</p></Col>
-          <Col md={3}><p>Created: {created}</p></Col>
-          <Col md={3}><p>Updated: {updated}</p></Col>
           <Col md={3}><p>Details: {details}</p></Col>
-          <Col md={3}><p>Private: {is_private ? 'Yes' : 'No'}</p></Col>
-          <Col md={3}><p>Watched: {toggle ? 'Yes' : 'No'}</p></Col>
-      </Row>
+        </Row>
+      )}
       <Row>
         <Col>
-          <img src={image} className={style.Image} alt='note image'/>
+          <img src={image} className={style.ImageDetail} alt='note image'/>
         </Col>
       </Row>
-    </Container>
+    </>
+  )
+
+  const noteListPage = (
+    <Link to={`note/${id}`} className={style.Link}>
+      <Row className={isDarkMode ? style.NoteTest : style.NoteRed}>
+        <Col xs={5}><img src={image} className={style.ImageList} alt='note image'/></Col>
+        <Col xs={5}>{title}</Col>
+        <Col xs={2}>
+        {is_private ? <i className={`fa-solid fa-lock ${style.Private}`}></i> : null}
+        {toggle ? <i className={`fa-solid fa-eye ${style.Watched}`}></i> : null}
+        </Col>
+      </Row>
+    </Link>
   )
 
   const isOwner = (
     <>
-      {detailsPage}
       <Row className={style.ButtonContainer}> 
         <Col>
           <button className={appStyle.Button} onClick={handleDelete}>Delete</button>
@@ -141,30 +189,17 @@ const NoteItem = ( props ) => {
     </>
   )
 
-  const notOwner = (
-    <>
-      {detailsPage}
-    </>
-  )
-
   return (
-    <Container className={`text-center`}>
-        {notePage ? (
-          <>
-            {owner === user.name ? (<>{isOwner}</>) : (<>{notOwner}</>)}
-          </>
-        ) : (
-          <Link to={`note/${id}`} className={style.Link}>
-            <Row className={isDarkMode ? style.NoteTest : style.NoteRed}>
-              <Col xs={5}><img src={image} className={style.Image} alt='note image'/></Col>
-              <Col xs={5}>{title}</Col>
-              <Col xs={2}>
-              {is_private ? <i className={`fa-solid fa-lock ${style.Private}`}></i> : null}
-              {toggle ? <i className={`fa-solid fa-eye ${style.Watched}`}></i> : null}
-              </Col>
-            </Row>
-          </Link>
-        )}
+    <Container >
+      {detailPage ? (
+        <>
+          {noteDetailPage}
+        </>
+      ) : (
+        <>
+          {noteListPage}
+        </>
+      )}
     </Container>
   )
 }

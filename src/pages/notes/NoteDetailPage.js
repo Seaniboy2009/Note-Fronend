@@ -33,7 +33,7 @@ const NoteDetailPage = () => {
 
   return (
     <Container className={appStyle.Container}>
-      {hasLoaded ? (<NoteItem key={id} {...note} notePage />) : (<><Loader spinner text='loading note' /></>)}
+      {hasLoaded ? (<NoteItem key={id} {...note} detailPage />) : (<><Loader spinner text='loading note' /></>)}
     </Container>
   )
 }

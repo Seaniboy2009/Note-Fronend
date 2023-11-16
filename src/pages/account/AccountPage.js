@@ -14,16 +14,15 @@ const AccountPage = () => {
     <Container>
       <Row className={isDarkMode ? appStyle.BackgroundTestContrast : appStyle.BackgroundRedContrast}>
         <Col>
-          <h2>Account Page</h2>
-          <h3>Name: {user.name}</h3>
-          <h3>Login expires: {expire}</h3>
+          <h5>Name: {user.name}</h5>
+          <p>Login expires: {expire}</p>
           {console.log(user)}
           {console.log(expire)}
         </Col>
       </Row>
       <Row className={isDarkMode ? appStyle.BackgroundTestContrast : appStyle.BackgroundRedContrast}>
         <Col xl={12}>
-          <h4>Theme</h4>
+          <p>Theme</p>
         </Col>
         <Col>
           <p>Light</p>

@@ -67,16 +67,22 @@
 .ButtonRed, .ButtonLinkRed {
     background-color: #240000;
     color: #9d0913;
-    border: 2px solid #410004;
+    border: 1px solid #410004;
     font-size: 100%;
-    margin-bottom: 15px;
-    padding: 5px;
+    /* margin-bottom: 15px;
+    padding: 5px; */
+    margin: 1px;
 }
 
 .ButtonRed:hover, .ButtonRed:active,.ButtonRed:focus, .ButtonLinkRed:hover {
     background-color: #410004 !important;
     color: #9d0913 !important;
-    border: 2px solid #240000 !important;
+    border: 1px solid #240000 !important;
+}
+
+.CheckBoxRed {
+    background-color: #410004;
+    color: #410004;
 }
 
 /* *********************************Light************************************* */
