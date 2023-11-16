@@ -9,6 +9,7 @@ import axiosInstance from '../../api/axiosDefaults';
 
 import AuthContext from '../../contexts/AuthContext'
 import Loader from '../../components/Loader';
+import { useTheme } from '../../utils/ThemeSelection';
 
 const ListPage = () => {
 
@@ -16,6 +17,7 @@ const ListPage = () => {
     const [lists, setLists] = useState({ results: []})
     const [hasLoaded, setHasLoaded] = useState(false)
     let {user} = useContext(AuthContext)
+    const {isDarkMode} = useTheme()
 
     useEffect(() => {
         const getMyLists = async () => {
@@ -47,8 +49,8 @@ const ListPage = () => {
 
 
   return (
-    <Container fluid className={`text-center ${appStyle.Container}`}>
-        <Container fluid className={`text-center ${appStyle.Container}`}>
+    <Container className={`text-center ${appStyle.Container}`}>
+        <Container className={`text-center ${appStyle.Container}`}>
             <Row xl={1}>
                 <Col>
                     <h3>Lists</h3>
@@ -56,7 +58,7 @@ const ListPage = () => {
                 {hasLoaded ? (
                     <Col>
                         <Link to={'list/create'}>
-                            <button className={appStyle.Button}>Create<i className="fa-sharp fa-solid fa-plus" /></button>
+                            <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}>Create<i className="fa-sharp fa-solid fa-plus" /></button>
                         </Link>
                     </Col>
           ) : (<></>)}
@@ -69,17 +71,11 @@ const ListPage = () => {
                 {myLists?.results?.map((list, index) => (
                     <Link key={index} to={`list/${list.id}`}>
                         <Row className={style.List}>
-                            <Col xs={3}>
-                                <h5 className={style.ListDetails}>#{list.id}</h5>
-                            </Col>
-                            <Col xs={4}>
+                            <Col xs={10}>
                                 <h5 className={style.ListDetails}>{list.title}</h5>
                             </Col>
-                            <Col xs={3}>
-                                <h5 className={style.ListDetails}>{list.is_private ? 'private' : 'not private'}</h5>
-                            </Col>
                             <Col>
-                                <i className='fa-solid fa-bars'/>
+                                {list.is_private ? <i className={`fa-solid fa-lock ${style.Private}`}></i> : null}
                             </Col>
                         </Row>
                     </Link>

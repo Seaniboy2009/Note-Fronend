@@ -13,8 +13,7 @@
     color: #100000;
     border: 2px solid #9d0913;
     font-size: 100%;
-    margin-bottom: 15px;
-    padding: 5px;
+    margin: 5px;
 }
 
 .Button:hover, .Button:active,.Button:focus, .ButtonLink:hover {
@@ -26,8 +25,6 @@
 .ButtonLarge {
     width: 50%;
 }
-
-
 
 
 /*  *********************************THEME************************************ */
@@ -68,18 +65,18 @@
 }
 
 .ButtonRed, .ButtonLinkRed {
-    background-color: #9d0913;
-    color: #100000;
-    border: 2px solid #9d0913;
+    background-color: #240000;
+    color: #9d0913;
+    border: 2px solid #410004;
     font-size: 100%;
     margin-bottom: 15px;
     padding: 5px;
 }
 
 .ButtonRed:hover, .ButtonRed:active,.ButtonRed:focus, .ButtonLinkRed:hover {
-    background-color: #100000 !important;
+    background-color: #410004 !important;
     color: #9d0913 !important;
-    border: 2px solid #9d0913 !important;
+    border: 2px solid #240000 !important;
 }
 
 /* *********************************Light************************************* */
@@ -124,7 +121,7 @@
     border: 2px solid #000000;
     font-size: 100%;
     margin-bottom: 15px;
-    padding: 5px;
+    margin: 5px;
 }
 
 .ButtonTest:hover, .ButtonTest:active,.ButtonTest:focus, .ButtonLinkTest:hover {

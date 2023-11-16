@@ -56,6 +56,8 @@ const ListDetailPage = () => {
             await axiosInstance.post(`/api/listitems/`, formData)
             setFormData(prevData => ({...prevData, list: ''}))
             getLists()
+            const textArea = document.getElementById("textInput")
+            textArea.value = ""
         } catch (error) {
             console.log(error)
         }
@@ -109,7 +111,7 @@ const ListDetailPage = () => {
           <Modal.Body>Please confirm you want to delete this list</Modal.Body>
           <Modal.Footer>
             <button className={appStyle.Button} onClick={handleClose}>
-              Close
+              Cancel
             </button>
             <button className={appStyle.Button} onClick={handleDelete}>
               Delete
@@ -120,64 +122,48 @@ const ListDetailPage = () => {
     )
 
   return (
-    <Container fluid className={appStyle.Container}>
-            <>
-                {modelShow}
-            </>
-        <Container>
-        {hasLoaded ? (
-            <>
-                <Row>
-                    <Col md={2}>
-                        <Link to={'/lists/'}><i className="fa-solid fa-arrow-left" />&nbsp; Lists</Link>
-                    </Col>
-                </Row>
-                <Row>
+    <Container className={appStyle.Container}>
+        <>
+            {modelShow}
+        </>
+    {hasLoaded ? (
+        <>
+            <Row>
+                <Col xs={9}>
+                    <Link to={'/lists/'}><i className="fa-solid fa-arrow-left" />&nbsp; Lists</Link>
+                </Col>
+                <Col>
+                    <button onClick={handleShow} className={appStyle.Button}><i className="fa-solid fa-trash" /></button>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <h3>{list.title}</h3>
+                </Col>
+            </Row>
+            <Row className={style.ListContainer}>
+                <Col>
+                    <textarea id="textInput" onChange={handleChange} className={style.InputArea} autofocus placeholder="new item" rows="1"></textarea>
+                </Col>
+                <Col xs={3}>
+                    <button onClick={handleCreateItem} className={appStyle.Button}>Add</button>
+                </Col>
+            </Row>
+            {/* List Item */}
+            {items?.results?.map((item, index) => (
+                <Row key={index} className={style.ListContainer}>
                     <Col>
-                        <h3>{list.title}</h3>
+                        <p>{item.content}</p>
+                    </Col>
+                    <Col xs={3}>
+                        <button onClick={() => handleDeleteItem(item)} className={appStyle.Button}>Delete</button>
                     </Col>
                 </Row>
-                {items?.results?.map((item, index) => (
-                    <Row key={index} className={style.ListContainer}>
-                        <Col>
-                            <p>#{index + 1}:{item.content}</p>
-                        </Col>
-                        <Col xs={3}>
-                            <button onClick={() => handleDeleteItem(item)} className={appStyle.Button}>Delete</button>
-                        </Col>
-                    </Row>
-                ))}
-            </>
+            ))}
+        </>
         ) : (
             <Loader spinner text='Loading lists, please wait' />
         )}
-            <Row>
-                <Col md={2}>
-                    <Dropdown>
-                        <Dropdown.Toggle className={appStyle.Button} id="dropdown-basic">
-                            New
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu className={style.Dropdown}>
-                            <Form.Group className="mb-3">
-                                <Form.Label htmlFor="content"><h4>Title</h4></Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    id="content"
-                                    aria-describedby="content"
-                                    onChange={handleChange}
-                                />
-                            </Form.Group>
-                            <Col>
-                                <button onClick={handleCreateItem} className={appStyle.Button}>Add item</button>
-                            </Col>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                </Col>
-                <Col>
-                    <button onClick={handleShow} className={appStyle.Button}>Delete List</button>
-                </Col>
-            </Row>
-        </Container>
     </Container>
   )
 }
