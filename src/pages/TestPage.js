@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
-import Table from 'react-bootstrap/Table';
 import appStyle from '../styles/App.module.css'
 import Form from 'react-bootstrap/Form';
 import style from '../styles/Test.module.css'
@@ -8,15 +7,16 @@ import style from '../styles/Test.module.css'
 import Container from 'react-bootstrap/Container';
 import { Col, Row } from 'react-bootstrap';
 import Loader from '../components/Loader';
-import { useTheme } from '../utils/ThemeSelection';
+// import { useTheme } from '../utils/ThemeSelection';
 
-const TestPage = ( { search, searchPage } ) => {
+const TestPage = ( { search, searchPage, pickedImage } ) => {
 
 
     const [hasLoaded, setHasLoaded] = useState(false);
     const [data, setData] = useState({ results: [] })
     const [query, setQuery] = useState('');
-    const {isDarkMode} = useTheme()
+    // const [pickImage, setPickImage] = useState('')
+    // const {isDarkMode} = useTheme()
 
 
     const optionsSearch = {
@@ -45,30 +45,6 @@ const TestPage = ( { search, searchPage } ) => {
         }
     }
 
-    //   Get api date once confirm button is pressed
-    // const testGet = () => {
-
-    //     const getData = async () => {
-    //         try {
-    //             const response = await axios.request(options);
-    //             console.log('Search list: ', response.data);
-    //             setData(response.data)
-    //             setHasLoaded(true)
-    //         } catch (error) {
-    //             console.error(error);
-    //         }
-    //     }
-
-    //     setHasLoaded(false)
-    //     const timer = setTimeout(() => {
-    //         getData()
-    //     }, 1000);
-
-    //     return () => {
-    //         clearTimeout(timer);
-    //     };
-    // }
-
     // Get api data after query is updated
     useEffect(() => {
         const getData = async () => {
@@ -84,10 +60,6 @@ const TestPage = ( { search, searchPage } ) => {
                     setData(response.data)
                     setHasLoaded(true)
                 }
-                // const response = await axios.request(options);
-                // console.log('Search list: ', response.data);
-                // setData(response.data)
-                // setHasLoaded(true)
             } catch (error) {
                 console.error(error);
             }
@@ -107,8 +79,26 @@ const TestPage = ( { search, searchPage } ) => {
         setQuery(event.target.value)
     }
 
-    console.log('Search: ', search)
-    console.log('Quary: ', query)
+    const newLayout = (
+        <>
+        {data.results?.map((data, index) => (
+            <>
+            <Row key={index}>
+                <Col xs={8}>{data.titleText?.text}</Col>
+                <Col xs={4}>{data.releaseYear?.year}</Col>
+            </Row>
+            <Row>
+                <Col xs={12}><img className={style.Image} src={data.primaryImage?.url ? data.primaryImage.url : null} /></Col>
+            </Row>
+            <Row>
+                {data.primaryImage?.url ? (
+                    <Col xs={12}><button className={appStyle.Button} onClick={() => pickedImage(data.primaryImage.url)} value={data.primaryImage.url}>Use image</button></Col>
+                ) : null}
+            </Row>
+            </>
+        ))}
+        </>
+    )
     
   return (
     <Container>
@@ -132,30 +122,13 @@ const TestPage = ( { search, searchPage } ) => {
         </Container>
         )}
         <Container>
-            <Row>
+            <>
                 {hasLoaded ? (
-                    <Table className={isDarkMode ? appStyle.TableTest : appStyle.TableRed}>
-                        <thead>
-                            <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Release Year</th>
-                            <th>Image</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data.results?.map((data, index) => (
-                                <tr key={index}>
-                                    <td>{index}</td>
-                                    <td>{data.titleText?.text}</td>
-                                    <td>{data.releaseYear?.year}</td>
-                                    <td><img className={style.Image} src={data.primaryImage?.url ? data.primaryImage.url : null} /></td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
-                ) : null}
-            </Row>
+                    <>
+                    {newLayout}
+                    </>
+                ) : <Loader spinner text='Loading, please wait' />}
+            </>
         </Container>
     </Container>
   )

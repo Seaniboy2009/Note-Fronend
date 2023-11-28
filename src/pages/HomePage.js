@@ -57,13 +57,13 @@ const HomePage = () => {
     }, [])
 
   return (
-    <Container fluid className={`text-center ${''}`}>
+    <Container>
         {loaded ? (
             <>
             {user ? (
             <>
               <Row>
-                <Col><h3>Home</h3></Col>
+                <Col><h4>Welcome {user.name}</h4></Col>
               </Row>
               <Row>
                 <Col>

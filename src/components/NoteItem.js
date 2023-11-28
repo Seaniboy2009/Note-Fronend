@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import style from '../styles/NoteItem.module.css'
 import appStyle from '../styles/App.module.css'
 import axiosInstance from '../api/axiosDefaults';
-import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -18,6 +17,7 @@ const NoteItem = ( props ) => {
     created,
     updated,
     image,
+    image_url,
     details,
     detailPage,
     is_private,
@@ -26,6 +26,7 @@ const NoteItem = ( props ) => {
 
   let {user} = useContext(AuthContext)
   const {isDarkMode} = useTheme()
+  const [edit, setEdit] = useState(false)
 
   const [formData, setFormData] = useState({
     newTitle: title,
@@ -73,52 +74,91 @@ const NoteItem = ( props ) => {
 
   }
 
+  const toggleEditMode = () => {
+    setEdit(!edit)
+    console.log("Current edit", edit)
+    if (edit) {
+      console.log("edit mode enabled")
+    } else {
+      console.log("edit mode disabled: save to DB")
+    }
+  }
+
+  const editModeEnabled = (
+    <Row className={isDarkMode ? appStyle.NoteDetailsTest : appStyle.NoteDetailsRed}>
+      <Col md={3}>
+        <p>Title: <input type='text' defaultValue={title} onChange={handleUpdate} className={style.NoteInputRed} /></p>
+      </Col>
+      <Col md={3}>
+        <p>Details: {details}</p>
+      </Col>
+      <Col md={3}>
+        <p>Private: <input
+          type="checkbox"
+          name='newIs_private'
+          defaultChecked={is_private}
+          defaultValue={true}
+          onChange={handleChecked}
+          className={appStyle.CheckBoxRed}
+        /> {is_private ? 'Yes' : 'No'}</p>
+      </Col>
+      <Col md={3}>
+        <p>Watched: <input
+          type="checkbox"
+          name='newToggle'
+          defaultChecked={toggle}
+          defaultValue={true}
+          onChange={handleChecked}
+        /> {toggle ? 'Yes' : 'No'}</p>
+      </Col>
+      <Col md={3}>
+        <p>Created: {created}</p>
+      </Col>
+      <Col md={3}>
+        <p>Updated: {updated}</p>
+      </Col>
+      <Col>
+        <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleDelete}>Delete</button>
+        <button className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}`} onClick={handleSend}>Save</button>
+      </Col>
+    </Row>
+  )
+
+  const editModeDisabled = (
+    <Row className={isDarkMode ? appStyle.NoteDetailsTest : appStyle.NoteDetailsRed}>
+      <Col md={3}>
+        <p>Title: {title}</p>
+      </Col>
+      <Col md={3}>
+        <p>Details: {details}</p>
+      </Col>
+      <Col md={3}>
+        <p>Private: {is_private ? 'Yes' : 'No'}</p>
+      </Col>
+      <Col md={3}>
+        <p>Watched: {toggle ? 'Yes' : 'No'}</p>
+      </Col>
+      <Col md={3}>
+        <p>Created: {created}</p>
+      </Col>
+      <Col md={3}>
+        <p>Updated: {updated}</p>
+      </Col>
+    </Row>
+  )
+
   const noteDetailPage = (
     <>
       <Row className={`text-left`}>
-        <Col>
+        <Col xs={10}>
           <Link to={'/notes/'}><i className="fa-solid fa-arrow-left" />&nbsp;</Link>
         </Col>
+        <Col xs={2}>
+          <button className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} fa-solid fa-pen-to-square`} onClick={toggleEditMode}></button>
+        </Col>
       </Row>
-      {owner.id === user.id ? (
-        <Row className={isDarkMode ? appStyle.NoteDetailsTest : appStyle.NoteDetailsRed}>
-          <Col md={3}>
-            <p>Title: <input type='text' defaultValue={title} onChange={handleUpdate} className={style.NoteInputRed} /></p>
-          </Col>
-          <Col md={3}>
-            <p>Details: {details}</p>
-          </Col>
-          <Col md={3}>
-            <p>Private: <input
-              type="checkbox"
-              name='newIs_private'
-              defaultChecked={is_private}
-              defaultValue={true}
-              onChange={handleChecked}
-              className={appStyle.CheckBoxRed}
-            /> {is_private ? 'Yes' : 'No'}</p>
-          </Col>
-          <Col md={3}>
-            <p>Watched: <input
-              type="checkbox"
-              name='newToggle'
-              defaultChecked={toggle}
-              defaultValue={true}
-              onChange={handleChecked}
-            /> {toggle ? 'Yes' : 'No'}</p>
-          </Col>
-          <Col md={3}>
-            <p>Created: {created}</p>
-          </Col>
-          <Col md={3}>
-            <p>Updated: {updated}</p>
-          </Col>
-          <Col>
-            <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleDelete}>Delete</button>
-            <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleSend}>Edit</button>
-          </Col>
-        </Row>
-      ) : (
+        {owner.id === user.id ? (edit ? (editModeEnabled) : (editModeDisabled))
+        : (
         <Row className={isDarkMode ? appStyle.NoteDetailsTest : appStyle.NoteDetailsRed}>
           <Col md={3}><p>Title: {title}</p></Col>
           <Col md={3}><p>Details: {details}</p></Col>
@@ -126,7 +166,7 @@ const NoteItem = ( props ) => {
       )}
       <Row>
         <Col>
-          <img src={image} className={style.ImageDetail} alt='note image'/>
+          {image_url ? (<img src={image_url} className={style.ImageDetail} alt='note image'/>) : (<img src={image} className={style.ImageDetail} alt='note image'/>)}
         </Col>
       </Row>
     </>
@@ -135,58 +175,16 @@ const NoteItem = ( props ) => {
   const noteListPage = (
     <Link to={`note/${id}`} className={style.Link}>
       <Row className={isDarkMode ? style.NoteTest : style.NoteRed}>
-        <Col xs={5}><img src={image} className={style.ImageList} alt='note image'/></Col>
+        <Col xs={5}>
+          {image_url ? (<img src={image_url} className={style.ImageList} alt='note image'/>) : (<img src={image} className={style.ImageList} alt='note image'/>)}
+        </Col>
         <Col xs={5}>{title}</Col>
         <Col xs={2}>
-        {is_private ? <i className={`fa-solid fa-lock ${style.Private}`}></i> : null}
-        {toggle ? <i className={`fa-solid fa-eye ${style.Watched}`}></i> : null}
+          {is_private ? <i className={`fa-solid fa-lock ${style.Private}`}></i> : null}
+          {toggle ? <i className={`fa-solid fa-eye ${style.Watched}`}></i> : null}
         </Col>
       </Row>
     </Link>
-  )
-
-  const isOwner = (
-    <>
-      <Row className={style.ButtonContainer}> 
-        <Col>
-          <button className={appStyle.Button} onClick={handleDelete}>Delete</button>
-          <button className={appStyle.Button} onClick={handleSend}>Edit</button>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="title"><h4>{title}</h4></Form.Label>
-            <Form.Control
-              type="text"
-              id="title"
-              defaultValue={title}
-              aria-describedby="title"
-              onChange={handleUpdate}
-            />
-            <br/>
-            <Form.Check
-              type="checkbox"
-              name='newIs_private'
-              id="newIs_private"
-              label="Set Private?"
-              defaultChecked={is_private}
-              defaultValue={true}
-              onChange={handleChecked}
-            />
-            <Form.Check
-              type="checkbox"
-              name='newToggle'
-              id="newToggle"
-              label="Set toggle?"
-              defaultChecked={toggle}
-              defaultValue={false}
-              onChange={handleChecked}
-            />
-            </Form.Group>
-        </Col>
-      </Row>
-    </>
   )
 
   return (

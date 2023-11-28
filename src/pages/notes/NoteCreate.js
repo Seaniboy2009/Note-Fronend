@@ -15,32 +15,50 @@ const NoteCreate = () => {
   const [formData, setFormData] = useState({
     title: '',
     image: '',
+    image_url: '',
     is_private: false,
   })
 
   const { title, is_private } = formData
   const [submit, setSubmit] = useState(false)
   const [search, setQueryGlobal] = useState('');
+  const [pickImage, setPickImage] = useState()
 
   const createNote = async () => {
-      const formData  = new FormData()
+    const formDataSend = new FormData();
 
-      formData.append('title', title)
-      formData.append('is_private', is_private)
-      formData.append('image', imageInput.current.files[0])
+    formDataSend.append('title', title);
+    formDataSend.append('is_private', is_private);
 
-      try {
-        setSubmit(true)
-        await axiosInstance.post("/api/notes/", formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data', // Use 'multipart/form-data' for FormData
-          },
-        });
-        setSubmit(false)
-        navigate('/notes/')
-      } catch (error) {
-        console.log(error)
-      }
+    console.log('Type of image:', typeof formData.image);
+    console.log('Type of image_url:', typeof formData.image_url);
+
+    if (formData.image) {
+      // Assuming formData.image is a local file
+      formDataSend.append('image', formData.image);
+    } else if (formData.image_url) {
+      // If formData.image is falsy, check formData.image_url
+      formDataSend.append('image_url', formData.image_url);
+    } else {
+      console.error('Either image or image_url must be provided');
+      console.log('Form Data:', formData);
+      // return;
+    }
+
+    console.log('Form Data:', formData); // Log the form data
+
+    try {
+      setSubmit(true)
+      await axiosInstance.post("/api/notes/", formDataSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Use 'multipart/form-data' for FormData
+        },
+      });
+      setSubmit(false)
+      navigate('/notes/')
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const handleChange = (event) => {
@@ -57,10 +75,24 @@ const NoteCreate = () => {
   }
 
   const handleChangeImage = (event) => {
-      setFormData({
-          ...formData,
-          image: URL.createObjectURL(event.target.files[0]),
-  })}
+    const file = event.target.files[0];
+    setFormData({
+      ...formData,
+      image: file,
+      image_url: '', // Reset the image_url field
+    });
+    console.log('Form Data:', formData);
+  };
+
+  const pickedImage = (imageUrl) => {
+    console.log("Picked image URL:", imageUrl);
+    setFormData({
+      ...formData,
+      image_url: imageUrl,
+      image: null, // Reset the image field
+    });
+    console.log('Form Data:', formData);
+  }
 
   const submittingText = (
     <Container>
@@ -77,7 +109,7 @@ const NoteCreate = () => {
       <Row>
         <Col>
         <Form.Group className="mb-3">
-          <Form.Label htmlFor="title"><h4>Title</h4></Form.Label>
+          <Form.Label htmlFor="title"><h5>Title</h5></Form.Label>
           <Form.Control
               type="text"
               name='title'
@@ -85,7 +117,8 @@ const NoteCreate = () => {
               aria-describedby="title"
               onChange={handleChange}
           />
-          <Form.Label htmlFor="image"><h4>Image</h4></Form.Label>
+          {/* Test */}
+          <Form.Label htmlFor="image"><h5>Image</h5></Form.Label>
           <Form.Control
               type="file"
               name='image'
@@ -105,6 +138,9 @@ const NoteCreate = () => {
         </Col>
       </Row>
       <Row>
+        {pickImage ? "Picked" : "Not picked"}
+      </Row>
+      <Row>
         <Col md={1}>
           <button onClick={createNote} className={appStyle.Button}>Create</button>
         </Col>
@@ -115,7 +151,7 @@ const NoteCreate = () => {
         </Col>
       </Row>
       <Row>
-        <TestPage search={title} searchPage />
+        <TestPage search={title} searchPage pickedImage={pickedImage}/>
       </Row>
     </Container>
   )

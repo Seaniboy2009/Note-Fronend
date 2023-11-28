@@ -32,7 +32,7 @@ const NoteListPage = () => {
           console.log('Get my notes data:', data)
         } catch (error) {
           const access = localStorage.getItem('access_token')
-          if (error.response.status === 401 && access) {
+          if (error.response?.status === 401 && access) {
             window.location.reload()
           } else if (!access) {
             navigate('/')
@@ -52,7 +52,7 @@ const NoteListPage = () => {
           console.log('Get other notes data:', filteredData)
         } catch (error) {
           const access = localStorage.getItem('access_token')
-          if (error.response.status === 401 && access) {
+          if (error.response?.status === 401 && access) {
             window.location.reload()
           } else if (!access) {
             navigate('/')

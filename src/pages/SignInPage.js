@@ -15,7 +15,7 @@ const SignInForm = () => {
     const {isDarkMode, toggleDarkMode} = useTheme()
     
     return (
-        <Container className={`text-center`}>
+        <>
             {!user ? (
                 <form onSubmit={handleLogIn}>
                 <Row>
@@ -47,7 +47,7 @@ const SignInForm = () => {
                     </Col>
                 </Row>
             )}
-        </Container>
+        </>
     )
 }
 
