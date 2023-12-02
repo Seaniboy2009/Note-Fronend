@@ -37,23 +37,23 @@ const NoteItem = ( props ) => {
   const { newTitle, newIs_private, newToggle } = formData
 
   const navigate = useNavigate()
-
+// handle this note deletion when in edit mode
   const handleDelete = async () => {
     await axiosInstance.delete(`/api/notes/${id}`)
     navigate('/notes/')
   }
-
+// handle title change and update its state when in edit mode
   const handleUpdate = (event) => {
     setFormData({...formData, newTitle: event.target.value})
     console.log('Form data updating:', formData)
   }
-
+// handle any checkbox and update its state when in edit mode
   const handleChecked = (event) => {
     setFormData({...formData, [event.target.name]: event.target.checked})
     console.log('Form data updating:', formData)
   }
-
-  const handleSend = async () => {
+// this will update the current note and will send the title, is private and toggle to be updated by the api
+  const handleFormSubmit= async () => {
 
     const formData  = new FormData()
     formData.append('title', newTitle)
@@ -73,7 +73,7 @@ const NoteItem = ( props ) => {
     }
 
   }
-
+// this will toggle between edit mode enabled and disabled
   const toggleEditMode = () => {
     setEdit(!edit)
     console.log("Current edit", edit)
@@ -83,7 +83,7 @@ const NoteItem = ( props ) => {
       console.log("edit mode disabled: save to DB")
     }
   }
-
+// all normal text will be conveted to input so the user can then change the note
   const editModeEnabled = (
     <Row className={isDarkMode ? appStyle.NoteDetailsTest : appStyle.NoteDetailsRed}>
       <Col md={3}>
@@ -119,11 +119,11 @@ const NoteItem = ( props ) => {
       </Col>
       <Col>
         <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleDelete}>Delete</button>
-        <button className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}`} onClick={handleSend}>Save</button>
+        <button className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}`} onClick={handleFormSubmit}>Save</button>
       </Col>
     </Row>
   )
-
+// normal text to be shown when edit is disabled, cant edit anything
   const editModeDisabled = (
     <Row className={isDarkMode ? appStyle.NoteDetailsTest : appStyle.NoteDetailsRed}>
       <Col md={3}>
@@ -146,7 +146,7 @@ const NoteItem = ( props ) => {
       </Col>
     </Row>
   )
-
+// Layout for the notes detail page
   const noteDetailPage = (
     <>
       <Row className={`text-left`}>
@@ -171,7 +171,7 @@ const NoteItem = ( props ) => {
       </Row>
     </>
   )
-
+// layout for the notes list page
   const noteListPage = (
     <Link to={`note/${id}`} className={style.Link}>
       <Row className={isDarkMode ? style.NoteTest : style.NoteRed}>
@@ -189,6 +189,7 @@ const NoteItem = ( props ) => {
 
   return (
     <Container >
+      {/* check if this is the detail page or the list page and show the correct layout */}
       {detailPage ? (
         <>
           {noteDetailPage}

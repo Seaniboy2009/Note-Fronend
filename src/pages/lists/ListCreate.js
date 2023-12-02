@@ -10,87 +10,92 @@ import Col from 'react-bootstrap/Col';
 
 const ListCreate = () => {
   
-    const navigate = useNavigate()
-    const [formData, setFormData] = useState({
-      title: '',
-      is_private: false,
-    });
+  const navigate = useNavigate()
+  const [formData, setFormData] = useState({
+    title: '',
+    is_private: false,
+  });
 
-    const { title, is_private } = formData;
-    const [submit, setSubmit] = useState(false)
+  const { title, is_private } = formData;
+  const [submit, setSubmit] = useState(false)
 
-    const createList = async () => {
-      
-      const formData  = new FormData()
-      formData.append('title', title)
-      formData.append('is_private', is_private)
-  
-      try {
-        setSubmit(true)
-        await axiosInstance.post("/api/lists/", formData,)
-        setSubmit(false)
-        navigate('/lists/')
-      } catch (error) {
-        console.log(error)
-      }
+  // Send the tile and private to the API and create the new list
+  const createList = async () => {
+    
+    const formData  = new FormData()
+    formData.append('title', title)
+    formData.append('is_private', is_private)
+
+    try {
+      setSubmit(true)
+      await axiosInstance.post("/api/lists/", formData,)
+      setSubmit(false)
+      navigate('/lists/')
+    } catch (error) {
+      console.log(error)
     }
+  }
 
-    const handleChecked = (event) => {
-      setFormData({...formData, is_private: event.target.checked})
+  // Handle is private checkbox change
+  const handleChecked = (event) => {
+    setFormData({...formData, is_private: event.target.checked})
+    console.log(formData)
+  }
+
+  // Handle title change
+  const handleChange = (event) => {
+      setFormData({...formData, [event.target.name]: event.target.value})
       console.log(formData)
-    }
+  }
 
-    const handleChange = (event) => {
-        setFormData({...formData, [event.target.name]: event.target.value})
-        console.log(formData)
-    }
+  // Text for when the form is submitted
+  const submittingText = (
+    <Container>
+      <Row>
+        <Col>
+          <h4>Please wait..Submitting</h4>
+        </Col>
+      </Row>
+    </Container>
+  )
 
-    const submittingText = (
-      <Container>
-        <Row>
-          <Col>
-            <h4>Please wait..Submitting</h4>
-          </Col>
-        </Row>
-      </Container>
-    )
-  
-    const defaultText = (
-      <Container>
-        <Row>
-          <Col>
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="title"><h4>Title</h4></Form.Label>
-            <Form.Control
-              type="text"
-              id="title"
-              name='title'
-              aria-describedby="title"
-              onChange={handleChange}
-            />
-            <br/>
-            <Form.Check
-              type="checkbox"
-              name='is_private'
-              id="is_private"
-              label="Set Private?"
-              onChange={handleChecked}
-            />
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={1}>
-            <button onClick={createList} className={appStyle.Button}>Create</button>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={1}>
-            <Link to={'/lists/'} className={appStyle.ButtonLink}>Back</Link>
-          </Col>
-        </Row>
-      </Container>
-    )
+  // Text for the user to input there list details
+  const defaultText = (
+    <Container>
+      <Row>
+        <Col>
+        <Form.Group className="mb-3">
+          <Form.Label htmlFor="title"><h4>Title</h4></Form.Label>
+          <Form.Control
+            type="text"
+            id="title"
+            name='title'
+            aria-describedby="title"
+            onChange={handleChange}
+          />
+          <br/>
+          <Form.Check
+            type="checkbox"
+            name='is_private'
+            id="is_private"
+            label="Set Private?"
+            onChange={handleChecked}
+          />
+          </Form.Group>
+        </Col>
+      </Row>
+      <Row>
+        <Col md={1}>
+          <button onClick={createList} className={appStyle.Button}>Create</button>
+        </Col>
+      </Row>
+      <Row>
+        <Col md={1}>
+          <Link to={'/lists/'} className={appStyle.ButtonLink}>Back</Link>
+        </Col>
+      </Row>
+    </Container>
+  )
   return (
     <Container fluid className={appStyle.Container}>
       {submit ? ((submittingText)) : ((defaultText))}

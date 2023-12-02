@@ -17,6 +17,7 @@ export const AuthProvider = ({children}) => {
     })
 
     const [user, setUser] = useState(() => localStorage.getItem('access_token') ? jwt_decode(localStorage.getItem('access_token')) : null)
+
     const [expire, setExpire] = useState(() => {
         if (localStorage.getItem('refresh_token')) {
           const dataRef = jwt_decode(localStorage.getItem('refresh_token'));
@@ -28,6 +29,8 @@ export const AuthProvider = ({children}) => {
     });
     const [signInErrors, setSignInErrors] = useState('')
 
+    // Handle the log of the user by passing the API the username and password
+    // This will then store the returned access and refresh tokens and the users name
     const handleLogIn = async (event) => {
 
         event.preventDefault();
@@ -51,6 +54,7 @@ export const AuthProvider = ({children}) => {
         }
     }
 
+    // Handle change of the users username and password for signing in
     const handleChange = (event) => {
         setFormData({
             ...formData,
@@ -58,6 +62,7 @@ export const AuthProvider = ({children}) => {
         })
     }
 
+    // Handle the logout of the user, it will delete the JWT tokens form the local storage
     const handleLogOut = () => {
         localStorage.removeItem('access_token')
         localStorage.removeItem('refresh_token')
@@ -65,6 +70,7 @@ export const AuthProvider = ({children}) => {
         navigate('/')
     }
 
+    // This is the data and fucntions passed down so they can be accessed within the app
     let contextData = {
         user:user,
         expire:expire,

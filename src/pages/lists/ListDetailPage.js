@@ -91,7 +91,7 @@ const ListDetailPage = () => {
 
     const toggleEditMode = () => {
         setEdit(!edit);
-      };
+    }
 
     useEffect(() => {
 

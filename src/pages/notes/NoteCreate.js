@@ -7,6 +7,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import axiosInstance from '../../api/axiosDefaults';
 import TestPage from '../TestPage';
+import { useTheme } from '../../utils/ThemeSelection';
 
 const NoteCreate = () => {
   
@@ -22,7 +23,8 @@ const NoteCreate = () => {
   const { title, is_private } = formData
   const [submit, setSubmit] = useState(false)
   const [search, setQueryGlobal] = useState('');
-  const [pickImage, setPickImage] = useState()
+  const [pickImage, setPickImage] = useState(true)
+  const {isDarkMode} = useTheme()
 
   const createNote = async () => {
     const formDataSend = new FormData();
@@ -94,6 +96,14 @@ const NoteCreate = () => {
     console.log('Form Data:', formData);
   }
 
+  const handlePickImage = () => {
+    if (pickImage) {
+      setPickImage(false)
+    } else {
+      setPickImage(true)
+    }
+  }
+
   const submittingText = (
     <Container>
       <Row>
@@ -107,51 +117,51 @@ const NoteCreate = () => {
   const defaultText = (
     <Container>
       <Row>
-        <Col>
-        <Form.Group className="mb-3">
-          <Form.Label htmlFor="title"><h5>Title</h5></Form.Label>
-          <Form.Control
-              type="text"
-              name='title'
-              id="title"
-              aria-describedby="title"
-              onChange={handleChange}
-          />
-          {/* Test */}
-          <Form.Label htmlFor="image"><h5>Image</h5></Form.Label>
-          <Form.Control
-              type="file"
-              name='image'
-              id='image'
-              onChange={handleChangeImage}
-              ref={imageInput}
-          />
-          <br/>
-          <Form.Check
-            type="checkbox"
-            name='is_private'
-            id="is_private"
-            label="Set Private?"
-            onChange={handleChecked}
-          />
+        <Col xs={10}>
+          <Link to={'/notes/'}><i className="fa-solid fa-arrow-left" />&nbsp;</Link>
+        </Col>
+      </Row>
+      <Row>
+        <Col xs={6}>
+          <Form.Group className="mb-3">
+            <Form.Label htmlFor="title"><h5>Title</h5></Form.Label>
+            <Form.Control
+                type="text"
+                name='title'
+                id="title"
+                aria-describedby="title"
+                onChange={handleChange}
+            />
+            <br/>
+            <Form.Label htmlFor="image"><h5>Image</h5></Form.Label>
+            <Form.Control
+                type="file"
+                name='image'
+                id='image'
+                onChange={handleChangeImage}
+                ref={imageInput}
+            />
+            <br/>
+            <Form.Check
+              type="checkbox"
+              name='is_private'
+              id="is_private"
+              label="Set Private?"
+              onChange={handleChecked}
+            />
           </Form.Group>
         </Col>
       </Row>
       <Row>
-        {pickImage ? "Picked" : "Not picked"}
-      </Row>
-      <Row>
         <Col md={1}>
-          <button onClick={createNote} className={appStyle.Button}>Create</button>
+          <button onClick={createNote} className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}>Submit</button>
+        </Col>
+        <Col md={5}>
+          <button onClick={handlePickImage} className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}>Show recomendations</button>
         </Col>
       </Row>
       <Row>
-        <Col md={1}>
-          <Link to={'/'} className={appStyle.ButtonLink}>Back</Link>
-        </Col>
-      </Row>
-      <Row>
-        <TestPage search={title} searchPage pickedImage={pickedImage}/>
+        {pickImage ? <TestPage search={title} searchPage pickedImage={pickedImage}/> : null}
       </Row>
     </Container>
   )

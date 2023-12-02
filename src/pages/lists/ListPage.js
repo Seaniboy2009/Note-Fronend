@@ -50,7 +50,7 @@ const ListPage = () => {
 
   return (
     <Container className={`${appStyle.Container}`}>
-        <Container className={`text-center ${appStyle.Container}`}>
+        <Container className={`${appStyle.Container}`}>
             <Row>
                 <Col xs={3}>
                     <h4>Lists</h4>
@@ -67,7 +67,7 @@ const ListPage = () => {
         <Container>
             {hasLoaded ? (
                 <>
-                <Row>My lists</Row>
+                <Row><Col><h5>My lists</h5></Col></Row>
                 {myLists?.results?.map((list, index) => (
                     <Link key={index} to={`list/${list.id}`}>
                         <Row className={style.List}>
@@ -80,7 +80,7 @@ const ListPage = () => {
                         </Row>
                     </Link>
                 ))}
-                <Row>All lists</Row>
+                <Row><Col><h5>Shared lists</h5></Col></Row>
                 {lists?.results?.map((list, index) => (
                     <div key={index}>
                         {list.is_private ? null : (

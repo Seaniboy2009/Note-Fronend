@@ -11,13 +11,9 @@ import Loader from '../components/Loader';
 
 const TestPage = ( { search, searchPage, pickedImage } ) => {
 
-
     const [hasLoaded, setHasLoaded] = useState(false);
     const [data, setData] = useState({ results: [] })
     const [query, setQuery] = useState('');
-    // const [pickImage, setPickImage] = useState('')
-    // const {isDarkMode} = useTheme()
-
 
     const optionsSearch = {
         method: 'GET',
@@ -111,7 +107,6 @@ const TestPage = ( { search, searchPage, pickedImage } ) => {
                     <Form onSubmit={(event) => event.preventDefault()}>
                         <Form.Control
                             value={query}
-                            // onChange={(event) => setQuery(event.target.value)}
                             onChange={handleChange}
                             type='text'
                             placeholder='Start typing to search movies'
@@ -123,11 +118,9 @@ const TestPage = ( { search, searchPage, pickedImage } ) => {
         )}
         <Container>
             <>
-                {hasLoaded ? (
-                    <>
-                    {newLayout}
-                    </>
-                ) : <Loader spinner text='Loading, please wait' />}
+                {hasLoaded ? (newLayout)
+                    : <Loader spinner text='Loading, please wait' />
+                }
             </>
         </Container>
     </Container>

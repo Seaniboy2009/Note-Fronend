@@ -78,13 +78,19 @@ const NoteListPage = () => {
 
   return (
     <Container fluid className={`${appStyle.Container}`}>
-      <Container className={`text-center ${appStyle.Container}`}>
+      <Container className={`${appStyle.Container}`}>
         <Row>
           <Col xs={3}>
-            <h4>Notes</h4>
+            <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}>Movies</button>
+          </Col>
+          <Col xs={3}>
+            <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}>Games</button>
+          </Col>
+          <Col xs={3}>
+            <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}>Other</button>
           </Col>
           {hasLoaded ? (
-            <Col xs={9}> 
+            <Col xs={3}> 
               <Link to={'note/create'}>
                 <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}>New <i className="fa-sharp fa-solid fa-plus" /></button>
               </Link>

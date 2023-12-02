@@ -22,7 +22,8 @@ const NavBarComponent = () => {
     setLoc(location.pathname)
     console.log(location)
   }, [location])
-  
+
+  // show the buttons and links for sign in user
   const signedIn = (
     <Row xs={12}>
       <Col><Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/notes/' ? style.Active : null)}`} href="/notes/">Notes</Nav.Link></Col>
@@ -39,6 +40,7 @@ const NavBarComponent = () => {
     </Row>
   )
   
+  // Show the buttons and links for none signed in user
   const notSignedIn = (
     <>
       <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/' ? style.Active : null)}`}  href="/">Sign in</Nav.Link>

@@ -14,21 +14,20 @@ import { useTheme } from '../utils/ThemeSelection';
 
 const ListItem = ( { id,owner,content, edit, getLists} ) => {
 
-    let {user} = useContext(AuthContext)
-    const {isDarkMode} = useTheme()
+  let {user} = useContext(AuthContext)
+  const {isDarkMode} = useTheme()
 
-    const handleDeleteItem = async () => {
-      console.log('Handle delete item called')
-      try {
-          await axiosInstance.delete(`/api/listitems/${id}`)
-          if (getLists) {
-            getLists();
-          }
-          // window.location.reload()
-      } catch (error) {
-          
-      }
+  // Handle the deletion of the list item
+  const handleDeleteItem = async () => {
+    try {
+        await axiosInstance.delete(`/api/listitems/${id}`)
+        if (getLists) {
+          getLists();
+        }
+    } catch (error) {
+        
     }
+  }
 
   return (
     <Row className={style.ListContainer}>
