@@ -59,7 +59,7 @@ const HomePage = () => {
   return (
     <Container>
         {loaded ? (
-            <>
+            <Container className={`${isDarkMode ? appStyle.BackgroundContainerTest : appStyle.BackgroundContainerRed}`}>
             {user ? (
             <>
               <Row>
@@ -82,7 +82,7 @@ const HomePage = () => {
             </>
                 ) : (null)}
                 {<SignInForm />}
-            </>
+            </Container>
         ) : (<Loader spinner text='Loading App, Please wait' />)}
     </Container>
   )

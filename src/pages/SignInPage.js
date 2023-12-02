@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import Container from 'react-bootstrap/Container';
+import { Link } from 'react-router-dom';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import appStyle from '../styles/App.module.css'
@@ -19,31 +19,36 @@ const SignInForm = () => {
             {!user ? (
                 <form onSubmit={handleLogIn}>
                 <Row>
-                    <Col>
-                        <h3>Please sign in to access the app.</h3>
+                    <Col className={'text-left'}>
+                        <h3>Log in</h3>
                     </Col>
                 </Row>
                 <Row><Col>{signInErrors != null ? (<p>{signInErrors}</p>) : null}</Col></Row>
-                <Row>
+                <Row className={'text-left'}s>
                     <Col>
+                        <p>Username</p>
                         <input className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`} type="text" name="username" placeholder="Enter Username" onChange={handleChange}/>
                     </Col>
                 </Row>
-                <Row>
+                <Row className={'text-left'}>
                     <Col>
+                        <p>Password</p>
                         <input className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`} type="password" name="password" placeholder="Enter Password" onChange={handleChange}/>
                     </Col>
                 </Row>
-                <Row>
-                    <Col>
-                        <input className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`} type="submit"/>
+                <Row className={'text-left'}>
+                    <Col xs={8}>
+                        <Link to={'/register/'}>Create new accout</Link>
+                    </Col>
+                    <Col xs={4}>
+                        <button className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}`} type="submit">Login</button>
                     </Col>
                 </Row>
                 </form>
             ) : (
                 <Row>
                     <Col>
-                        <button className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`} onClick={handleLogOut}>Log out</button>
+                        <button className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}`} onClick={handleLogOut}>Log out</button>
                     </Col>
                 </Row>
             )}

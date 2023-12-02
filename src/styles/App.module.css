@@ -59,6 +59,13 @@
     margin-top: 12px;
 }
 
+.BackgroundContainerRed {
+    background-color: #160000 !important;
+    border: 1px solid #410004;
+    text-align: center;
+    margin-top: 12px;
+}
+
 .TableRed, .TableRed > tbody > tr > td {
     border: 1px solid #9d0913 !important;
     color: #9d0913;
@@ -69,9 +76,6 @@
     color: #9d0913;
     border: 1px solid #410004;
     font-size: 100%;
-    /* margin-bottom: 15px;
-    padding: 5px; */
-    margin: 1px;
 }
 
 .ButtonRed:hover, .ButtonRed:active,.ButtonRed:focus, .ButtonLinkRed:hover {
@@ -116,6 +120,13 @@
     margin-top: 12px;
 }
 
+.BackgroundContainerTest {
+    background-color: #bebebe !important;
+    border: 1px solid #000000;
+    text-align: center;
+    margin-top: 12px;
+}
+
 .TableTest, .TableTest > tbody > tr > td {
     border: 1px solid #000000 !important;
     color: #000000;
@@ -126,12 +137,10 @@
     color: #000000;
     border: 2px solid #000000;
     font-size: 100%;
-    margin-bottom: 15px;
-    margin: 5px;
 }
 
 .ButtonTest:hover, .ButtonTest:active,.ButtonTest:focus, .ButtonLinkTest:hover {
-    background-color: #ffffff !important;
+    background-color: #bebebe !important;
     color: #000000 !important;
     border: 2px solid #000000 !important;
 }
