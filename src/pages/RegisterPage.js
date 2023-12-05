@@ -50,39 +50,42 @@ const RegisterPage = () => {
 
 
   return (
-            <Container className={`text-center ${appStyle.Container}`}>
-                <form onSubmit={handleSubmit}>
-                <Row>
-                    <Col>
-                        <h3>Please complete the below to create an account.</h3>
-                    </Col>
-                </Row>
-                <Row><Col>{errors?.username?.map((error, index) => (<p key={index}>{error}</p>))}</Col></Row>
-                <Row>
-                    <Col>
-                        <input className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`} type='text' name='username' onChange={handleChange} placeholder="Enter Username (Case sensitive)" />
-                    </Col>
-                </Row>
-                <Row><Col>{errors?.password1?.map((error, index) => (<p key={index}>{error}</p>))}</Col></Row>
-                <Row>
-                    <Col>
-                        <input className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`} type='password' name='password1' onChange={handleChange} placeholder="Enter Password" />
-                    </Col>
-                </Row>
-                <Row><Col>{errors?.password2?.map((error, index) => (<p key={index}>{error}</p>))}</Col></Row>
-                <Row>
-                    <Col>
-                        <input className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`} type='password' name='password2' onChange={handleChange} placeholder="Confirm Password" />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <input className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`} type="submit"/>
-                    </Col>
-                </Row>
-                </form>
-
-        </Container>
+    <Container className={`${isDarkMode ? appStyle.BackgroundContainerTest : appStyle.BackgroundContainerSmallRed}`}>
+        <form onSubmit={handleSubmit}>
+        <Row>
+            <Col>
+                <h5>Please complete the below to create an account.</h5>
+            </Col>
+        </Row>
+        <Row><Col>{errors?.username?.map((error, index) => (<p key={index}>{error}</p>))}</Col></Row>
+        <br/>
+        <Row>
+            <Col>
+                <input className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`} type='text' name='username' onChange={handleChange} placeholder="Enter Username (Case sensitive)" />
+            </Col>
+        </Row>
+        <Row><Col>{errors?.password1?.map((error, index) => (<p key={index}>{error}</p>))}</Col></Row>
+        <br/>
+        <Row>
+            <Col>
+                <input className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`} type='password' name='password1' onChange={handleChange} placeholder="Enter Password" />
+            </Col>
+        </Row>
+        <Row><Col>{errors?.password2?.map((error, index) => (<p key={index}>{error}</p>))}</Col></Row>
+        <br/>
+        <Row>
+            <Col>
+                <input className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`} type='password' name='password2' onChange={handleChange} placeholder="Confirm Password" />
+            </Col>
+        </Row>
+        <br/>
+        <Row>
+            <Col>
+                <input className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`} type="submit"/>
+            </Col>
+        </Row>
+        </form>
+    </Container>
   )
 }
 

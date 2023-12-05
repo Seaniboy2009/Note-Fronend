@@ -18,32 +18,36 @@ const SignInForm = () => {
         <>
             {!user ? (
                 <form onSubmit={handleLogIn}>
-                <Row>
-                    <Col className={'text-left'}>
-                        <h3>Log in</h3>
-                    </Col>
-                </Row>
-                <Row><Col>{signInErrors != null ? (<p>{signInErrors}</p>) : null}</Col></Row>
-                <Row className={'text-left'}s>
-                    <Col>
-                        <p>Username</p>
-                        <input className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`} type="text" name="username" placeholder="Enter Username" onChange={handleChange}/>
-                    </Col>
-                </Row>
-                <Row className={'text-left'}>
-                    <Col>
-                        <p>Password</p>
-                        <input className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`} type="password" name="password" placeholder="Enter Password" onChange={handleChange}/>
-                    </Col>
-                </Row>
-                <Row className={'text-left'}>
-                    <Col xs={8}>
-                        <Link to={'/register/'}>Create new accout</Link>
-                    </Col>
-                    <Col xs={4}>
-                        <button className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}`} type="submit">Login</button>
-                    </Col>
-                </Row>
+                    <Row>
+                        <Col className={'text-left'}>
+                            <h3>Log in</h3>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            {signInErrors != null ? (<p>{signInErrors}</p>) : null}
+                        </Col>
+                    </Row>
+                    <Row className={'text-left'}s>
+                        <Col>
+                            <p>Username</p>
+                            <input className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`} type="text" name="username" placeholder="Enter Username" onChange={handleChange}/>
+                        </Col>
+                    </Row>
+                    <Row className={'text-left'}>
+                        <Col>
+                            <p>Password</p>
+                            <input className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`} type="password" name="password" placeholder="Enter Password" onChange={handleChange}/>
+                        </Col>
+                    </Row>
+                    <Row className={'text-left'}>
+                        <Col xs={8}>
+                            <Link to={'/register/'}>Create new accout</Link>
+                        </Col>
+                        <Col xs={4}>
+                            <button className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}`} type="submit">Login</button>
+                        </Col>
+                    </Row>
                 </form>
             ) : (
                 <Row>

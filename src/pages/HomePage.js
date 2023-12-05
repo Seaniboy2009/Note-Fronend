@@ -57,31 +57,31 @@ const HomePage = () => {
     }, [])
 
   return (
-    <Container>
+    <Container className={`${isDarkMode ? appStyle.BackgroundContainerTest : appStyle.BackgroundContainerSmallRed}`}>
         {loaded ? (
-            <Container className={`${isDarkMode ? appStyle.BackgroundContainerTest : appStyle.BackgroundContainerRed}`}>
-            {user ? (
-            <>
-              <Row>
-                <Col><h4>Welcome {user.name}</h4></Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Link to={'notes/'}>
-                    <button className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`}>Notes</button>
-                  </Link>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Link to={'lists/'}>
-                    <button className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`}>Lists</button>
-                  </Link>
-                </Col>
-              </Row>
-            </>
-                ) : (null)}
-                {<SignInForm />}
+            <Container >
+              {user ? (
+              <>
+                <Row>
+                  <Col><h4>Welcome {user.name}</h4></Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <Link to={'notes/'}>
+                      <button className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`}>Notes</button>
+                    </Link>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <Link to={'lists/'}>
+                      <button className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} ${appStyle.ButtonLarge}`}>Lists</button>
+                    </Link>
+                  </Col>
+                </Row>
+              </>
+                  ) : (null)}
+                  {<SignInForm />}
             </Container>
         ) : (<Loader spinner text='Loading App, Please wait' />)}
     </Container>

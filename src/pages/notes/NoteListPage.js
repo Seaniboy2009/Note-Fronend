@@ -100,7 +100,7 @@ const NoteListPage = () => {
       </Container>
       <Container className={`text-center`}>
       {hasLoaded ? (
-        <Container fluid>
+        <Container>
           <Row><h5>My notes</h5></Row>
             <Row>
             {myNotes?.results?.map((note, index) => (

@@ -28,14 +28,14 @@ const NavBarComponent = () => {
     <Row xs={12}>
       <Col><Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/notes/' ? style.Active : null)}`} href="/notes/">Notes</Nav.Link></Col>
       <Col><Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/lists/' ? style.Active : null)}`} href="/lists/">Lists</Nav.Link></Col>
-      <Col>
+      {/* <Col>
         <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/test/' ? style.Active : null)}`} href="/test/">Test</Nav.Link>
       </Col>
       <Col>
         <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/all/' ? style.Active : null)}`} href="/all/">All</Nav.Link>
-      </Col>
+      </Col> */}
       <Col>
-        <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/account/' ? style.Active : null)}`} href="/account/">{user?.name}</Nav.Link>
+        <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/account/' ? style.Active : null)}`} href="/account/">Account</Nav.Link>
       </Col>
     </Row>
   )
@@ -49,7 +49,7 @@ const NavBarComponent = () => {
   )
 
   return (
-    <Container fluid="xl"
+    <Container fluid="xs"
     className={`
       ${style.Header}
       ${style.FixedTop}
