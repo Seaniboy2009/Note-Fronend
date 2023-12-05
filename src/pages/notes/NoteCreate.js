@@ -15,12 +15,13 @@ const NoteCreate = () => {
   const imageInput = useRef(null)
   const [formData, setFormData] = useState({
     title: '',
+    category: '',
     image: '',
     image_url: '',
     is_private: false,
   })
 
-  const { title, is_private } = formData
+  const { title, category, is_private } = formData
   const [submit, setSubmit] = useState(false)
   const [search, setQueryGlobal] = useState('');
   const [pickImage, setPickImage] = useState(true)
@@ -30,6 +31,7 @@ const NoteCreate = () => {
     const formDataSend = new FormData();
 
     formDataSend.append('title', title);
+    formDataSend.append('category', category);
     formDataSend.append('is_private', is_private);
 
     console.log('Type of image:', typeof formData.image);
@@ -132,6 +134,19 @@ const NoteCreate = () => {
                 aria-describedby="title"
                 onChange={handleChange}
             />
+            <br/>
+            <Form.Label htmlFor="category"><h5>Category</h5></Form.Label>
+            <Form.Control
+                as='select'
+                name='category'
+                id="category"
+                aria-describedby="category"
+                onChange={handleChange}
+            >
+              <option value="Other">Other</option>
+              <option value="Game">Game</option>
+              <option value="Movie">Movie</option>
+            </Form.Control>
             <br/>
             <Form.Label htmlFor="image"><h5>Image</h5></Form.Label>
             <Form.Control

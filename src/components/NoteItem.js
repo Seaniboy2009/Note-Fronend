@@ -7,6 +7,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import AuthContext from '../contexts/AuthContext'
+import Form from 'react-bootstrap/Form';
 import { useTheme } from '../utils/ThemeSelection';
 
 const NoteItem = ( props ) => {
@@ -55,6 +56,28 @@ const NoteItem = ( props ) => {
     setFormData({...formData, [event.target.name]: event.target.checked})
     console.log('Form data updating:', formData)
   }
+
+  // Check the category of the note and retun the word to be used for the checked box
+  const checkCategory = () => {
+
+    var categoryToCheck = category
+    let result
+
+    // this will check categoryToCheck and see if its the same as each case and return the oword to use
+    switch (categoryToCheck) {
+      case 'Other':
+        return 'Other'
+      case 'Game':
+        return 'Played'
+      case 'Movie':
+        return 'Watched'
+      default:
+        return 'Invalid category'
+    }
+
+    console.log(result)
+    return result
+  }
 // this will update the current note and will send the title, is private and toggle to be updated by the api
   const handleFormSubmit= async () => {
 
@@ -90,31 +113,54 @@ const NoteItem = ( props ) => {
   }
 // all normal text will be conveted to input so the user can then change the note
   const editModeEnabled = (
-    <Container className={`${isDarkMode ? appStyle.BackgroundContainerTest : appStyle.BackgroundContainerRed}`}>
-      <Row><p>Title: <input type='text' defaultValue={title} onChange={handleUpdate} className={style.NoteInputRed} name='newTitle'/></p></Row>
-      <Row><p>Category: <input type='text' defaultValue={category} onChange={handleUpdate} className={style.NoteInputRed} name='newCategory'/></p></Row>
+    <Container className={` text-left ${isDarkMode ? appStyle.BackgroundContainerTest : appStyle.BackgroundContainerRed}`}>
+      <Row>
+        <Col>
+          <p>Title: <input type='text' defaultValue={title} onChange={handleUpdate} className={style.NoteInputRed} name='newTitle'/></p>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <p>Category:
+            <Form.Control
+              as="select"
+              name="newCategory"
+              defaultValue={category}
+              onChange={handleUpdate}
+            >
+              <option value="Other">Other</option>
+              <option value="Game">Game</option>
+              <option value="Movie">Movie</option>
+            </Form.Control>
+          </p>
+        </Col>
+      </Row>
       {/* <Row><p>Details: <input type='text' defaultValue={details} onChange={handleUpdate} className={style.NoteInputRed} name='newDetails'/></p></Row> */}
       <Row>
-        <p>Private: <input
-          type="checkbox"
-          name='newIs_private'
-          defaultChecked={is_private}
-          defaultValue={true}
-          onChange={handleChecked}
-          className={appStyle.CheckBoxRed}
-        /> {is_private ? 'Yes' : 'No'}</p>
+        <Col>
+          <p>Private: <input
+            type="checkbox"
+            name='newIs_private'
+            defaultChecked={is_private}
+            defaultValue={true}
+            onChange={handleChecked}
+            // className={appStyle.CheckBoxRed}
+          /> {is_private ? 'Yes' : 'No'}</p>
+        </Col>
       </Row>
       <Row>
-        <p>Watched: <input
-          type="checkbox"
-          name='newToggle'
-          defaultChecked={toggle}
-          defaultValue={true}
-          onChange={handleChecked}
-        /> {toggle ? 'Yes' : 'No'}</p>
+        <Col>
+          <p>{checkCategory()}: <input
+            type="checkbox"
+            name='newToggle'
+            defaultChecked={toggle}
+            defaultValue={true}
+            onChange={handleChecked}
+          /> {toggle ? 'Yes' : 'No'}</p>
+        </Col>
       </Row>
-      <Row><p>Created: {created}</p></Row>
-      <Row><p>Updated: {updated}</p></Row>
+      <Row><Col><p>Created: {created}</p></Col></Row>
+      <Row><Col><p>Updated: {updated}</p></Col></Row>
       <Row>
         <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleDelete}>Delete</button>
         <button className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}`} onClick={handleFormSubmit}>Save</button>
@@ -123,12 +169,12 @@ const NoteItem = ( props ) => {
   )
 // normal text to be shown when edit is disabled, cant edit anything
   const editModeDisabled = (
-    <Container className={`${isDarkMode ? appStyle.BackgroundContainerTest : appStyle.BackgroundContainerRed}`}>
+    <Container className={` text-left  ${isDarkMode ? appStyle.BackgroundContainerTest : appStyle.BackgroundContainerRed}`}>
       <Row><p>Title: {title}</p></Row>
       <Row><p>Category: {category}</p></Row>
       {/* <Row><p>Details: {details}</p></Row> */}
       <Row><p>Private: {is_private ? 'Yes' : 'No'}</p></Row>
-      <Row><p>Watched: {toggle ? 'Yes' : 'No'}</p></Row>
+      <Row><p>{checkCategory()}: {toggle ? 'Yes' : 'No'}</p></Row>
       <Row><p>Created: {created}</p></Row>
       <Row><p>Updated: {updated}</p></Row>
     </Container>
@@ -136,7 +182,7 @@ const NoteItem = ( props ) => {
 // Layout for the notes detail page
   const noteDetailPage = (
     <>
-      <Row className={`text-left`}>
+      <Row>
         <Col xs={10}>
           <Link to={'/notes/'}><i className="fa-solid fa-arrow-left" />&nbsp;</Link>
         </Col>
