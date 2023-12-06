@@ -1,9 +1,10 @@
 .Header {
     text-align: center;
+    font-size: 65%;
     /* background-color: #100000; */
     /* border-bottom: 1px solid #9d0913; */
     /* color: #9d0913; */
-    padding: 10px 10px;
+    /* padding: 10px 10px; */
 }
 
 .FixedTop {
@@ -15,15 +16,52 @@
 }
 
 .Active {
-    /* background-color: #3d0000; */
-    /* border-top: 1px solid #3d0000;
-    border-left: 1px solid #3d0000;
-    border-right: 1px solid #3d0000; */
+    background-color: #3d0000;
     border: 1px solid #3d0000;
 }
 
 .NavBarItem {
     color: #9d0913 !important;
+}
+
+.NavbarPopout {
+    position: absolute;
+    top: 0;
+    left: -300px; /* Set an initial value that hides the Navbar */
+    width: 300px; /* Set the width of the Navbar */
+    height: 100vh; /* Set the height of the Navbar to cover the entire viewport */
+    background-color: #fff; /* Set your desired background color */
+    z-index: 1040;
+    transition: left 0.3s ease; /* Add a transition for a smooth effect */
+  }
+  
+  .NavbarPopout.open {
+    left: 0; /* When the Navbar is open, set the left property to 0 */
+  }
+
+  .NavbarPopout.back {
+    height: 100%;
+    width: 100%;
+    left: auto;
+    z-index: 1020;
+    background-color: #313131;
+  }
+
+/* Small screen */
+@media screen and (max-width: 413px) {
+
+    .FixedTop {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        z-index: 1030;
+    }
+
+    .TextSmall {
+        font-size: 60%;
+    }
 }
 
 /* .ThemePurple {

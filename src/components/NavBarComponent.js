@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useRef  } from 'react'
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
@@ -14,26 +14,44 @@ const NavBarComponent = () => {
 
   const location = useLocation()
   const [loc, setLoc] = useState()
+  const navbarRef = useRef(null)
 
   let {user} = useContext(AuthContext)
   const {isDarkMode, toggleDarkMode} = useTheme()
+  const [navbarOpen, setNavbarOpen] = useState(false)
+
+  const toggleNavbar = () => {
+    setNavbarOpen(!navbarOpen)
+    console.log(navbarOpen)
+  }
+
+  const closeNavbar = () => {
+    setNavbarOpen(false);
+  }
 
   useEffect(() => {
     setLoc(location.pathname)
-    console.log(location)
-  }, [location])
+    console.log('NavbarOpen state:', navbarOpen);
+    const handleDocumentClick  = (event) => {
+      if (navbarRef.current && navbarOpen && !navbarRef.current.contains(event.target)) {
+        closeNavbar();
+      }
+    }
+
+    const delayedDocumentClickSetup = setTimeout(() => {
+      document.addEventListener('click', handleDocumentClick);
+    }, 0)
+
+    return () => {
+      clearTimeout(delayedDocumentClickSetup);
+      document.removeEventListener('click', handleDocumentClick);
+    }
+
+  }, [location, navbarOpen])
 
   // show the buttons and links for sign in user
   const signedIn = (
-    <Row xs={12}>
-      <Col><Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/notes/' ? style.Active : null)}`} href="/notes/">Notes</Nav.Link></Col>
-      <Col><Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/lists/' ? style.Active : null)}`} href="/lists/">Lists</Nav.Link></Col>
-      {/* <Col>
-        <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/test/' ? style.Active : null)}`} href="/test/">Test</Nav.Link>
-      </Col>
-      <Col>
-        <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/all/' ? style.Active : null)}`} href="/all/">All</Nav.Link>
-      </Col> */}
+    <Row>
       <Col>
         <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/account/' ? style.Active : null)}`} href="/account/">Account</Nav.Link>
       </Col>
@@ -42,32 +60,42 @@ const NavBarComponent = () => {
   
   // Show the buttons and links for none signed in user
   const notSignedIn = (
-    <>
+    <Row>
       <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/' ? style.Active : null)}`}  href="/">Sign in</Nav.Link>
       <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/register/' ? style.Active : null)}`}  href="/register/">Sign up</Nav.Link>
-    </>
+    </Row>
   )
 
   return (
-    <Container fluid="xs"
-    className={`
-      ${style.Header}
-      ${style.FixedTop}
-      ${isDarkMode ? appStyle.HeaderThemeTest : appStyle.HeaderThemeRed}
-    `}>
-      <Navbar expand="lg" className="bg-body-tertiary">
-      <Container>
-        <Col><Nav.Link className={isDarkMode ? appStyle.TextTest : appStyle.TextRed} href="/">Home</Nav.Link></Col>
-        <Navbar.Toggle className={`${appStyle.ContrastBackground} ${appStyle.MainBorder}`} aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse className={isDarkMode ? appStyle.TextTest : appStyle.TextRed} id="basic-navbar-nav">
-          <Nav className="me-auto">
-            <Row>
-              {user ? (signedIn) : (notSignedIn)}
-            </Row>
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-      </Navbar>
+    <Container>
+      <Row
+        className={
+          `
+          ${style.Header}
+          ${style.FixedTop}
+          ${isDarkMode ? appStyle.HeaderThemeTest : appStyle.HeaderThemeRed}
+          `
+        }>
+        <Col xs={3}><button className={`${appStyle.ButtonNavBar} ${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonNavBar}`} onClick={toggleNavbar}><i class="fa-solid fa-ellipsis-vertical"></i></button></Col>
+        {user ? (
+            <>
+            <Col xs={3}>
+              <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/notes/' ? style.Active : null)}`} href="/notes/"><i className="fa-solid fa-clipboard"></i><p>Notes</p></Nav.Link>
+            </Col>
+            <Col xs={3}>
+              <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/lists/' ? style.Active : null)}`} href="/lists/"><i className="fa-regular fa-rectangle-list"></i><p>List</p></Nav.Link>
+            </Col>
+            </>
+          ) : null
+        }
+      </Row>
+      <Row className={`${style.NavbarPopout} ${navbarOpen ? style.open : ''} ${isDarkMode ? appStyle.HeaderThemeTest : appStyle.HeaderThemeRed}`}>
+        <Navbar ref={navbarRef} className={`${style.NavbarPopout} ${navbarOpen ? style.open : ''} ${isDarkMode ? appStyle.HeaderThemeTest : appStyle.HeaderThemeRed}`}>
+          <p>Test</p>
+        </Navbar>
+      </Row>
+      <Row className={`${style.NavbarPopout} ${navbarOpen ? style.back : ''} ${appStyle.HeaderThemeTest}`}>
+      </Row>
     </Container>
   )
 }

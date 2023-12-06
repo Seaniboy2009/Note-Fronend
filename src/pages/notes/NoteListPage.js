@@ -80,28 +80,28 @@ const NoteListPage = () => {
     <Container fluid className={`${appStyle.Container}`}>
       <Container className={`${appStyle.Container}`}>
         <Row>
-          <Col xs={3}>
+          <Col>
             <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}>Movies</button>
           </Col>
-          <Col xs={3}>
+          <Col>
             <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}>Games</button>
           </Col>
-          <Col xs={3}>
+          <Col>
             <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}>Other</button>
           </Col>
-          {hasLoaded ? (
-            <Col xs={3}> 
-              <Link to={'note/create'}>
-                <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}>New <i className="fa-sharp fa-solid fa-plus" /></button>
-              </Link>
-            </Col>
-          ) : null}
         </Row>
       </Container>
       <Container className={`text-center`}>
       {hasLoaded ? (
         <Container>
           <Row><h5>My notes</h5></Row>
+            {hasLoaded ? (
+              <Col xs={5}> 
+                <Link to={'note/create'}>
+                  <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonCreate}><i className="fa-sharp fa-solid fa-plus" /></button>
+                </Link>
+              </Col>
+            ) : null}
             <Row>
             {myNotes?.results?.map((note, index) => (
               <NoteItem key={index} {...note} />
