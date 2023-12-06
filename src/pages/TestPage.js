@@ -9,13 +9,14 @@ import { Col, Row } from 'react-bootstrap';
 import Loader from '../components/Loader';
 // import { useTheme } from '../utils/ThemeSelection';
 
-const TestPage = ( { search, searchPage, pickedImage } ) => {
+const TestPage = ( { search, searchPage, pickedImage, gameSearch } ) => {
 
     const [hasLoaded, setHasLoaded] = useState(false);
     const [data, setData] = useState({ results: [] })
-    const [query, setQuery] = useState('');
+    const [query, setQuery] = useState('')
+    
 
-    const optionsSearch = {
+    const autoSearch = {
         method: 'GET',
         url: `https://moviesdatabase.p.rapidapi.com/titles/search/title/${search}`,
         params: {
@@ -28,7 +29,8 @@ const TestPage = ( { search, searchPage, pickedImage } ) => {
         }
     }
 
-    const optionsQuary = {
+    // Movies DB
+    const manualSearch = {
         method: 'GET',
         url: `https://moviesdatabase.p.rapidapi.com/titles/search/title/${query}`,
         params: {
@@ -41,18 +43,36 @@ const TestPage = ( { search, searchPage, pickedImage } ) => {
         }
     }
 
+    // Games DB
+    const gameOptions = {
+        method: 'GET',
+        url: 'https://rawg-video-games-database.p.rapidapi.com/games',
+        headers: {
+          'X-RapidAPI-Key': 'SIGN-UP-FOR-KEY',
+          'X-RapidAPI-Host': 'rawg-video-games-database.p.rapidapi.com'
+        }
+      };
+
     // Get api data after query is updated
     useEffect(() => {
         const getData = async () => {
             try {
+                // Search passed down from movies note title text
                 if(searchPage) {
-                    const response = await axios.request(optionsSearch);
-                    console.log('Search list: ', response.data);
+                    const response = await axios.request(autoSearch)
+                    console.log('auto Search list: ', response.data)
+                    setData(response.data)
+                    setHasLoaded(true)
+                } else if (gameSearch) {
+                    // Search passed down from games note title
+                    const response = await axios.request(gameOptions)
+                    console.log('game Search list: ', response.data)
                     setData(response.data)
                     setHasLoaded(true)
                 } else {
-                    const response = await axios.request(optionsQuary);
-                    console.log('Search list: ', response.data);
+                    // Search manualy typed on this component
+                    const response = await axios.request(manualSearch)
+                    console.log('manual Search list: ', response.data)
                     setData(response.data)
                     setHasLoaded(true)
                 }

@@ -44,7 +44,7 @@
     width: 100%;
     left: auto;
     z-index: 1020;
-    background-color: #313131;
+    background-color: #31313150 !important;
   }
 
 /* Small screen */

@@ -68,6 +68,10 @@ const NavBarComponent = () => {
 
   return (
     <Container>
+      {user ? (
+          <p>User</p>
+          ) : <p>No User</p>
+      }
       <Row
         className={
           `
@@ -89,11 +93,23 @@ const NavBarComponent = () => {
           ) : null
         }
       </Row>
-      <Row className={`${style.NavbarPopout} ${navbarOpen ? style.open : ''} ${isDarkMode ? appStyle.HeaderThemeTest : appStyle.HeaderThemeRed}`}>
-        <Navbar ref={navbarRef} className={`${style.NavbarPopout} ${navbarOpen ? style.open : ''} ${isDarkMode ? appStyle.HeaderThemeTest : appStyle.HeaderThemeRed}`}>
-          <p>Test</p>
-        </Navbar>
-      </Row>
+      <Container ref={navbarRef} className={`${style.NavbarPopout} ${navbarOpen ? style.open : ''} ${isDarkMode ? appStyle.HeaderThemeTest : appStyle.HeaderThemeRed}`}>
+        <Row >
+          <Col><Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed}`} href="/">*********IMAGE******</Nav.Link></Col>
+        </Row>
+        <Row >
+          <Col><Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/' ? style.Active : null)}`} href="/"><i className="fa-solid fa-house"></i> Home</Nav.Link></Col>
+        </Row>
+        <Row >
+          <Col><Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/account/' ? style.Active : null)}`} href="/account/"><i className="fa-solid fa-user"></i> Account</Nav.Link></Col>
+        </Row>
+        <Row >
+          <Col><Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/notes/' ? style.Active : null)}`} href="/notes/"><i className="fa-solid fa-gear"></i> Notes</Nav.Link></Col>
+        </Row>
+        <Row >
+          <Col><Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/settings/' ? style.Active : null)}`} href="/"><i className="fa-solid fa-gear"></i> Settings</Nav.Link></Col>
+        </Row>
+      </Container>
       <Row className={`${style.NavbarPopout} ${navbarOpen ? style.back : ''} ${appStyle.HeaderThemeTest}`}>
       </Row>
     </Container>
