@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import style from '../styles/NoteItem.module.css'
 import appStyle from '../styles/App.module.css'
-import axiosInstance from '../api/axiosDefaults';
+import {axiosInstance} from '../api/axiosDefaults';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';

@@ -5,7 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Link } from 'react-router-dom';
 import AuthContext from '../contexts/AuthContext'
-import axiosInstance from '../api/axiosDefaults';
+import {axiosInstance} from '../api/axiosDefaults';
 
 import SignInForm from './SignInPage';
 import Loader from '../components/Loader';

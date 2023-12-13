@@ -10,7 +10,7 @@ import ListCreate from './pages/lists/ListCreate';
 import NoteEditPage from './pages/notes/NoteEditPage';
 import RegisterPage from './pages/RegisterPage';
 import AccountPage from './pages/account/AccountPage';
-import TestPage from './pages/TestPage';
+import SearchPage from './pages/SearchPage';
 import NavBarComponent from './components/NavBarComponent';
 import ListAllPage from './utils/ListAllPage';
 
@@ -22,7 +22,7 @@ function App() {
         <Route exact path='/' element={<HomePage />} />
         <Route exact path='/register' element={<RegisterPage />} />
         <Route exact path='/account' element={<AccountPage />} />
-        <Route exact path='/test' element={<TestPage />} />
+        <Route exact path='/test' element={<SearchPage />} />
         <Route exact path='notes/' element={<NoteListPage />} />
         <Route exact path='notes/note/:id' element={<NoteDetailPage />} />
         <Route exact path='notes/note/create' element={<NoteCreate />} />

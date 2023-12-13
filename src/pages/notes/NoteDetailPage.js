@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom"
 import NoteItem from '../../components/NoteItem'
 import appStyle from '../../styles/App.module.css'
 import { Container } from 'react-bootstrap';
-import axiosInstance from '../../api/axiosDefaults';
+import {axiosInstance} from '../../api/axiosDefaults';
 
 import Loader from '../../components/Loader';
 

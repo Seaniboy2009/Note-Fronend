@@ -21,6 +21,28 @@ const axiosInstance = axios.create({
     }
 })
 
+const axiosMoviesDatabase = axios.create({
+    baseURL: 'https://moviesdatabase.p.rapidapi.com/titles/search/title/',
+    timeout: 5000,
+    headers: {
+        'X-RapidAPI-Key': '2c53ff4e4fmshe49848acaec3f07p1e278ajsn6f3e8b171bbf', // Replace with your RapidAPI key
+        'X-RapidAPI-Host': 'moviesdatabase.p.rapidapi.com',
+        'Content-Type': 'application/json',
+        accept: 'application/json',
+    }
+})
+
+axiosMoviesDatabase.interceptors.response.use(
+    (response) => {
+        return response;
+    },
+    function (error) {
+        // Your error handling for the Movies Database API
+        console.error('Error in Movies Database API:', error);
+        return Promise.reject(error);
+    }
+)
+
 axiosInstance.interceptors.response.use(
 	(response) => {
 		return response;
@@ -112,4 +134,7 @@ axiosInstance.interceptors.response.use(
 	}
 )
 
-export default axiosInstance
+export {
+    axiosInstance,
+    axiosMoviesDatabase,
+}

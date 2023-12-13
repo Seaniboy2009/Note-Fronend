@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import axiosInstance from '../api/axiosDefaults'
+import {axiosInstance} from '../api/axiosDefaults'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';

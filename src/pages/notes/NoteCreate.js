@@ -5,8 +5,8 @@ import appStyle from '../../styles/App.module.css'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import axiosInstance from '../../api/axiosDefaults';
-import TestPage from '../TestPage';
+import {axiosInstance} from '../../api/axiosDefaults';
+import SearchPage from '../SearchPage';
 import { useTheme } from '../../utils/ThemeSelection';
 
 const NoteCreate = () => {
@@ -176,7 +176,11 @@ const NoteCreate = () => {
         </Col>
       </Row>
       <Row>
-        {pickImage ? <TestPage search={title} searchPage pickedImage={pickedImage}/> : null}
+        {pickImage ? <SearchPage
+          search={title}
+          searchPage
+          pickedImage={pickedImage}
+        /> : null}
       </Row>
     </Container>
   )

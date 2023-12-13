@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import axiosInstance from '../../api/axiosDefaults';
+import {axiosInstance} from '../../api/axiosDefaults';
 import { useParams } from "react-router-dom"
 
 const NoteEditPage = () => {

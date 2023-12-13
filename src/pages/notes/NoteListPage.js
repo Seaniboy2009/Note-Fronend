@@ -5,7 +5,7 @@ import appStyle from '../../styles/App.module.css'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import axiosInstance from '../../api/axiosDefaults';
+import {axiosInstance} from '../../api/axiosDefaults';
 import { useNavigate } from 'react-router-dom';
 
 import AuthContext from '../../contexts/AuthContext'
