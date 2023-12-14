@@ -13,6 +13,7 @@ import AccountPage from './pages/account/AccountPage';
 import SearchPage from './pages/SearchPage';
 import NavBarComponent from './components/NavBarComponent';
 import ListAllPage from './utils/ListAllPage';
+import TestExternalDBAPI from './pages/TestExternalDBAPI';
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
         <Route exact path='/' element={<HomePage />} />
         <Route exact path='/register' element={<RegisterPage />} />
         <Route exact path='/account' element={<AccountPage />} />
-        <Route exact path='/test' element={<SearchPage />} />
+        {/* <Route exact path='/test' element={<SearchPage />} /> */}
         <Route exact path='notes/' element={<NoteListPage />} />
         <Route exact path='notes/note/:id' element={<NoteDetailPage />} />
         <Route exact path='notes/note/create' element={<NoteCreate />} />
@@ -31,6 +32,7 @@ function App() {
         <Route path='lists/list/:id' element={<ListDetailPage />} />
         <Route path='/lists/list/create' element={<ListCreate />} />
         <Route path='/all' element={<ListAllPage />} />
+        <Route path='/test' element={<TestExternalDBAPI />} />
       </Routes>
     </div>
   );

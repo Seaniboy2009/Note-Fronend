@@ -6,8 +6,9 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import {axiosInstance} from '../../api/axiosDefaults';
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { fetchMoreData, fetchMoreDataURL } from '../../utils/utils'
 import AuthContext from '../../contexts/AuthContext'
 import Loader from '../../components/Loader';
 import { useTheme } from '../../utils/ThemeSelection';
@@ -103,9 +104,19 @@ const NoteListPage = () => {
               </Col>
             ) : null}
             <Row>
-            {myNotes?.results?.map((note, index) => (
+            {/* {myNotes?.results?.map((note, index) => (
               <NoteItem key={index} {...note} />
-            ))}
+            ))} */}
+            <InfiniteScroll
+                    dataLength={myNotes.results.length}
+                    next={() => fetchMoreData(myNotes, setMyNotes)}
+                    hasMore={!!myNotes.next}
+                    loader={<Loader spinner text='Loading, please wait' />}
+                    >
+                    {myNotes?.results?.map((note, index) => (
+                      <NoteItem key={index} {...note} />
+                    ))}
+            </InfiniteScroll>
             </Row>
           <Row><h5>All notes</h5></Row>
           {notes?.results?.map((note, index) => (

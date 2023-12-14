@@ -15,7 +15,7 @@ const NoteCreate = () => {
   const imageInput = useRef(null)
   const [formData, setFormData] = useState({
     title: '',
-    category: '',
+    category: 'Other',
     image: '',
     image_url: '',
     is_private: false,
@@ -67,7 +67,7 @@ const NoteCreate = () => {
 
   const handleChange = (event) => {
       setFormData({...formData, [event.target.name]: event.target.value})
-      if (event.target.name == title) {
+      if (event.target.name === title) {
         setQueryGlobal(event.target.value)
       }
       console.log(formData)
@@ -123,7 +123,7 @@ const NoteCreate = () => {
           <Link to={'/notes/'}><i className="fa-solid fa-arrow-left" />&nbsp;</Link>
         </Col>
       </Row>
-      <Row>
+      <Row className={`${isDarkMode ? appStyle.BackgroundContainerTest : appStyle.BackgroundContainerSmallRed}`}>
         <Col xs={6}>
           <Form.Group className="mb-3">
             <Form.Label htmlFor="title"><h5>Title</h5></Form.Label>
@@ -167,18 +167,20 @@ const NoteCreate = () => {
           </Form.Group>
         </Col>
       </Row>
-      <Row>
-        <Col md={1}>
+      <Row className={`${isDarkMode ? appStyle.BackgroundContainerTest : appStyle.BackgroundContainerSmallRed}`}>
+        <Col>
           <button onClick={createNote} className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}>Submit</button>
         </Col>
-        <Col md={5}>
-          <button onClick={handlePickImage} className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}>Show recomendations</button>
+        <Col>
+          <button onClick={handlePickImage} className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}>Recomendations</button>
         </Col>
       </Row>
+      {/* Search page */}
       <Row>
         {pickImage ? <SearchPage
-          search={title}
+          searchText={title}
           searchPage
+          category={category}
           pickedImage={pickedImage}
         /> : null}
       </Row>

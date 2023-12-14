@@ -12,7 +12,7 @@ const AccountPage = () => {
 
   return (
     <Container>
-      <Row className={isDarkMode ? appStyle.BackgroundTestContrast : appStyle.BackgroundRedContrast}>
+      <Row className={`${isDarkMode ? appStyle.BackgroundContainerTest : appStyle.BackgroundContainerSmallRed}`}>
         <Col>
           <h5>Name: {user.name}</h5>
           <p>Login expires: {expire}</p>
@@ -20,7 +20,7 @@ const AccountPage = () => {
           {console.log(expire)}
         </Col>
       </Row>
-      <Row className={isDarkMode ? appStyle.BackgroundTestContrast : appStyle.BackgroundRedContrast}>
+      <Row className={`${isDarkMode ? appStyle.BackgroundContainerTest : appStyle.BackgroundContainerSmallRed}`}>
         <Col xl={12}>
           <p>Theme</p>
         </Col>

@@ -1,14 +1,13 @@
 import React, { useContext, useEffect, useState, useRef  } from 'react'
-import Row from 'react-bootstrap/Row';
-import Container from 'react-bootstrap/Container';
-import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row'
+import Container from 'react-bootstrap/Container'
+import Col from 'react-bootstrap/Col'
 import AuthContext from '../contexts/AuthContext'
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav'
 import appStyle from '../styles/App.module.css'
 import style from '../styles/Header.module.css'
-import { useLocation } from 'react-router-dom';
-import { useTheme } from '../utils/ThemeSelection';
+import { useLocation } from 'react-router-dom'
+import { useTheme } from '../utils/ThemeSelection'
 
 const NavBarComponent = () => {
 
@@ -49,28 +48,11 @@ const NavBarComponent = () => {
 
   }, [location, navbarOpen])
 
-  // show the buttons and links for sign in user
-  const signedIn = (
-    <Row>
-      <Col>
-        <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/account/' ? style.Active : null)}`} href="/account/">Account</Nav.Link>
-      </Col>
-    </Row>
-  )
-  
-  // Show the buttons and links for none signed in user
-  const notSignedIn = (
-    <Row>
-      <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/' ? style.Active : null)}`}  href="/">Sign in</Nav.Link>
-      <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/register/' ? style.Active : null)}`}  href="/register/">Sign up</Nav.Link>
-    </Row>
-  )
-
   return (
     <Container>
       {user ? (
-          <p>User</p>
-          ) : <p>No User</p>
+          <p>DEVMODE: User</p>
+          ) : <p>DEVMODE: No User</p>
       }
       <Row
         className={
@@ -88,6 +70,9 @@ const NavBarComponent = () => {
             </Col>
             <Col xs={3}>
               <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/lists/' ? style.Active : null)}`} href="/lists/"><i className="fa-regular fa-rectangle-list"></i><p>List</p></Nav.Link>
+            </Col>
+            <Col xs={3}>
+              <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/lists/' ? style.Active : null)}`} href="/test/"><i className="fa-regular fa-rectangle-list"></i><p>DEV</p></Nav.Link>
             </Col>
             </>
           ) : null
