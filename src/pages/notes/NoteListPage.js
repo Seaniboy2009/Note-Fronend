@@ -17,6 +17,7 @@ const NoteListPage = () => {
 
     const [myNotes, setMyNotes] = useState({ results: []})
     const [notes, setNotes] = useState({ results: []})
+    const [viewSelection, setViewSelection] = useState('All')
     const [hasLoaded, setHasLoaded] = useState(false)
     const [errors, setErrors] = useState({})
     let {user} = useContext(AuthContext)
@@ -75,20 +76,39 @@ const NoteListPage = () => {
         clearTimeout(timer)
       }
 
-    }, [user, navigate])
+    }, [user, navigate, viewSelection])
+
+    const handleChangeSelection = (event) => {
+      if (event.target.name === 'Other') {
+        console.log('Other')
+        setViewSelection('Other')
+      } else if (event.target.name === 'Movie') {
+        console.log('Movie')
+        setViewSelection('Movie')
+      } else if (event.target.name === 'Game') {
+        console.log('Game')
+        setViewSelection('Game')
+      } else if (event.target.name === 'All') {
+        console.log('All')
+        setViewSelection('All')
+      }
+    }
 
   return (
     <Container fluid className={`${appStyle.Container}`}>
       <Container className={`${appStyle.Container}`}>
         <Row>
           <Col>
-            <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}>Movies</button>
+            <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeSelection} name='All'>All</button>
           </Col>
           <Col>
-            <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}>Games</button>
+            <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeSelection} name='Movie'>Movies</button>
           </Col>
           <Col>
-            <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}>Other</button>
+            <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeSelection} name='Game'>Games</button>
+          </Col>
+          <Col>
+            <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeSelection} name='Other'>Other</button>
           </Col>
         </Row>
       </Container>
@@ -103,20 +123,32 @@ const NoteListPage = () => {
                 </Link>
               </Col>
             ) : null}
+            {/* <Row>
+              <InfiniteScroll
+                      dataLength={myNotes.results.length}
+                      next={() => fetchMoreData(myNotes, setMyNotes)}
+                      hasMore={!!myNotes.next}
+                      loader={<Loader spinner text='Loading, please wait' />}
+                      >
+                      {myNotes?.results?.map((note, index) => (
+                        <NoteItem key={index} {...note} />
+                      ))}
+              </InfiniteScroll>
+            </Row> */}
             <Row>
-            {/* {myNotes?.results?.map((note, index) => (
-              <NoteItem key={index} {...note} />
-            ))} */}
-            <InfiniteScroll
-                    dataLength={myNotes.results.length}
-                    next={() => fetchMoreData(myNotes, setMyNotes)}
-                    hasMore={!!myNotes.next}
-                    loader={<Loader spinner text='Loading, please wait' />}
-                    >
-                    {myNotes?.results?.map((note, index) => (
-                      <NoteItem key={index} {...note} />
-                    ))}
-            </InfiniteScroll>
+              <InfiniteScroll
+                      dataLength={myNotes.results.length}
+                      next={() => fetchMoreData(myNotes, setMyNotes)}
+                      hasMore={!!myNotes.next}
+                      loader={<Loader spinner text='Loading, please wait' />}
+                      >
+                      {myNotes?.results?.map((note, index) => (
+                        <>
+                          {/* {viewSelection === note.category ? (<NoteItem key={index} {...note} />) : null} */}
+                          {viewSelection === 'All' || viewSelection === note.category ? (<NoteItem key={index} {...note} />) : null}
+                        </>
+                      ))}
+              </InfiniteScroll>
             </Row>
           <Row><h5>All notes</h5></Row>
           {notes?.results?.map((note, index) => (

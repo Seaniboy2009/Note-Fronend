@@ -211,7 +211,8 @@ const NoteItem = ( props ) => {
         <Col xs={5}>
           {image_url ? (<img src={image_url} className={style.ImageList} alt='note image'/>) : (<img src={image} className={style.ImageList} alt='note image'/>)}
         </Col>
-        <Col xs={5}>{title}</Col>
+        <Col fluid>Title: {title}</Col>
+
         <Col xs={2}>
           {is_private ? <i className={`fa-solid fa-lock ${style.Private}`}></i> : null}
           {toggle ? <i className={`fa-solid fa-eye ${style.Watched}`}></i> : null}

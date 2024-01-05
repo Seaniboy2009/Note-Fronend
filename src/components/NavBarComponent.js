@@ -66,13 +66,19 @@ const NavBarComponent = () => {
         {user ? (
             <>
             <Col xs={3}>
-              <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/notes/' ? style.Active : null)}`} href="/notes/"><i className="fa-solid fa-clipboard"></i><p>Notes</p></Nav.Link>
+              <Nav.Link 
+              className={`
+              ${isDarkMode ? appStyle.TextTest : appStyle.TextRed} 
+              ${(loc == '/notes/' ? style.Active : null)}`}
+              href="/notes/">
+                <i className="fa-solid fa-clipboard"/><p>Notes</p>
+              </Nav.Link>
             </Col>
             <Col xs={3}>
               <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/lists/' ? style.Active : null)}`} href="/lists/"><i className="fa-regular fa-rectangle-list"></i><p>List</p></Nav.Link>
             </Col>
             <Col xs={3}>
-              <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/lists/' ? style.Active : null)}`} href="/test/"><i className="fa-regular fa-rectangle-list"></i><p>DEV</p></Nav.Link>
+              <Nav.Link className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed} ${(loc == '/test/' ? style.Active : null)}`} href="/test/"><i className="fa-regular fa-rectangle-list"></i><p>DEV</p></Nav.Link>
             </Col>
             </>
           ) : null

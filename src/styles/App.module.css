@@ -176,7 +176,7 @@
 }
 
 /* Small screen */
-@media screen and (max-width: 413px) {
+@media screen and (max-width: 1024px) {
 
     .Main {
         padding-top: 10px;

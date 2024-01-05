@@ -8,6 +8,7 @@
     object-fit: cover;
     width: 60%;
     min-height: 120px;
+    padding: 5px 0;
 }
 
 .NoteRed, .NoteTest {
@@ -64,10 +65,10 @@
 /* Large screens */
 @media  screen and (min-width: 768px) {
 
-    .ImageDetail {
+    /* .ImageDetail {
         width: 70%;
         border-radius: 10%;
-    }
+    } */
 
     .NoteRed, .NoteTest {
         margin-bottom: 12px;
@@ -77,7 +78,7 @@
 }
 
 /* Small screens */
-@media  screen and (max-width: 413px) {
+@media  screen and (max-width: 1024px) {
     .Text, .TextDetail {
         font-size: 60%;
     }
