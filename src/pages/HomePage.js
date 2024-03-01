@@ -59,10 +59,10 @@ const HomePage = () => {
   return (
     <Container className={`${isDarkMode ? appStyle.BackgroundContainerTest : appStyle.BackgroundContainerSmallRed}`}>
         {loaded ? (
-            <Container >
+            <Container>
               {user ? (
               <>
-                <Row>
+                <Row auto>
                   <Col><h4>Welcome {user.name}</h4></Col>
                 </Row>
                 <Row>

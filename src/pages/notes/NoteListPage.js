@@ -17,12 +17,13 @@ const NoteListPage = () => {
 
     const [myNotes, setMyNotes] = useState({ results: []})
     const [notes, setNotes] = useState({ results: []})
-    const [viewSelection, setViewSelection] = useState('All')
+    const [viewSelection, setViewSelection] = useState('Movie') // set to movies to show all movies on page load
     const [hasLoaded, setHasLoaded] = useState(false)
     const [errors, setErrors] = useState({})
     let {user} = useContext(AuthContext)
     const navigate = useNavigate()
     const {isDarkMode} = useTheme()
+    const [gridLayout, setGridLayout] = useState(false)
   
     useEffect(() => {
 
@@ -45,29 +46,29 @@ const NoteListPage = () => {
         }
       }
 
-      const getNotes = async () => {
-        try {
-          const {data} = await axiosInstance.get('/api/notes/')
-          const filteredData = data.results.filter(item => item.owner !== user.name);
-          setNotes({ results: filteredData });
-          setHasLoaded(true)
-          console.log('Get other notes data:', filteredData)
-        } catch (error) {
-          const access = localStorage.getItem('access_token')
-          if (error.response?.status === 401 && access) {
-            window.location.reload()
-          } else if (!access) {
-            navigate('/')
-          } else {
-            console.log('Other error')
-          }
-          setErrors(error)
-        }
-      }
+      // const getNotes = async () => {
+      //   try {
+      //     const {data} = await axiosInstance.get('/api/notes/')
+      //     const filteredData = data.results.filter(item => item.owner !== user.name);
+      //     setNotes({ results: filteredData });
+      //     // setHasLoaded(true)
+      //     console.log('Get other notes data:', filteredData)
+      //   } catch (error) {
+      //     const access = localStorage.getItem('access_token')
+      //     if (error.response?.status === 401 && access) {
+      //       window.location.reload()
+      //     } else if (!access) {
+      //       navigate('/')
+      //     } else {
+      //       console.log('Other error')
+      //     }
+      //     setErrors(error)
+      //   }
+      // }
       
       const timer = setTimeout(() => {
         getMyNotes()
-        getNotes()
+        // getNotes()
       }, 1000)
 
       setHasLoaded(false)
@@ -77,6 +78,11 @@ const NoteListPage = () => {
       }
 
     }, [user, navigate, viewSelection])
+
+    const handleChangeLayout = () => {
+      setGridLayout(!gridLayout)
+      console.log(gridLayout)
+    }
 
     const handleChangeSelection = (event) => {
       if (event.target.name === 'Other') {
@@ -96,60 +102,60 @@ const NoteListPage = () => {
 
   return (
     <Container fluid className={`${appStyle.Container}`}>
-      <Container className={`${appStyle.Container}`}>
-        <Row>
-          <Col>
-            <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeSelection} name='All'>All</button>
-          </Col>
-          <Col>
-            <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeSelection} name='Movie'>Movies</button>
-          </Col>
-          <Col>
-            <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeSelection} name='Game'>Games</button>
-          </Col>
-          <Col>
-            <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeSelection} name='Other'>Other</button>
-          </Col>
-        </Row>
-      </Container>
       <Container className={`text-center`}>
       {hasLoaded ? (
         <Container>
-          <Row><h5>My notes</h5></Row>
-            {hasLoaded ? (
-              <Col xs={5}> 
-                <Link to={'note/create'}>
-                  <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonCreate}><i className="fa-sharp fa-solid fa-plus" /></button>
-                </Link>
-              </Col>
-            ) : null}
+          <Row>
+            <Col xs lg="10"><h4>My notes</h4></Col>
+            <Col xs lg="2">
+            <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeLayout}><i className="fa-solid fa-border-all"></i></button>
+            </Col>
+          </Row>
+          <Container className={`${appStyle.Container}`}>
             {/* <Row>
-              <InfiniteScroll
-                      dataLength={myNotes.results.length}
-                      next={() => fetchMoreData(myNotes, setMyNotes)}
-                      hasMore={!!myNotes.next}
-                      loader={<Loader spinner text='Loading, please wait' />}
-                      >
-                      {myNotes?.results?.map((note, index) => (
-                        <NoteItem key={index} {...note} />
-                      ))}
-              </InfiniteScroll>
+              <Col xs lg="2">
+                <bold>Filter</bold>
+              </Col>
+              <Col xs lg="2">
+                <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeSelection} name='Movie'>Movies</button>
+              </Col>
+              <Col xs lg="2">
+                <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeSelection} name='Game'>Games</button>
+              </Col>
+              <Col xs lg="2">
+                <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeSelection} name='Other'>Other</button>
+              </Col>
+              <Col xs lg="2">
+                <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeSelection} name='All'>All</button>
+              </Col>
             </Row> */}
-            <Row>
-              <InfiniteScroll
-                      dataLength={myNotes.results.length}
-                      next={() => fetchMoreData(myNotes, setMyNotes)}
-                      hasMore={!!myNotes.next}
-                      loader={<Loader spinner text='Loading, please wait' />}
-                      >
-                      {myNotes?.results?.map((note, index) => (
-                        <>
-                          {/* {viewSelection === note.category ? (<NoteItem key={index} {...note} />) : null} */}
-                          {viewSelection === 'All' || viewSelection === note.category ? (<NoteItem key={index} {...note} />) : null}
-                        </>
-                      ))}
-              </InfiniteScroll>
-            </Row>
+          </Container>
+          <Row>
+            <Col xs={5}> 
+              <Link to={'note/create'}>
+                <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonCreate}><i className="fa-sharp fa-solid fa-plus" /></button>
+              </Link>
+            </Col>
+          </Row>
+
+            <InfiniteScroll
+              dataLength={myNotes.results.length}
+              next={() => fetchMoreData(myNotes, setMyNotes)}
+              hasMore={!!myNotes.next}
+              loader={<Loader spinner text='Loading, please wait' />}
+              >
+              {myNotes?.results?.map((note, index) => (
+                <>
+                  {/* 
+                    this code is taking the view selection and if its all it will show all the notes
+                    or if the view selection is the same as the current note category then show the note
+                  */}
+                  {/* {viewSelection === 'All' || viewSelection === note.category ? (<NoteItem key={index} {...note} grid={gridLayout}/>) : null} */}
+                  <NoteItem key={index} {...note} grid={gridLayout}/>
+                </>
+              ))}
+            </InfiniteScroll>
+
           <Row><h5>All notes</h5></Row>
           {notes?.results?.map((note, index) => (
             <Row key={index}>

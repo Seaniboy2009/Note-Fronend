@@ -24,6 +24,7 @@ const NoteItem = ( props ) => {
     is_private,
     toggle,
     category,
+    grid,
   } = props
 
   let {user} = useContext(AuthContext)
@@ -206,34 +207,38 @@ const NoteItem = ( props ) => {
   )
 // layout for the notes list page
   const noteListPage = (
-    <Link to={`note/${id}`} className={style.Link}>
+    grid ? (
+      <Link to={`note/${id}`} className={style.Link}>
+          {image_url ? (<img src={image_url} className={style.ImageGrid} alt='note image'/>) : (<img src={image} className={style.ImageGrid} alt='note image'/>)}
+      </Link>
+    ) : (
+      <Link to={`note/${id}`} className={style.Link}>
       <Row className={isDarkMode ? style.NoteTest : style.NoteRed}>
         <Col xs={5}>
           {image_url ? (<img src={image_url} className={style.ImageList} alt='note image'/>) : (<img src={image} className={style.ImageList} alt='note image'/>)}
         </Col>
         <Col fluid>Title: {title}</Col>
-
         <Col xs={2}>
           {is_private ? <i className={`fa-solid fa-lock ${style.Private}`}></i> : null}
           {toggle ? <i className={`fa-solid fa-eye ${style.Watched}`}></i> : null}
         </Col>
       </Row>
     </Link>
+    )
   )
 
   return (
-    <Container >
-      {/* check if this is the detail page or the list page and show the correct layout */}
-      {detailPage ? (
+      detailPage ? (
         <>
-          {noteDetailPage}
+          <Container>
+            {noteDetailPage}
+          </Container>
         </>
       ) : (
         <>
           {noteListPage}
         </>
-      )}
-    </Container>
+      )
   )
 }
 

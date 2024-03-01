@@ -11,6 +11,18 @@
     padding: 5px 0;
 }
 
+.ImageGrid {
+    object-fit: contain;
+    width: 30%;
+    min-height: 150px;
+    padding: 5px 5px;
+    max-height: 160px;
+}
+
+.ImageGrid:hover {
+    border: 1px solid #13099d;
+}
+
 .NoteRed, .NoteTest {
     margin-bottom: 12px;
     font-size: 60%;
