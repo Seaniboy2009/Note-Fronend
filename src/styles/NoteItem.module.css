@@ -77,15 +77,12 @@
 /* Large screens */
 @media  screen and (min-width: 768px) {
 
-    /* .ImageDetail {
-        width: 70%;
-        border-radius: 10%;
-    } */
-
     .NoteRed, .NoteTest {
         margin-bottom: 12px;
         font-size: 100%;
         overflow-wrap: break-word;
+        width: 55%;
+        display: inline-flex;
     }
 }
 
