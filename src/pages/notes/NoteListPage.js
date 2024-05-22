@@ -42,7 +42,7 @@ const NoteListPage = () => {
         } else {
           console.log("Other error");
         }
-        setErrors(error);
+        // setErrors(error);
       }
     };
 
