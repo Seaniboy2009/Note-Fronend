@@ -18,14 +18,14 @@ const SignInForm = () => {
       {!user ? (
         <form onSubmit={handleLogIn}>
           <Row>
-            <Col className={"text-left"}>
-              <h3>Log in</h3>
+            <Col>
+              <h3>Welcome</h3>
             </Col>
           </Row>
           <Row>
             <Col>{signInErrors != null ? <p>{signInErrors}</p> : null}</Col>
           </Row>
-          <Row className={"text-left"} s>
+          <Row style={{ paddingBottom: "10px" }}>
             <Col>
               <p>Username</p>
               <input
@@ -39,7 +39,7 @@ const SignInForm = () => {
               />
             </Col>
           </Row>
-          <Row className={"text-left"}>
+          <Row>
             <Col>
               <p>Password</p>
               <input
@@ -53,24 +53,35 @@ const SignInForm = () => {
               />
             </Col>
           </Row>
-          <Row className={"text-left"}>
-            <Col xs={8}>
-              <Link to={"/register/"}>Create new accout</Link>
-            </Col>
-            <Col xs={4}>
+          <br />
+          <Row>
+            <Col>
               <button
                 className={`${
                   isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
                 }`}
                 type="submit"
               >
-                Login
+                Log in
+              </button>
+            </Col>
+          </Row>
+          <br />
+          <Row style={{ paddingBottom: "10px" }}>
+            <Col>
+              <button
+                className={`${
+                  isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
+                }`}
+                type="submit"
+              >
+                <Link to={"/register/"}>Create new accout</Link>
               </button>
             </Col>
           </Row>
         </form>
       ) : (
-        <Row>
+        <Row style={{ paddingBottom: "10px" }}>
           <Col>
             <button
               className={`${

@@ -67,12 +67,12 @@ const HomePage = () => {
         <Container>
           {user ? (
             <>
-              <Row auto>
+              <Row style={{ paddingBottom: "20px" }}>
                 <Col>
-                  <h4>Welcome {user.name}</h4>
+                  <h4>Welcome</h4>
                 </Col>
               </Row>
-              <Row>
+              <Row style={{ paddingBottom: "10px" }}>
                 <Col>
                   <Link to={"notes/"}>
                     <button
@@ -80,7 +80,7 @@ const HomePage = () => {
                         isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
                       } ${appStyle.ButtonLarge}`}
                     >
-                      Notes
+                      Your notes
                     </button>
                   </Link>
                 </Col>
@@ -93,11 +93,12 @@ const HomePage = () => {
                         isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
                       } ${appStyle.ButtonLarge}`}
                     >
-                      Lists
+                      Your lists
                     </button>
                   </Link>
                 </Col>
               </Row>
+              <br />
             </>
           ) : null}
           {<SignInForm />}

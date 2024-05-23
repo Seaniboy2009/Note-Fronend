@@ -82,7 +82,7 @@ const NoteListPage = () => {
       <Container className={`text-center`}>
         {hasLoaded ? (
           <Container>
-            <Row>
+            {/* <Row>
               <Col xs lg="10">
                 <h4>My notes</h4>
               </Col>
@@ -96,7 +96,7 @@ const NoteListPage = () => {
                   <i className="fa-solid fa-border-all"></i>
                 </button>
               </Col>
-            </Row>
+            </Row> */}
             <Container className={`${appStyle.Container}`}>
               {/* <Row>
               <Col xs lg="2">
