@@ -77,17 +77,6 @@
 }
 
 /* Large screens */
-<<<<<<< Updated upstream
-@media  screen and (min-width: 768px) {
-
-    .NoteRed, .NoteTest {
-        margin-bottom: 12px;
-        font-size: 100%;
-        overflow-wrap: break-word;
-        width: 55%;
-        display: inline-flex;
-    }
-=======
 @media screen and (min-width: 768px) {
   .NoteRed,
   .NoteTest {
@@ -97,7 +86,6 @@
     width: 55%;
     display: inline-flex;
   }
->>>>>>> Stashed changes
 }
 
 /* Small screens */
