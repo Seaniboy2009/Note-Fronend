@@ -4,7 +4,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import appStyle from "../styles/App.module.css";
 import AuthContext from "../contexts/AuthContext";
-import { useTheme } from "../utils/ThemeSelection";
+import { useTheme } from "../contexts/ThemeSelection";
 
 const SignInForm = () => {
   let { handleLogIn } = useContext(AuthContext);

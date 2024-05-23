@@ -9,7 +9,7 @@ import { axiosInstance } from "../api/axiosDefaults";
 
 import SignInForm from "./SignInPage";
 import Loader from "../components/Loader";
-import { useTheme } from "../utils/ThemeSelection";
+import { useTheme } from "../contexts/ThemeSelection";
 
 const HomePage = () => {
   let { user } = useContext(AuthContext);

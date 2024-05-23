@@ -1,94 +1,97 @@
 .ImageDetail {
-    object-fit: cover;
-    width: 100%;
-    min-height: 120px;
+  object-fit: cover;
+  width: 100%;
+  min-height: 120px;
 }
 
 .ImageList {
-    object-fit: cover;
-    width: 60%;
-    min-height: 120px;
-    padding: 5px 0;
+  object-fit: cover;
+  width: 60%;
+  min-height: 120px;
+  padding: 5px 0;
 }
 
 .ImageGrid {
-    object-fit: contain;
-    width: 30%;
-    min-height: 150px;
-    padding: 5px 5px;
-    max-height: 160px;
+  object-fit: contain;
+  width: 30%;
+  min-height: 150px;
+  padding: 5px 5px;
+  max-height: 160px;
 }
 
 .ImageGrid:hover {
-    border: 1px solid #13099d;
+  border: 1px solid #13099d;
 }
 
-.NoteRed, .NoteTest {
-    margin-bottom: 12px;
-    font-size: 60%;
-    overflow-wrap: break-word;
+.NoteRed,
+.NoteTest {
+  margin-bottom: 12px;
+  font-size: 100%;
+  overflow-wrap: break-word;
+  width: 100%;
+  display: inline-flex;
 }
 
 .Private {
-    position: absolute;
-    right: 15%;
+  position: absolute;
+  right: 15%;
 }
 
 .Watched {
-    position: absolute;
-    right: 13%;
-    top: 15%;
+  position: absolute;
+  right: 13%;
+  top: 15%;
 }
 
 /* ************************************THEME************************************* */
 
 /* Red */
 .NoteDetailsRed {
-    border: 1px solid #410004;
-    text-align: left;
+  border: 1px solid #410004;
+  text-align: left;
 }
 
 .NoteRed {
-    color: #9d0913;
-    background-color: #240000;
-    border: 1px solid #410004;
-    border-radius: 5px;
+  color: #9d0913;
+  background-color: #240000;
+  border: 1px solid #410004;
+  border-radius: 5px;
 }
 
 .NoteInputRed {
-    background-color: #240000;
-    color: #9d0913;
-    border: 1px solid #410004;
+  background-color: #240000;
+  color: #9d0913;
+  border: 1px solid #410004;
 }
 
 /* Test */
 .NoteDetailsTest {
-    border: 1px solid #13099d;
-
+  border: 1px solid #13099d;
 }
 
 .NoteTest {
-    color: #000000;
-    background-color: #e7e7e7;
-    border: 1px solid #000000;
-    border-radius: 5px;
+  color: #000000;
+  background-color: #e7e7e7;
+  border: 1px solid #000000;
+  border-radius: 5px;
 }
 
 /* Large screens */
-@media  screen and (min-width: 768px) {
-
-    .NoteRed, .NoteTest {
-        margin-bottom: 12px;
-        font-size: 100%;
-        overflow-wrap: break-word;
-        width: 55%;
-        display: inline-flex;
-    }
+@media screen and (min-width: 768px) {
+  .NoteRed,
+  .NoteTest {
+    margin-bottom: 12px;
+    font-size: 100%;
+    overflow-wrap: break-word;
+    width: 55%;
+    display: inline-flex;
+  }
 }
 
 /* Small screens */
-@media  screen and (max-width: 1024px) {
-    .Text, .TextDetail {
-        font-size: 60%;
-    }
+@media screen and (max-width: 1024px) {
+  .Text,
+  .TextDetail {
+    font-size: 60%;
+  }
 }
