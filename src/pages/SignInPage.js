@@ -4,7 +4,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import appStyle from "../styles/App.module.css";
 import AuthContext from "../contexts/AuthContext";
-import { useTheme } from "../utils/ThemeSelection";
+import { useTheme } from "../contexts/ThemeSelection";
 
 const SignInForm = () => {
   let { handleLogIn } = useContext(AuthContext);
@@ -18,14 +18,14 @@ const SignInForm = () => {
       {!user ? (
         <form onSubmit={handleLogIn}>
           <Row>
-            <Col>
-              <h3>Welcome</h3>
+            <Col className={"text-left"}>
+              <h3>Log in</h3>
             </Col>
           </Row>
           <Row>
             <Col>{signInErrors != null ? <p>{signInErrors}</p> : null}</Col>
           </Row>
-          <Row style={{ paddingBottom: "10px" }}>
+          <Row className={"text-left"} s>
             <Col>
               <p>Username</p>
               <input
@@ -39,7 +39,7 @@ const SignInForm = () => {
               />
             </Col>
           </Row>
-          <Row>
+          <Row className={"text-left"}>
             <Col>
               <p>Password</p>
               <input
@@ -53,35 +53,24 @@ const SignInForm = () => {
               />
             </Col>
           </Row>
-          <br />
-          <Row>
-            <Col>
-              <button
-                className={`${
-                  isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
-                }`}
-                type="submit"
-              >
-                Log in
-              </button>
+          <Row className={"text-left"}>
+            <Col xs={8}>
+              <Link to={"/register/"}>Create new accout</Link>
             </Col>
-          </Row>
-          <br />
-          <Row style={{ paddingBottom: "10px" }}>
-            <Col>
+            <Col xs={4}>
               <button
                 className={`${
                   isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
                 }`}
                 type="submit"
               >
-                <Link to={"/register/"}>Create new accout</Link>
+                Login
               </button>
             </Col>
           </Row>
         </form>
       ) : (
-        <Row style={{ paddingBottom: "10px" }}>
+        <Row>
           <Col>
             <button
               className={`${

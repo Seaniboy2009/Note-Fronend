@@ -9,7 +9,7 @@ import { axiosInstance } from "../api/axiosDefaults";
 
 import SignInForm from "./SignInPage";
 import Loader from "../components/Loader";
-import { useTheme } from "../utils/ThemeSelection";
+import { useTheme } from "../contexts/ThemeSelection";
 
 const HomePage = () => {
   let { user } = useContext(AuthContext);
@@ -67,12 +67,12 @@ const HomePage = () => {
         <Container>
           {user ? (
             <>
-              <Row style={{ paddingBottom: "20px" }}>
+              <Row auto>
                 <Col>
-                  <h4>Welcome</h4>
+                  <h4>Welcome {user.name}</h4>
                 </Col>
               </Row>
-              <Row style={{ paddingBottom: "10px" }}>
+              <Row>
                 <Col>
                   <Link to={"notes/"}>
                     <button
@@ -80,7 +80,7 @@ const HomePage = () => {
                         isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
                       } ${appStyle.ButtonLarge}`}
                     >
-                      Your notes
+                      Notes
                     </button>
                   </Link>
                 </Col>
@@ -93,12 +93,11 @@ const HomePage = () => {
                         isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
                       } ${appStyle.ButtonLarge}`}
                     >
-                      Your lists
+                      Lists
                     </button>
                   </Link>
                 </Col>
               </Row>
-              <br />
             </>
           ) : null}
           {<SignInForm />}

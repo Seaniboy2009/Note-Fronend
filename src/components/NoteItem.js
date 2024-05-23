@@ -8,7 +8,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import AuthContext from "../contexts/AuthContext";
 import Form from "react-bootstrap/Form";
-import { useTheme } from "../utils/ThemeSelection";
+import { useTheme } from "../contexts/ThemeSelection";
 
 const NoteItem = (props) => {
   const {
@@ -64,7 +64,7 @@ const NoteItem = (props) => {
     var categoryToCheck = category;
     let result;
 
-    // this will check categoryToCheck and see if its the same as each case and return the oword to use
+    // this will check categoryToCheck and see if its the same as each case and return the word to use
     switch (categoryToCheck) {
       case "Other":
         return "Other";
@@ -110,6 +110,33 @@ const NoteItem = (props) => {
       console.log("edit mode disabled: save to DB");
     }
   };
+
+  const imageContainer = (
+    <Container
+      className={` text-left  ${
+        isDarkMode
+          ? appStyle.BackgroundContainerTest
+          : appStyle.BackgroundContainerRed
+      }`}
+    >
+      <Row style={{ fontWeight: 700, fontfamily: "Gill Sans", fontSize: 25 }}>
+        <Col>Note Image</Col>
+      </Row>
+      <Row>
+        <Col>
+          {image_url ? (
+            <img
+              src={image_url}
+              className={style.ImageDetail}
+              alt="note image"
+            />
+          ) : (
+            <img src={image} className={style.ImageDetail} alt="note image" />
+          )}
+        </Col>
+      </Row>
+    </Container>
+  );
   // all normal text will be conveted to input so the user can then change the note
   const editModeEnabled = (
     <Container
@@ -217,26 +244,52 @@ const NoteItem = (props) => {
           : appStyle.BackgroundContainerRed
       }`}
     >
-      <Row>
-        <p>Title: {title}</p>
+      <Row style={{ fontWeight: 700, fontfamily: "Gill Sans", fontSize: 25 }}>
+        <Col>Note Details</Col>
       </Row>
-      <Row>
-        <p>Category: {category}</p>
+      <Row style={{ fontWeight: 600, fontfamily: "Gill Sans" }}>
+        <Col>
+          <p>Title</p>
+        </Col>
+        <Col>
+          <p>Category</p>
+        </Col>
+        <Col>
+          <p>Private</p>
+        </Col>
       </Row>
-      {/* <Row><p>Details: {details}</p></Row> */}
-      <Row>
-        <p>Private: {is_private ? "Yes" : "No"}</p>
+      <Row style={{ fontWeight: 400, fontfamily: "Gill Sans" }}>
+        <Col>
+          <p>{title}</p>
+        </Col>
+        <Col>
+          <p>{category}</p>
+        </Col>
+        <Col>
+          <p>{is_private ? "Yes" : "No"}</p>
+        </Col>
       </Row>
-      <Row>
-        <p>
-          {checkCategory()}: {toggle ? "Yes" : "No"}
-        </p>
+      <Row style={{ fontWeight: 600, fontfamily: "Gill Sans" }}>
+        <Col>
+          <p>{checkCategory()}</p>
+        </Col>
+        <Col>
+          <p>Created</p>
+        </Col>
+        <Col>
+          <p>Updated</p>
+        </Col>
       </Row>
-      <Row>
-        <p>Created: {created}</p>
-      </Row>
-      <Row>
-        <p>Updated: {updated}</p>
+      <Row style={{ fontWeight: 400, fontfamily: "Gill Sans" }}>
+        <Col>
+          <p>{toggle ? "Yes" : "No"}</p>
+        </Col>
+        <Col>
+          <p>{created}</p>
+        </Col>
+        <Col>
+          <p>{updated}</p>
+        </Col>
       </Row>
     </Container>
   );
@@ -244,7 +297,7 @@ const NoteItem = (props) => {
   const noteDetailPage = (
     <>
       <Row>
-        <Col xs={10}>
+        <Col xs={8}>
           <Link to={"/notes/"}>
             <i className="fa-solid fa-arrow-left" />
             &nbsp;
@@ -255,6 +308,7 @@ const NoteItem = (props) => {
             className={`${
               isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
             } fa-solid fa-pen-to-square`}
+            style={{ minWidth: "11vh" }}
             onClick={toggleEditMode}
           ></button>
         </Col>
@@ -279,19 +333,7 @@ const NoteItem = (props) => {
           </Col>
         </Row>
       )}
-      <Row>
-        <Col>
-          {image_url ? (
-            <img
-              src={image_url}
-              className={style.ImageDetail}
-              alt="note image"
-            />
-          ) : (
-            <img src={image} className={style.ImageDetail} alt="note image" />
-          )}
-        </Col>
-      </Row>
+      {imageContainer}
     </>
   );
   // layout for the notes list page
@@ -306,17 +348,15 @@ const NoteItem = (props) => {
   ) : (
     <Link to={`note/${id}`} className={style.Link}>
       <Row className={isDarkMode ? style.NoteTest : style.NoteRed}>
-        <Col xs={5} style={{ padding: 0 }}>
+        <Col xs={5}>
           {image_url ? (
             <img src={image_url} className={style.ImageList} alt="note image" />
           ) : (
             <img src={image} className={style.ImageList} alt="note image" />
           )}
         </Col>
-        <Col fluid style={{ padding: 0 }}>
-          Title: {title}
-        </Col>
-        <Col xs={2} style={{ padding: 0 }}>
+        <Col fluid>Title: {title}</Col>
+        <Col xs={2}>
           {is_private ? (
             <i className={`fa-solid fa-lock ${style.Private}`}></i>
           ) : null}
