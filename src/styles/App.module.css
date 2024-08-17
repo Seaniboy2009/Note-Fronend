@@ -5,26 +5,8 @@
 /* This is to separe the header and rest of app */
 .Main {
   min-height: 140vh;
-  padding: 90px 0;
+  padding-top: 90px;
 }
-
-/* .Button, .ButtonLink {
-    background-color: #9d0913;
-    color: #100000;
-    border: 2px solid #9d0913;
-    font-size: 100%;
-    margin: 5px;
-} */
-
-/* .Button:hover, .Button:active,.Button:focus, .ButtonLink:hover {
-    background-color: #100000 !important;
-    color: #9d0913 !important;
-    border: 2px solid #9d0913 !important;
-} */
-
-/* .ButtonLarge {
-    width: 50%;
-} */
 
 /*  *********************************THEME************************************ */
 /* ***************************************Dark********************************* */
@@ -33,6 +15,12 @@
 .BodyRed {
   color: #9d0913 !important;
   padding: 0;
+}
+
+.inputRed {
+  color: #9d0913 !important;
+  background-color: #240000 !important;
+  border: 0px;
 }
 
 .BorderRed {
@@ -63,8 +51,13 @@
 
 .BackgroundContainerRed,
 .BackgroundContainerSmallRed {
-  background-color: #160000 !important;
-  border: 1px solid #410004;
+  /* background-color: #160000 !important;
+  border: 1px solid #410004; */
+  text-align: center;
+  margin-top: 12px;
+}
+
+.BackgroundContainer {
   text-align: center;
   margin-top: 12px;
 }
@@ -102,6 +95,20 @@
   color: #410004;
 }
 
+.ButtonListItem {
+  background-color: #240000;
+  color: #9d0913;
+  border: 1px solid #410004;
+  font-size: 85%;
+}
+
+.ButtonLists {
+  background-color: #240000;
+  color: #9d0913;
+  border: 1px solid #410004;
+  font-size: 120%;
+}
+
 /* *********************************Light************************************* */
 
 .TextTest,
@@ -115,6 +122,12 @@
 
 .BorderTestBottom {
   border-bottom: 1px solid #000000;
+}
+
+.inputLight {
+  color: #000000 !important;
+  background-color: #ffffff !important;
+  border: 1px solid #000000 !important;
 }
 
 .BackgroundTest,
@@ -169,10 +182,10 @@
 
 .ButtonCreate {
   position: fixed;
-  height: 50px;
-  width: 50px;
+  height: 60px;
+  width: 60px;
   border-radius: 50%;
-  bottom: 10%;
+  bottom: 12%;
   right: 3%;
   font-size: 80%;
   z-index: 2;
@@ -182,18 +195,31 @@
 }
 
 .ButtonNavBar {
-  height: 52px;
-  width: 35px;
-  background-color: #240000;
-  color: #9d0913;
+  height: 60px;
+  width: 60px;
+  /* background-color: #240000;
+  color: #9d0913; */
   border: none;
   font-size: 200%;
+}
+
+.NavButtons {
+  font-size: 100%;
+  padding: 10px 0;
 }
 
 /* Small screen */
 @media screen and (max-width: 1024px) {
   .Main {
-    padding-top: 10px;
-    padding-bottom: 90px;
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  a,
+  h1,
+  h2 {
+    font-size: 65%;
   }
 }

@@ -1,25 +1,45 @@
 .Dropdown {
-    background-color: #100000;
-    color: #9d0913;
+  background-color: #100000;
+  color: #9d0913;
 }
 
 .ListContainer {
-    border: 1px solid #410004;
-    margin-bottom: 10px;
-    background-color: #240000 !important;
+  border: 1px solid #410004;
+  margin-bottom: 10px;
+  background-color: #240000 !important;
+  line-height: 200%;
+}
+
+.ListItem {
+  padding: 5px;
+  font-weight: bolder;
+  font-size: large;
+}
+
+.ListItemSecondary {
+  padding: 5px;
+  color: #63636373;
+  font-size: medium;
+  text-decoration:line-through
 }
 
 .InputArea {
-    background-color: #240000;
-    color: #9d0913;
-    border: none;
-    text-decoration: none;
-    margin: 2px;
-    resize: none;
+  background-color: #240000;
+  color: #9d0913;
+  border: none;
+  text-decoration: none;
+  margin: 2px;
+  resize: none;
 }
 
 .Modal {
-    background-color: #100000;
-    color: #9d0913;
-    border: 1px solid #9d0913;
+  background-color: #100000;
+  color: #9d0913;
+  border: 1px solid #9d0913;
+}
+
+@media screen and (max-width: 600px) {
+  .ListContainer {
+    font-size: 110%;
+  }
 }

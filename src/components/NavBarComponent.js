@@ -2,20 +2,21 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
-import AuthContext from "../contexts/AuthContext";
 import Nav from "react-bootstrap/Nav";
+import AuthContext from "../contexts/AuthContext";
 import appStyle from "../styles/App.module.css";
+import { Link, NavLink } from "react-router-dom";
 import style from "../styles/Header.module.css";
 import { useLocation } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeSelection";
 
 const NavBarComponent = () => {
   const location = useLocation();
-  const [loc, setLoc] = useState();
   const navbarRef = useRef(null);
 
-  let { user } = useContext(AuthContext);
-  const { isDarkMode, toggleDarkMode } = useTheme();
+  const { user } = useContext(AuthContext);
+  const { activeTheme, theme } = useTheme();
+  const linkStyle = { color: theme[activeTheme]?.color };
   const [navbarOpen, setNavbarOpen] = useState(false);
 
   const toggleNavbar = () => {
@@ -28,7 +29,6 @@ const NavBarComponent = () => {
   };
 
   useEffect(() => {
-    setLoc(location.pathname);
     console.log("NavbarOpen state:", navbarOpen);
     const handleDocumentClick = (event) => {
       if (
@@ -53,142 +53,238 @@ const NavBarComponent = () => {
   const sideBar = (
     <>
       <Container
-        ref={navbarRef}
-        className={`${style.NavbarPopout} ${navbarOpen ? style.open : ""} ${
-          isDarkMode ? appStyle.HeaderThemeTest : appStyle.HeaderThemeRed
-        }`}
+        style={{
+          backgroundColor: theme[activeTheme].pannelColor,
+          border: theme[activeTheme].border,
+        }}
+        className={appStyle.BackgroundContainer}
       >
         <Row>
           <Col>
-            <Nav.Link
-              className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed}`}
-              href="/"
+            <Link
+              style={linkStyle}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              // className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed}`}
             >
               Menu
-            </Nav.Link>
+            </Link>
           </Col>
         </Row>
         <Row>
           <Col>
-            <Nav.Link
-              className={`${
-                isDarkMode ? appStyle.TextTest : appStyle.TextRed
-              } ${loc == "/" ? style.Active : null}`}
+            <Link
+              to={"/"}
+              style={linkStyle}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
               href="/"
             >
               <i className="fa-solid fa-house"></i> Home
-            </Nav.Link>
+            </Link>
           </Col>
         </Row>
         <Row>
           <Col>
-            <Nav.Link
-              className={`${
-                isDarkMode ? appStyle.TextTest : appStyle.TextRed
-              } ${loc == "/account/" ? style.Active : null}`}
-              href="/account/"
+            <Link
+              to={"/account/"}
+              style={linkStyle}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              href="/account"
             >
               <i className="fa-solid fa-user"></i> Account
-            </Nav.Link>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Nav.Link
-              className={`${
-                isDarkMode ? appStyle.TextTest : appStyle.TextRed
-              } ${loc == "/notes/" ? style.Active : null}`}
-              href="/notes/"
-            >
-              <i className="fa-solid fa-gear"></i> Notes
-            </Nav.Link>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Nav.Link
-              className={`${
-                isDarkMode ? appStyle.TextTest : appStyle.TextRed
-              } ${loc == "/settings/" ? style.Active : null}`}
-              href="/"
-            >
-              <i className="fa-solid fa-gear"></i> Settings
-            </Nav.Link>
+            </Link>
           </Col>
         </Row>
       </Container>
-      <Row
-        className={`${style.NavbarPopout} ${navbarOpen ? style.back : ""} ${
-          appStyle.HeaderThemeTest
-        }`}
-      ></Row>
     </>
   );
 
-  return (
-    <Container>
-      <Row>
-        {user ? <p>DEVMODE: Logged in</p> : <p>DEVMODE: Not logged in</p>}
-      </Row>
-
-      <Row
-        className={`
-          ${style.Header}
-          ${style.FixedTop}
-          ${isDarkMode ? appStyle.HeaderThemeTest : appStyle.HeaderThemeRed}
-          `}
-      >
-        <Col>
-          <button
-            className={`${appStyle.ButtonNavBar} ${
-              isDarkMode ? appStyle.ButtonTest : appStyle.ButtonNavBar
-            }`}
-            onClick={toggleNavbar}
+  const newNavBar = (
+    <Container
+      fluid
+      className={`${style.FixedNavbar}`}
+      style={{
+        backgroundColor: theme[activeTheme].pannelColor,
+        color: theme[activeTheme].color,
+      }}
+    >
+      <Row className="justify-content-md-center">
+        <Col xs="auto">
+          <Nav.Link
+            to="/"
+            style={linkStyle}
+            as={NavLink}
+            className={appStyle.NavButtons}
           >
-            <i class="fa-solid fa-ellipsis-vertical"></i>
-          </button>
+            Home
+          </Nav.Link>
+        </Col>
+        <Col xs="auto">
+          <Nav.Link
+            to={"/notes/"}
+            style={linkStyle}
+            as={NavLink}
+            className={appStyle.NavButtons}
+          >
+            Notes
+          </Nav.Link>
+        </Col>
+        <Col xs="auto">
+          <Nav.Link
+            to={"/lists/"}
+            style={linkStyle}
+            as={NavLink}
+            className={appStyle.NavButtons}
+          >
+            List's
+          </Nav.Link>
         </Col>
         {user ? (
           <>
-            <Col>
+            {/* <Col xs="auto">
               <Nav.Link
-                className={`
-              ${isDarkMode ? appStyle.TextTest : appStyle.TextRed} 
-              ${loc == "/notes/" ? style.Active : null}`}
-                href="/notes/"
+                to="/sign-out"
+                style={linkStyle}
+                as={NavLink}
+                className={appStyle.NavButtons}
               >
-                <i className="fa-solid fa-clipboard" />
-                <p>Notes</p>
+                Sign Out
               </Nav.Link>
-            </Col>
-            <Col>
+            </Col> */}
+            <Col xs="auto">
               <Nav.Link
-                className={`${
-                  isDarkMode ? appStyle.TextTest : appStyle.TextRed
-                } ${loc == "/lists/" ? style.Active : null}`}
-                href="/lists/"
+                to="/account"
+                style={linkStyle}
+                as={NavLink}
+                className={appStyle.NavButtons}
               >
-                <i className="fa-regular fa-rectangle-list"></i>
-                <p>List</p>
-              </Nav.Link>
-            </Col>
-            <Col>
-              <Nav.Link
-                className={`${
-                  isDarkMode ? appStyle.TextTest : appStyle.TextRed
-                } ${loc == "/test/" ? style.Active : null}`}
-                href="/test/"
-              >
-                <i className="fa-regular fa-rectangle-list"></i>
-                <p>DEV</p>
+                Account
               </Nav.Link>
             </Col>
           </>
-        ) : null}
+        ) : (
+          <>
+            <Col xs="auto">
+              <Nav.Link
+                to="/sign-up"
+                style={linkStyle}
+                as={NavLink}
+                className={appStyle.NavButtons}
+              >
+                Sign Up
+              </Nav.Link>
+            </Col>
+            <Col xs="auto">
+              <Nav.Link
+                to="/sign-in"
+                style={linkStyle}
+                as={NavLink}
+                className={appStyle.NavButtons}
+              >
+                Sign In
+              </Nav.Link>
+            </Col>
+          </>
+        )}
       </Row>
-      {sideBar}
     </Container>
   );
+
+  // const oldNavBar = (
+  //   <Container
+  //     fluid
+  //     //ref={navbarRef}
+  //     className={`
+  //     ${style.NavbarPopout}
+  //     ${navbarOpen ? style.open : ""}
+  //     `}
+  //     style={{
+  //       backgroundColor: theme[activeTheme].pannelColor,
+  //       color: theme[activeTheme].color,
+  //     }}
+  //   >
+  //     <Row>
+  //       <Col>
+  //         {user ? <p>DEVMODE: Logged in</p> : <p>DEVMODE: Not logged in</p>}
+  //       </Col>
+  //     </Row>
+
+  //     <Row
+  //       className={`
+  //       ${style.Header}
+  //       ${style.FixedTop}
+  //       "justify-content-md-center"
+  //       `}
+  //       style={{
+  //         backgroundColor: theme[activeTheme].pannelColor,
+  //         color: theme[activeTheme].color,
+  //         border: theme[activeTheme].border,
+  //       }}
+  //     >
+  //       <Col xs="auto">
+  //         <button
+  //           style={{
+  //             backgroundColor: theme[activeTheme].pannelColor,
+  //             color: theme[activeTheme].color,
+  //             border: theme[activeTheme].border,
+  //           }}
+  //           className={appStyle.ButtonNavBar}
+  //           onClick={toggleNavbar}
+  //         >
+  //           <i class="fa-solid fa-ellipsis-vertical"></i>
+  //         </button>
+  //       </Col>
+  //       {user ? (
+  //         <>
+  //           <Col xs="auto">
+  //             <Link
+  //               to={"/notes/"}
+  //               style={linkStyle}
+  //               // onMouseEnter={() => setIsHovered(true)}
+  //               // onMouseLeave={() => setIsHovered(false)}
+  //               // href="/notes"
+  //               //   className={`
+  //               // ${isDarkMode ? appStyle.TextTest : appStyle.TextRed}
+  //               // ${loc == "/notes/" ? style.Active : null}`}
+  //             >
+  //               <i className="fa-solid fa-clipboard" />
+  //               <p>Notes</p>
+  //             </Link>
+  //           </Col>
+  //           <Col xs="auto">
+  //             <Link
+  //               to={"/lists/"}
+  //               style={linkStyle}
+  //               // onMouseEnter={() => setIsHovered(true)}
+  //               // onMouseLeave={() => setIsHovered(false)}
+  //               // href="/lists"
+  //             >
+  //               <i className="fa-regular fa-rectangle-list"></i>
+  //               <p>List</p>
+  //             </Link>
+  //           </Col>
+  //           <Col xs="auto">
+  //             <Link
+  //               to={"/test/"}
+  //               style={linkStyle}
+  //               // onMouseEnter={() => setIsHovered(true)}
+  //               // onMouseLeave={() => setIsHovered(false)}
+  //               // href="/test"
+  //             >
+  //               <i className="fa-regular fa-rectangle-list"></i>
+  //               <p>DEV</p>
+  //             </Link>
+  //           </Col>
+  //         </>
+  //       ) : null}
+  //     </Row>
+  //     {sideBar}
+  //   </Container>
+  // );
+
+  return <>{newNavBar}</>;
 };
 
 export default NavBarComponent;

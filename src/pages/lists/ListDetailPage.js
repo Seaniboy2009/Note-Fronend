@@ -42,6 +42,7 @@ const ListDetailPage = () => {
       axiosInstance.get(`/api/listitems/?list=${id}`),
     ]);
     setList(list);
+    console.log(items);
     setItems(items);
     setHasLoaded(true);
   };
@@ -124,28 +125,31 @@ const ListDetailPage = () => {
       {hasLoaded ? (
         <>
           <Row>
-            <Col>
+            <Col xs={1}>
               <Link to={"/lists/"}>
                 <i className="fa-solid fa-arrow-left" />
               </Link>
             </Col>
-            <Col xs={7}>
-              <h5>{list.title}</h5>
+            <Col xs={6}>
+              <h5>List: {list.title}</h5>
             </Col>
             <Col xs={2}>
-              <button onClick={handleShow} className={appStyle.Button}>
+              <button onClick={handleShow} className={appStyle.ButtonLists}>
                 <i className="fa-solid fa-trash" />
               </button>
+            </Col>
+            <Col xs={2}>
               <button
                 onClick={toggleEditMode}
-                className={`${appStyle.Button} fa-solid fa-pen-to-square`}
-              ></button>
-              {/* <input className={isDarkMode ? appStyle.TextTest : appStyle.TextRed} type="checkbox" checked={edit} onChange={toggleEditMode} /> */}
+                className={`${appStyle.ButtonLists}`}
+              >
+                <i className=" fa-solid fa-pen-to-square" />
+              </button>
             </Col>
           </Row>
           {edit ? (
             <Row className={style.ListContainer}>
-              <Col>
+              <Col xs={6}>
                 <textarea
                   id="textInput"
                   onChange={handleChange}
@@ -155,15 +159,19 @@ const ListDetailPage = () => {
                   rows="1"
                 ></textarea>
               </Col>
-              <Col xs={3}>
-                <button onClick={handleCreateItem} className={appStyle.Button}>
+              <Col xs={6}>
+                <button
+                  onClick={handleCreateItem}
+                  className={appStyle.ButtonLists}
+                >
                   Add
                 </button>
               </Col>
             </Row>
           ) : null}
           {items?.results?.map((item, index) => (
-            <ListItem getLists={getLists} key={index} {...item} edit={edit} />
+            //<ListItem getLists={getLists} key={index} {...item} edit={edit} />
+            <ListItem getLists={getLists} key={index} item={item} edit={edit} />
           ))}
         </>
       ) : (

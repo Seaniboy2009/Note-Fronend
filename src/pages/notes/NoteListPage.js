@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import NoteItem from "../../components/NoteItem";
 import appStyle from "../../styles/App.module.css";
 import Container from "react-bootstrap/Container";
@@ -12,6 +12,7 @@ import { fetchMoreData, fetchMoreDataURL } from "../../utils/utils";
 import AuthContext from "../../contexts/AuthContext";
 import Loader from "../../components/Loader";
 import { useTheme } from "../../contexts/ThemeSelection";
+import { Button } from "bootstrap";
 
 const NoteListPage = () => {
   const [myNotes, setMyNotes] = useState({ results: [] });
@@ -78,89 +79,58 @@ const NoteListPage = () => {
   };
 
   return (
-    <Container fluid className={`${appStyle.Container}`}>
-      <Container className={`text-center`}>
-        {hasLoaded ? (
-          <Container>
-            {/* <Row>
-              <Col xs lg="10">
-                <h4>My notes</h4>
-              </Col>
-              <Col xs lg="2">
-                <button
-                  className={
-                    isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
-                  }
-                  onClick={handleChangeLayout}
-                >
-                  <i className="fa-solid fa-border-all"></i>
+    <Container fluid className={`text-center`}>
+      {hasLoaded ? (
+        <>
+          <Row>
+            <Col xs={1}>
+              <Link to={"/"}>
+                <i className="fa-solid fa-arrow-left"></i>
+              </Link>
+            </Col>
+            <Col xs={6}>
+              <h4>Your Notes</h4>
+            </Col>
+          </Row>
+          <br />
+          <Row>
+            <Col xs={5}>
+              <Link to={"note/create"}>
+                <button className={appStyle.ButtonCreate}>
+                  <i className="fa-sharp fa-solid fa-plus" />
                 </button>
-              </Col>
-            </Row> */}
-            <Container className={`${appStyle.Container}`}>
-              {/* <Row>
-              <Col xs lg="2">
-                <bold>Filter</bold>
-              </Col>
-              <Col xs lg="2">
-                <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeSelection} name='Movie'>Movies</button>
-              </Col>
-              <Col xs lg="2">
-                <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeSelection} name='Game'>Games</button>
-              </Col>
-              <Col xs lg="2">
-                <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeSelection} name='Other'>Other</button>
-              </Col>
-              <Col xs lg="2">
-                <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeSelection} name='All'>All</button>
-              </Col>
-            </Row> */}
-            </Container>
-            <Row>
-              <Col xs={5}>
-                <Link to={"note/create"}>
-                  <button
-                    className={
-                      isDarkMode ? appStyle.ButtonTest : appStyle.ButtonCreate
-                    }
-                  >
-                    <i className="fa-sharp fa-solid fa-plus" />
-                  </button>
-                </Link>
-              </Col>
-            </Row>
-
-            <InfiniteScroll
-              dataLength={myNotes.results.length}
-              next={() => fetchMoreData(myNotes, setMyNotes)}
-              hasMore={!!myNotes.next}
-              loader={<Loader spinner text="Loading, please wait" />}
-            >
-              {myNotes?.results?.map((note, index) => (
-                <>
-                  {/* 
+              </Link>
+            </Col>
+          </Row>
+          <InfiniteScroll
+            dataLength={myNotes.results.length}
+            next={() => fetchMoreData(myNotes, setMyNotes)}
+            hasMore={!!myNotes.next}
+            loader={<Loader spinner text="Loading, please wait" />}
+          >
+            {myNotes?.results?.map((note, index) => (
+              <>
+                {/* 
                     this code is taking the view selection and if its all it will show all the notes
                     or if the view selection is the same as the current note category then show the note
                   */}
-                  {/* {viewSelection === 'All' || viewSelection === note.category ? (<NoteItem key={index} {...note} grid={gridLayout}/>) : null} */}
-                  <NoteItem key={index} {...note} grid={gridLayout} />
-                </>
-              ))}
-            </InfiniteScroll>
-
-            <Row>
-              <h5>All notes</h5>
-            </Row>
-            {notes?.results?.map((note, index) => (
-              <Row key={index}>
-                {note.is_private ? null : <NoteItem key={index} {...note} />}
-              </Row>
+                {/* {viewSelection === 'All' || viewSelection === note.category ? (<NoteItem key={index} {...note} grid={gridLayout}/>) : null} */}
+                <NoteItem key={index} {...note} grid={gridLayout} />
+              </>
             ))}
-          </Container>
-        ) : (
-          <Loader spinner text="Loading notes, please wait" />
-        )}
-      </Container>
+          </InfiniteScroll>
+          <Row>
+            <h5>All notes</h5>
+          </Row>
+          {notes?.results?.map((note, index) => (
+            <Row key={index}>
+              {note.is_private ? null : <NoteItem key={index} {...note} />}
+            </Row>
+          ))}
+        </>
+      ) : (
+        <Loader spinner text="Loading notes, please wait" />
+      )}
     </Container>
   );
 };

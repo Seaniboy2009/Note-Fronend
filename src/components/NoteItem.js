@@ -28,7 +28,7 @@ const NoteItem = (props) => {
   } = props;
 
   let { user } = useContext(AuthContext);
-  const { isDarkMode } = useTheme();
+  const { isDarkMode, changeTheme, activeTheme, theme } = useTheme();
   const [edit, setEdit] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -62,7 +62,6 @@ const NoteItem = (props) => {
   // Check the category of the note and retun the word to be used for the checked box
   const checkCategory = () => {
     var categoryToCheck = category;
-    let result;
 
     // this will check categoryToCheck and see if its the same as each case and return the word to use
     switch (categoryToCheck) {
@@ -75,9 +74,6 @@ const NoteItem = (props) => {
       default:
         return "Invalid category";
     }
-
-    console.log(result);
-    return result;
   };
   // this will update the current note and will send the title, is private and toggle to be updated by the api
   const handleFormSubmit = async () => {
@@ -113,11 +109,11 @@ const NoteItem = (props) => {
 
   const imageContainer = (
     <Container
-      className={` text-left  ${
-        isDarkMode
-          ? appStyle.BackgroundContainerTest
-          : appStyle.BackgroundContainerRed
-      }`}
+      style={{
+        backgroundColor: theme[activeTheme].pannelColor,
+        border: theme[activeTheme].border,
+      }}
+      className={` text-left  ${appStyle.BackgroundContainer}`}
     >
       <Row style={{ fontWeight: 700, fontfamily: "Gill Sans", fontSize: 25 }}>
         <Col>Note Image</Col>
@@ -140,11 +136,11 @@ const NoteItem = (props) => {
   // all normal text will be conveted to input so the user can then change the note
   const editModeEnabled = (
     <Container
-      className={` text-left ${
-        isDarkMode
-          ? appStyle.BackgroundContainerTest
-          : appStyle.BackgroundContainerRed
-      }`}
+      style={{
+        backgroundColor: theme[activeTheme].pannelColor,
+        border: theme[activeTheme].border,
+      }}
+      className={` text-left  ${appStyle.BackgroundContainer}`}
     >
       <Row>
         <Col>
@@ -238,11 +234,11 @@ const NoteItem = (props) => {
   // normal text to be shown when edit is disabled, cant edit anything
   const editModeDisabled = (
     <Container
-      className={` text-left  ${
-        isDarkMode
-          ? appStyle.BackgroundContainerTest
-          : appStyle.BackgroundContainerRed
-      }`}
+      style={{
+        backgroundColor: theme[activeTheme].pannelColor,
+        border: theme[activeTheme].border,
+      }}
+      className={` text-left  ${appStyle.BackgroundContainer}`}
     >
       <Row style={{ fontWeight: 700, fontfamily: "Gill Sans", fontSize: 25 }}>
         <Col>Note Details</Col>
@@ -347,7 +343,14 @@ const NoteItem = (props) => {
     </Link>
   ) : (
     <Link to={`note/${id}`} className={style.Link}>
-      <Row className={isDarkMode ? style.NoteTest : style.NoteRed}>
+      <Row
+        style={{
+          backgroundColor: theme[activeTheme].pannelColor,
+          color: theme[activeTheme].color,
+          border: theme[activeTheme].border,
+        }}
+        className={style.NoteTest}
+      >
         <Col xs={5}>
           {image_url ? (
             <img src={image_url} className={style.ImageList} alt="note image" />
@@ -357,9 +360,9 @@ const NoteItem = (props) => {
         </Col>
         <Col fluid>Title: {title}</Col>
         <Col xs={2}>
-          {is_private ? (
+          {/* {is_private ? (
             <i className={`fa-solid fa-lock ${style.Private}`}></i>
-          ) : null}
+          ) : null} */}
           {toggle ? (
             <i className={`fa-solid fa-eye ${style.Watched}`}></i>
           ) : null}

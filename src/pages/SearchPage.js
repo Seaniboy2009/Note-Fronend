@@ -13,7 +13,7 @@ import { useTheme } from "../contexts/ThemeSelection";
 const SearchPage = ({
   searchText,
   searchPage,
-  pickedImage,
+  handlePickedImageFromList,
   gameSearch,
   category,
 }) => {
@@ -182,7 +182,9 @@ const SearchPage = ({
                     <Col xs={12}>
                       <button
                         className={appStyle.Button}
-                        onClick={() => pickedImage(data.primaryImage.url)}
+                        onClick={() =>
+                          handlePickedImageFromList(data.primaryImage.url)
+                        }
                         value={data.primaryImage.url}
                       >
                         Use image

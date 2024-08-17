@@ -1,40 +1,40 @@
 .Container {
-    text-align: center;
-    background-color: #240000;
+  text-align: center;
+  background-color: #240000;
 }
 
 .List {
-    background-color: #240000;
-    border: 1px solid #410004;
-    margin: .5% 0;
-    line-height: normal;
-    padding: 0;
-    text-align: left;
+  background-color: #240000;
+  border: 1px solid #410004;
+  margin: 0.5% 0;
+  line-height: normal;
+  padding: 0;
+  text-align: left;
 }
 
 .List:hover {
-    background-color: #410004;
-    border: 1px solid #240000;
+  background-color: #410004;
+  border: 1px solid #240000;
 }
 
 .ListDetails {
-    text-decoration: none;
-    color: #9d0913;
-
+  text-decoration: none;
+  color: #9d0913;
 }
 
-.ListDetails:hover, .List:hover {
-    text-decoration: none;
-    background-color: #410000;
+.ListDetails:hover,
+.List:hover {
+  text-decoration: none;
+  background-color: #410000;
 }
 
 a {
-    text-decoration: none;
-    color: #9d0913;
-    font-size: 140%;
+  text-decoration: none;
+  /* color: #9d0913; */
+  font-size: 140%;
 }
 
 a:hover {
-    text-decoration: none;
-    color: #470307;
+  text-decoration: none;
+  /* color: #470307; */
 }

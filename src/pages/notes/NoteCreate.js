@@ -8,6 +8,7 @@ import Col from "react-bootstrap/Col";
 import { axiosInstance } from "../../api/axiosDefaults";
 import SearchPage from "../SearchPage";
 import { useTheme } from "../../contexts/ThemeSelection";
+import { Button } from "bootstrap";
 
 const NoteCreate = () => {
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ const NoteCreate = () => {
   const [submit, setSubmit] = useState(false);
   const [search, setQueryGlobal] = useState("");
   const [pickImage, setPickImage] = useState(true);
+  const [pickedImageFromList, setPickImageFromList] = useState(false);
   const { isDarkMode } = useTheme();
 
   const createNote = async () => {
@@ -87,14 +89,22 @@ const NoteCreate = () => {
     console.log("Form Data:", formData);
   };
 
-  const pickedImage = (imageUrl) => {
-    console.log("Picked image URL:", imageUrl);
-    setFormData({
-      ...formData,
-      image_url: imageUrl,
-      image: null, // Reset the image field
-    });
-    console.log("Form Data:", formData);
+  const handlePickedImageFromList = (imageUrl) => {
+    console.log("Picked image from list called");
+    console.log("Image URL:", imageUrl);
+    if (pickedImageFromList && !imageUrl) {
+      console.log("Picked image from list is true and no url");
+      setPickImageFromList(false);
+    } else {
+      console.log("Picked image from list is false");
+      setPickImageFromList(true);
+      setFormData({
+        ...formData,
+        image_url: imageUrl,
+        image: null, // Reset the image field
+      });
+      console.log("Form Data:", formData);
+    }
   };
 
   const handlePickImage = () => {
@@ -132,54 +142,79 @@ const NoteCreate = () => {
             : appStyle.BackgroundContainerSmallRed
         }`}
       >
-        <Col xs={6}>
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="title">
-              <h5>Title</h5>
-            </Form.Label>
-            <Form.Control
-              type="text"
-              name="title"
-              id="title"
-              aria-describedby="title"
-              onChange={handleChange}
-            />
-            <br />
-            <Form.Label htmlFor="category">
-              <h5>Category</h5>
-            </Form.Label>
-            <Form.Control
-              as="select"
-              name="category"
-              id="category"
-              aria-describedby="category"
-              onChange={handleChange}
-            >
-              <option value="Other">Other</option>
-              <option value="Game">Game</option>
-              <option value="Movie">Movie</option>
-            </Form.Control>
-            <br />
-            <Form.Label htmlFor="image">
-              <h5>Image</h5>
-            </Form.Label>
-            <Form.Control
-              type="file"
-              name="image"
-              id="image"
-              onChange={handleChangeImage}
-              ref={imageInput}
-            />
-            <br />
-            <Form.Check
-              type="checkbox"
-              name="is_private"
-              id="is_private"
-              label="Set Private?"
-              onChange={handleChecked}
-            />
-          </Form.Group>
-        </Col>
+        <Form.Group>
+          <Row>
+            <Col xs={4}>
+              <Form.Label htmlFor="title">
+                <p>Title</p>
+              </Form.Label>
+            </Col>
+            <Col xs={8}>
+              <Form.Control
+                type="text"
+                name="title"
+                id="title"
+                aria-describedby="title"
+                onChange={handleChange}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={4}>
+              <Form.Label htmlFor="category">
+                <p>Category</p>
+              </Form.Label>
+            </Col>
+            <Col xs={8}>
+              <Form.Control
+                as="select"
+                name="category"
+                id="category"
+                aria-describedby="category"
+                onChange={handleChange}
+              >
+                <option value="Other">Other</option>
+                <option value="Game">Game</option>
+                <option value="Movie">Movie</option>
+              </Form.Control>
+            </Col>
+          </Row>
+          {pickedImageFromList ? (
+            <>
+              <button
+                onClick={handlePickedImageFromList(null)}
+                className={
+                  isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
+                }
+              >
+                Remove image
+              </button>
+            </>
+          ) : null}
+          <Row>
+            <Col xs={4}>
+              <Form.Label htmlFor="image">
+                <p>Image</p>
+              </Form.Label>
+            </Col>
+            <Col xs={8}>
+              <Form.Control
+                type="file"
+                name="image"
+                id="image"
+                onChange={handleChangeImage}
+                ref={imageInput}
+              />
+            </Col>
+          </Row>
+          <Form.Check
+            type="checkbox"
+            name="is_private"
+            id="is_private"
+            label="Set Private?"
+            onChange={handleChecked}
+          />
+        </Form.Group>
       </Row>
       <Row
         className={`${
@@ -201,7 +236,7 @@ const NoteCreate = () => {
             onClick={handlePickImage}
             className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}
           >
-            Recomendations
+            {pickImage ? "Hide Images" : "Show Images"}
           </button>
         </Col>
       </Row>
@@ -212,7 +247,7 @@ const NoteCreate = () => {
             searchText={title}
             searchPage
             category={category}
-            pickedImage={pickedImage}
+            handlePickedImageFromList={handlePickedImageFromList}
           />
         ) : null}
       </Row>

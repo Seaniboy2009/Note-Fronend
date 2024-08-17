@@ -74,7 +74,7 @@ const HomePage = () => {
               </Row>
               <Row style={{ paddingBottom: "10px" }}>
                 <Col>
-                  <Link to={"notes/"}>
+                  <Link to={"/notes"}>
                     <button
                       className={`${
                         isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
@@ -87,7 +87,7 @@ const HomePage = () => {
               </Row>
               <Row>
                 <Col>
-                  <Link to={"lists/"}>
+                  <Link to={"/lists"}>
                     <button
                       className={`${
                         isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
