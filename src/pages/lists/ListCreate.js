@@ -2,14 +2,16 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import appStyle from "../../styles/App.module.css";
-import { axiosInstance } from "../../api/axiosDefaults";
-
+import { useUser } from "../../contexts/UserContext";
+import { addDoc } from "firebase/firestore";
+import { dbListItems, dbLists } from "../../firebase";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 const ListCreate = () => {
   const navigate = useNavigate();
+  const userFirestore = useUser();
   const [formData, setFormData] = useState({
     title: "",
     is_private: false,
@@ -20,17 +22,27 @@ const ListCreate = () => {
 
   // Send the tile and private to the API and create the new list
   const createList = async () => {
+    if (!userFirestore) return;
+    if (!userFirestore.user) return;
+    console.log("userFirestore", userFirestore);
     const formData = new FormData();
     formData.append("title", title);
     formData.append("is_private", is_private);
 
     try {
       setSubmit(true);
-      await axiosInstance.post("/api/lists/", formData);
+      const listCreatedResponse = await addDoc(dbLists, {
+        title: title,
+        is_private: is_private,
+        date_created: new Date(),
+        userId: userFirestore.user.uid,
+      });
       setSubmit(false);
       navigate("/lists/");
+
+      console.log("noteCreatedResponse", listCreatedResponse);
     } catch (error) {
-      console.log(error);
+      console.log("Error updating payment db:", error);
     }
   };
 

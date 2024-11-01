@@ -14,6 +14,9 @@ import SearchPage from "./pages/SearchPage";
 import NavBarComponent from "./components/NavBarComponent";
 import ListAllPage from "./utils/ListAllPage";
 import TestExternalDBAPI from "./pages/TestExternalDBAPI";
+import SignUp from "./pages/auth/SignUp";
+import SignIn from "./pages/auth/SignIn";
+import SignOut from "./pages/auth/SignOut";
 
 function App() {
   return (
@@ -25,14 +28,17 @@ function App() {
         <Route exact path="/account" element={<AccountPage />} />
         {/* <Route exact path='/test' element={<SearchPage />} /> */}
         <Route exact path="/notes" element={<NoteListPage />} />
-        <Route exact path="/notes/note/:id" element={<NoteDetailPage />} />
+        <Route exact path="/notes/note/:docId" element={<NoteDetailPage />} />
         <Route exact path="/notes/note/create" element={<NoteCreate />} />
-        <Route exact path="/notes/note/edit:id" element={<NoteEditPage />} />
+        <Route exact path="/notes/note/edit:docId" element={<NoteEditPage />} />
         <Route path="/lists/" element={<ListPage />} />
-        <Route path="/lists/list/:id" element={<ListDetailPage />} />
+        <Route path="/lists/list/:docId" element={<ListDetailPage />} />
         <Route path="/lists/list/create" element={<ListCreate />} />
         <Route path="/all" element={<ListAllPage />} />
         <Route path="/test" element={<TestExternalDBAPI />} />
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-out" element={<SignOut />} />
       </Routes>
     </div>
   );

@@ -37,7 +37,7 @@
 }
 
 /* For the header and border */
-.HeaderThemeRed {
+/* .HeaderThemeRed {
   background-color: #240000 !important;
   border-bottom: 1px solid #410004;
 }
@@ -51,11 +51,9 @@
 
 .BackgroundContainerRed,
 .BackgroundContainerSmallRed {
-  /* background-color: #160000 !important;
-  border: 1px solid #410004; */
   text-align: center;
   margin-top: 12px;
-}
+} */
 
 .BackgroundContainer {
   text-align: center;
@@ -221,5 +219,10 @@
   h1,
   h2 {
     font-size: 65%;
+  }
+
+  .NavButtons {
+    font-size: 100%;
+    padding: 5px 0;
   }
 }

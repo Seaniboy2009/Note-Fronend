@@ -1,30 +1,30 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import appStyle from "../styles/App.module.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Link } from "react-router-dom";
-import AuthContext from "../contexts/AuthContext";
 import { axiosInstance } from "../api/axiosDefaults";
 
-import SignInForm from "./SignInPage";
 import Loader from "../components/Loader";
 import { useTheme } from "../contexts/ThemeSelection";
+import { useUser } from "../contexts/UserContext";
+import ThemedButton from "../components/ThemedButton";
 
 const HomePage = () => {
-  let { user } = useContext(AuthContext);
+  const userFirestore = useUser();
   const [loaded, setLoaded] = useState(false);
 
-  const { isDarkMode } = useTheme();
+  const { activeTheme, theme, isDarkMode } = useTheme();
 
   useEffect(() => {
     const loadApp = async () => {
       try {
         const data = await axiosInstance.get(`/`);
         const status = data.status;
-        console.log(status);
+        // console.log(status);
         if (status === 200) {
-          console.log(`${status} OK`);
+          // console.log(`${status} OK`);
           setLoaded(true);
         } else if (status === 404) {
           console.log(`${status} not found`);
@@ -37,7 +37,9 @@ const HomePage = () => {
     };
 
     const timer = setTimeout(() => {
-      loadApp();
+      if (loaded === false) {
+        loadApp();
+      }
     }, 1000);
 
     const load = setInterval(() => {
@@ -53,19 +55,19 @@ const HomePage = () => {
       clearTimeout(timer);
       clearInterval(load);
     };
-  }, []);
+  }, [loaded]);
 
   return (
     <Container
-      className={`${
-        isDarkMode
-          ? appStyle.BackgroundContainerTest
-          : appStyle.BackgroundContainerSmallRed
-      }`}
+      style={{
+        color: theme[activeTheme].color,
+        textAlign: "center",
+        marginTop: "12px",
+      }}
     >
       {loaded ? (
         <Container>
-          {user ? (
+          {userFirestore.user ? (
             <>
               <Row style={{ paddingBottom: "20px" }}>
                 <Col>
@@ -75,33 +77,44 @@ const HomePage = () => {
               <Row style={{ paddingBottom: "10px" }}>
                 <Col>
                   <Link to={"/notes"}>
-                    <button
-                      className={`${
-                        isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
-                      } ${appStyle.ButtonLarge}`}
-                    >
-                      Your notes
-                    </button>
+                    <ThemedButton>Notes</ThemedButton>
                   </Link>
                 </Col>
               </Row>
               <Row>
                 <Col>
                   <Link to={"/lists"}>
-                    <button
-                      className={`${
-                        isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
-                      } ${appStyle.ButtonLarge}`}
-                    >
-                      Your lists
-                    </button>
+                    <ThemedButton>Lists</ThemedButton>
                   </Link>
                 </Col>
               </Row>
               <br />
             </>
-          ) : null}
-          {<SignInForm />}
+          ) : (
+            <>
+              {" "}
+              <Row style={{ paddingBottom: "20px" }}>
+                <Col>
+                  <h4>Welcome</h4>
+                  <h5>Please sign up to start using the app</h5>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Link to={"/sign-up"}>
+                    <ThemedButton> Sign up</ThemedButton>
+                  </Link>
+                </Col>
+              </Row>
+              <Row style={{ paddingBottom: "10px" }}>
+                <Col>
+                  <Link to={"/sign-in"}>
+                    <p> Log in</p>
+                  </Link>
+                </Col>
+              </Row>
+            </>
+          )}
         </Container>
       ) : (
         <Loader spinner text="Loading App, Please wait" />

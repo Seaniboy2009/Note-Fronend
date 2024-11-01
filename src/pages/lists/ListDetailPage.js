@@ -9,27 +9,28 @@ import { Link } from "react-router-dom";
 import { axiosInstance } from "../../api/axiosDefaults";
 import Modal from "react-bootstrap/Modal";
 import Loader from "../../components/Loader";
-import AuthContext from "../../contexts/AuthContext";
-import { useTheme } from "../../contexts/ThemeSelection";
 import ListItem from "../../components/ListItem";
+import { getDocs, query, where, doc, getDoc } from "firebase/firestore";
+import { dbLists, dbListItems, db } from "../../firebase";
+import { useUser } from "../../contexts/UserContext";
+import { addDoc } from "firebase/firestore";
+import { useTheme } from "../../contexts/ThemeSelection";
+import ThemedButton from "../../components/ThemedButton";
+const useNewDb = true; // ***********TODO remove this once new db is fully implemented**********
 
 const ListDetailPage = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
-  const [list, setList] = useState({ results: [] });
-  const [items, setItems] = useState({ results: [] });
+  const { docId } = useParams();
+  const [list, setList] = useState({});
+  const [items, setItems] = useState([]);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [show, setShow] = useState(false);
   const [edit, setEdit] = useState(false);
-
-  let { user } = useContext(AuthContext);
-  const { isDarkMode } = useTheme();
-
+  const userFirestore = useUser();
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
+  const { activeTheme, theme } = useTheme();
   const [formData, setFormData] = useState({
-    list: "",
     content: "",
   });
 
@@ -37,29 +38,67 @@ const ListDetailPage = () => {
 
   const getLists = async () => {
     console.log("Get list detail called");
-    const [{ data: list }, { data: items }] = await Promise.all([
-      axiosInstance.get(`/api/lists/${id}`),
-      axiosInstance.get(`/api/listitems/?list=${id}`),
-    ]);
-    setList(list);
-    console.log(items);
-    setItems(items);
-    setHasLoaded(true);
+    console.log("docId:", docId);
+    try {
+      if (useNewDb) {
+        const docRef = doc(db, "lists", docId);
+        const docSnap = await getDoc(docRef);
+        let listResponse;
+        console.log(docSnap);
+        if (docSnap.exists()) {
+          // Convert document data into an object
+          listResponse = {
+            docId: docSnap.id, // Firestore document ID
+            ...docSnap.data(), // Document data
+          };
+          console.log(listResponse);
+          setList(listResponse);
+        }
+        const queryListItems = query(
+          dbListItems,
+          where("listId", "==", listResponse.docId)
+        );
+        const querySnapshot = await getDocs(queryListItems);
+        const listItemsResponse = querySnapshot.docs.map((doc) => ({
+          docId: doc.id, // Firestore document ID
+          ...doc.data(), // Document data
+        }));
+        console.log(listItemsResponse);
+        setItems(listItemsResponse);
+        setHasLoaded(true);
+      } else {
+        const [{ data: list }, { data: items }] = await Promise.all([
+          axiosInstance.get(`/api/lists/${docId}`),
+          axiosInstance.get(`/api/listitems/?list=${docId}`),
+        ]);
+        setList(list);
+        console.log(items);
+        setItems(items);
+        setHasLoaded(true);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleCreateItem = async () => {
+    if (!userFirestore) return;
+    if (!userFirestore.user) return;
+    console.log("userFirestore", userFirestore);
     const formData = new FormData();
-    formData.append("content", content);
-    formData.append("list", list.id);
+    formData.append("title", content);
 
     try {
-      await axiosInstance.post(`/api/listitems/`, formData);
-      setFormData((prevData) => ({ ...prevData, list: "" }));
+      const listItemCreatedResponse = await addDoc(dbListItems, {
+        content: content,
+        date_created: new Date(),
+        listId: docId,
+      });
+      setEdit(false);
       getLists();
-      const textArea = document.getElementById("textInput");
-      textArea.value = "";
+      console.log("noteCreatedResponse", listItemCreatedResponse);
     } catch (error) {
-      console.log(error);
+      console.log("Error updating payment db:", error);
     }
   };
 
@@ -148,31 +187,35 @@ const ListDetailPage = () => {
             </Col>
           </Row>
           {edit ? (
-            <Row className={style.ListContainer}>
-              <Col xs={6}>
-                <textarea
-                  id="textInput"
-                  onChange={handleChange}
-                  className={style.InputArea}
-                  autofocus
-                  placeholder="Type here"
-                  rows="1"
-                ></textarea>
-              </Col>
-              <Col xs={6}>
-                <button
-                  onClick={handleCreateItem}
-                  className={appStyle.ButtonLists}
-                >
-                  Add
-                </button>
-              </Col>
-            </Row>
+            <Container
+              className={style.ListContainer}
+              style={{
+                backgroundColor: theme[activeTheme].pannelColor,
+                border: theme[activeTheme].border,
+              }}
+            >
+              <Row>
+                <Col>
+                  <input
+                    id="textInput"
+                    onChange={handleChange}
+                    // className={style.InputArea}
+                    autofocus
+                    placeholder="Type here"
+                  ></input>
+                </Col>
+                <Col>
+                  <ThemedButton size="small" onClick={handleCreateItem}>
+                    Add
+                  </ThemedButton>
+                </Col>
+              </Row>
+            </Container>
           ) : null}
-          {items?.results?.map((item, index) => (
-            //<ListItem getLists={getLists} key={index} {...item} edit={edit} />
+          {items?.map((item, index) => (
             <ListItem getLists={getLists} key={index} item={item} edit={edit} />
           ))}
+          <br />
         </>
       ) : (
         <Loader spinner text="Loading lists, please wait" />

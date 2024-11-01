@@ -6,138 +6,116 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { axiosInstance } from "../../api/axiosDefaults";
-
+import { useUser } from "../../contexts/UserContext";
+import { getDocs, query, where } from "firebase/firestore";
+import { dbLists } from "../../firebase";
 import AuthContext from "../../contexts/AuthContext";
 import Loader from "../../components/Loader";
 import { useTheme } from "../../contexts/ThemeSelection";
 
+const useNewDb = true; // ***********TODO remove this once new db is fully implemented**********
+
 const ListPage = () => {
   const [myLists, setMyLists] = useState({ results: [] });
-  const [lists, setLists] = useState({ results: [] });
   const [hasLoaded, setHasLoaded] = useState(false);
   let { user } = useContext(AuthContext);
-  const { isDarkMode } = useTheme();
+  const userFirestore = useUser();
+  const { activeTheme, theme } = useTheme();
 
   useEffect(() => {
-    const getMyLists = async () => {
-      const { data } = await axiosInstance.get(
-        `/api/lists/?owner=${user.user_id}`
-      );
-      console.log(data);
-      setMyLists(data);
-      setHasLoaded(true);
-    };
-
-    const getAllLists = async () => {
-      const { data } = await axiosInstance.get(`/api/lists/`);
-      const filteredData = data.results.filter(
-        (item) => item.owner !== user.name
-      );
-      console.log(filteredData);
-      setLists({ results: filteredData });
+    const handleGetLists = async () => {
+      try {
+        if (useNewDb) {
+          const queryLists = query(
+            dbLists,
+            where("userId", "==", userFirestore.user.uid)
+          );
+          const querySnapshot = await getDocs(queryLists);
+          const userUpdatedResponse = querySnapshot.docs.map((doc) => ({
+            docId: doc.id, // Firestore document ID
+            ...doc.data(), // Document data
+          }));
+          setMyLists({ results: userUpdatedResponse });
+          console.log("Get my lists data:", userUpdatedResponse);
+        } else {
+          const { data } = await axiosInstance.get(
+            `/api/lists/?owner=${user.user_id}`
+          );
+          console.log(data);
+          setMyLists(data);
+          setHasLoaded(true);
+          console.log("myLists:", myLists);
+        }
+      } catch (error) {
+        const access = localStorage.getItem("access_token");
+        if (error.response?.status === 401 && access) {
+          window.location.reload();
+        } else if (!access) {
+          //navigate("/");
+        } else {
+          console.log("Other error");
+        }
+      }
       setHasLoaded(true);
     };
 
     const timer = setTimeout(() => {
-      getMyLists();
-      getAllLists();
+      handleGetLists();
     }, 1000);
-
-    setHasLoaded(false);
 
     return () => {
       clearTimeout(timer);
     };
-  }, []);
+  }, [userFirestore, user]);
 
   return (
     <Container fluid className={`text-center ${appStyle.Container}`}>
       {hasLoaded ? (
         <>
-          {/* <Row>
-            {hasLoaded ? (
-              <Col xs={9}>
-                <Link to={"list/create"}>
-                  <button
-                    className={
-                      isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
-                    }
-                  >
-                    Create
-                    <i className="fa-sharp fa-solid fa-plus" />
-                  </button>
-                </Link>
-              </Col>
-            ) : (
-              <></>
-            )}
-          </Row> */}
           <Row>
             <Col xs={1}>
               <Link to={"/"}>
                 <i className="fa-solid fa-arrow-left"></i>
               </Link>
             </Col>
-            <Col xs={6}>
-              <h4>Your Lists</h4>
-            </Col>
-            <Col xs={4}>
-              <Link to={"list/create"}>
-                <button className={appStyle.ButtonCreate}>
-                  <i className="fa-sharp fa-solid fa-plus" />
-                </button>
-              </Link>
+            <Col xs={10}>
+              <h4>Lists</h4> <p> {useNewDb && "Using new db"}</p>
             </Col>
           </Row>
           <br />
-          <Row></Row>
-          <Row>
-            <Col>
-              <h5>My lists</h5>
-            </Col>
-          </Row>
-          {myLists?.results?.map((list, index) => (
-            <Link key={index} to={`list/${list.id}`}>
-              <Row className={style.List}>
-                <Col xs={10}>
-                  <h5 className={style.ListDetails}>{list.title}</h5>
-                </Col>
-                <Col>
-                  {list.is_private ? (
-                    <i className={`fa-solid fa-lock ${style.Private}`}></i>
-                  ) : null}
-                </Col>
-              </Row>
-            </Link>
-          ))}
-          <Row>
-            <Col>
-              <h5>Shared lists</h5>
-            </Col>
-          </Row>
-          {lists?.results?.map((list, index) => (
-            <div key={index}>
-              {list.is_private ? null : (
-                <Link key={index} to={`list/${list.id}`}>
-                  <Row className={style.List}>
-                    <Col xs={3}>
-                      <h5 className={style.ListDetails}>#{list.id}</h5>
-                    </Col>
-                    <Col xs={4}>
-                      <h5 className={style.ListDetails}>{list.title}</h5>
-                    </Col>
-                    <Col xs={3}>
-                      <h5 className={style.ListDetails}>
-                        {list.is_private ? "private" : "not private"}
-                      </h5>
-                    </Col>
-                    <Col>
-                      <i className="fa-solid fa-bars" />
-                    </Col>
-                  </Row>
+          {userFirestore?.user ? (
+            <Row>
+              <Col xs={5}>
+                <Link to={"list/create"}>
+                  <button className={appStyle.ButtonCreate}>
+                    <i className="fa-sharp fa-solid fa-plus" />
+                  </button>
                 </Link>
-              )}
-            </div>
+              </Col>
+            </Row>
+          ) : null}
+
+          {myLists?.results?.map((list, index) => (
+            <Container
+              style={{
+                backgroundColor: theme[activeTheme].pannelColor,
+                border: theme[activeTheme].border,
+              }}
+              className={` text-left  ${appStyle.BackgroundContainer}`}
+            >
+              <Link key={list.id} to={`list/${list.docId}`}>
+                <Row>
+                  <Col xs={10}>
+                    <h5 className={style.ListDetails}>{list.title}</h5>
+                  </Col>
+                  <Col>
+                    {list.is_private ? (
+                      <i className={`fa-solid fa-lock ${style.Private}`}></i>
+                    ) : null}
+                  </Col>
+                </Row>
+              </Link>
+            </Container>
           ))}
         </>
       ) : (

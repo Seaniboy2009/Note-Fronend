@@ -6,16 +6,16 @@ import { axiosInstance } from "../api/axiosDefaults";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import AuthContext from "../contexts/AuthContext";
 import Form from "react-bootstrap/Form";
 import { useTheme } from "../contexts/ThemeSelection";
 
+const useNewDb = true; // ***********TODO remove this once new db is fully implemented**********
+
 const NoteItem = (props) => {
   const {
+    docId,
     id,
     title,
-    owner,
-    created,
     updated,
     image,
     image_url,
@@ -23,12 +23,10 @@ const NoteItem = (props) => {
     detailPage,
     is_private,
     toggle,
+    date_created,
     category,
-    grid,
   } = props;
-
-  let { user } = useContext(AuthContext);
-  const { isDarkMode, changeTheme, activeTheme, theme } = useTheme();
+  const { activeTheme, theme } = useTheme();
   const [edit, setEdit] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -41,7 +39,8 @@ const NoteItem = (props) => {
   });
   const { newTitle, newIs_private, newToggle, newCategory, newDetails } =
     formData;
-
+  console.log(date_created);
+  const created = Date(date_created).toLocaleString();
   const navigate = useNavigate();
   // handle this note deletion when in edit mode
   const handleDelete = async () => {
@@ -124,10 +123,14 @@ const NoteItem = (props) => {
             <img
               src={image_url}
               className={style.ImageDetail}
-              alt="note image"
+              alt="Note image Missing"
             />
           ) : (
-            <img src={image} className={style.ImageDetail} alt="note image" />
+            <img
+              src={image}
+              className={style.ImageDetail}
+              alt="Note image Missing"
+            />
           )}
         </Col>
       </Row>
@@ -216,133 +219,84 @@ const NoteItem = (props) => {
         </Col>
       </Row>
       <Row>
-        <button
-          className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}
-          onClick={handleDelete}
-        >
-          Delete
-        </button>
-        <button
-          className={`${isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}`}
-          onClick={handleFormSubmit}
-        >
-          Save
-        </button>
+        <button onClick={handleDelete}>Delete</button>
+        <button onClick={handleFormSubmit}>Save</button>
       </Row>
     </Container>
   );
   // normal text to be shown when edit is disabled, cant edit anything
   const editModeDisabled = (
-    <Container
-      style={{
-        backgroundColor: theme[activeTheme].pannelColor,
-        border: theme[activeTheme].border,
-      }}
-      className={` text-left  ${appStyle.BackgroundContainer}`}
-    >
-      <Row style={{ fontWeight: 700, fontfamily: "Gill Sans", fontSize: 25 }}>
-        <Col>Note Details</Col>
-      </Row>
-      <Row style={{ fontWeight: 600, fontfamily: "Gill Sans" }}>
-        <Col>
-          <p>Title</p>
-        </Col>
-        <Col>
-          <p>Category</p>
-        </Col>
-        <Col>
-          <p>Private</p>
-        </Col>
-      </Row>
-      <Row style={{ fontWeight: 400, fontfamily: "Gill Sans" }}>
-        <Col>
-          <p>{title}</p>
-        </Col>
-        <Col>
-          <p>{category}</p>
-        </Col>
-        <Col>
-          <p>{is_private ? "Yes" : "No"}</p>
-        </Col>
-      </Row>
-      <Row style={{ fontWeight: 600, fontfamily: "Gill Sans" }}>
-        <Col>
-          <p>{checkCategory()}</p>
-        </Col>
-        <Col>
-          <p>Created</p>
-        </Col>
-        <Col>
-          <p>Updated</p>
-        </Col>
-      </Row>
-      <Row style={{ fontWeight: 400, fontfamily: "Gill Sans" }}>
-        <Col>
-          <p>{toggle ? "Yes" : "No"}</p>
-        </Col>
-        <Col>
-          <p>{created}</p>
-        </Col>
-        <Col>
-          <p>{updated}</p>
-        </Col>
-      </Row>
-    </Container>
-  );
-  // Layout for the notes detail page
-  const noteDetailPage = (
     <>
-      <Row>
-        <Col xs={8}>
-          <Link to={"/notes/"}>
-            <i className="fa-solid fa-arrow-left" />
-            &nbsp;
-          </Link>
-        </Col>
-        <Col xs={2}>
-          <button
-            className={`${
-              isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
-            } fa-solid fa-pen-to-square`}
-            style={{ minWidth: "11vh" }}
-            onClick={toggleEditMode}
-          ></button>
-        </Col>
-      </Row>
-      {owner.id === user.id ? (
-        edit ? (
-          editModeEnabled
-        ) : (
-          editModeDisabled
-        )
-      ) : (
-        <Row
-          className={
-            isDarkMode ? appStyle.NoteDetailsTest : appStyle.NoteDetailsRed
-          }
-        >
-          <Col md={3}>
-            <p>Title: {title}</p>
+      <Container
+        style={{
+          backgroundColor: theme[activeTheme].pannelColor,
+          border: theme[activeTheme].border,
+        }}
+        className={` text-left  ${appStyle.BackgroundContainer}`}
+      >
+        <Row style={{ fontWeight: 700, fontfamily: "Gill Sans", fontSize: 25 }}>
+          <Col>Note</Col>
+        </Row>
+        <Row style={{ fontWeight: 600, fontfamily: "Gill Sans" }}>
+          <Col>
+            <p>Title</p>
           </Col>
-          <Col md={3}>
-            <p>Details: {details}</p>
+          <Col>
+            <p>Category</p>
+          </Col>
+          <Col>
+            <p>Private</p>
           </Col>
         </Row>
-      )}
-      {imageContainer}
+        <Row style={{ fontWeight: 400, fontfamily: "Gill Sans" }}>
+          <Col>
+            <p>{title}</p>
+          </Col>
+          <Col>
+            <p>{category}</p>
+          </Col>
+          <Col>
+            <p>{is_private ? "Yes" : "No"}</p>
+          </Col>
+        </Row>
+        <Row style={{ fontWeight: 600, fontfamily: "Gill Sans" }}>
+          <Col>
+            <p>Created</p>
+          </Col>
+        </Row>
+        <Row style={{ fontWeight: 400, fontfamily: "Gill Sans" }}>
+          <Col>
+            <p>{created}</p>
+          </Col>
+        </Row>
+      </Container>
+      <Container
+        style={{
+          backgroundColor: theme[activeTheme].pannelColor,
+          border: theme[activeTheme].border,
+        }}
+        className={` text-left  ${appStyle.BackgroundContainer}`}
+      >
+        <Row style={{ fontWeight: 700, fontfamily: "Gill Sans", fontSize: 25 }}>
+          <Col>Details</Col>
+        </Row>
+        <Row style={{ fontWeight: 600, fontfamily: "Gill Sans" }}>
+          <Col>
+            <p>details</p>
+          </Col>
+        </Row>
+        <Row style={{ fontWeight: 400, fontfamily: "Gill Sans" }}>
+          <Col>
+            <p>{details}</p>
+          </Col>
+        </Row>
+      </Container>
     </>
   );
   // layout for the notes list page
-  const noteListPage = grid ? (
-    <Link to={`note/${id}`} className={style.Link}>
-      {image_url ? (
-        <img src={image_url} className={style.ImageGrid} alt="note image" />
-      ) : (
-        <img src={image} className={style.ImageGrid} alt="note image" />
-      )}
-    </Link>
-  ) : (
-    <Link to={`note/${id}`} className={style.Link}>
+  const noteListPage = (
+    //<Link to={`note/${id}`} className={style.Link}> // this is the original line
+    <Link to={`note/${docId}`} className={style.Link}>
       <Row
         style={{
           backgroundColor: theme[activeTheme].pannelColor,
@@ -353,11 +307,16 @@ const NoteItem = (props) => {
       >
         <Col xs={5}>
           {image_url ? (
+            // eslint-disable-next-line jsx-a11y/img-redundant-alt
             <img src={image_url} className={style.ImageList} alt="note image" />
-          ) : (
+          ) : !useNewDb ? (
+            // eslint-disable-next-line jsx-a11y/img-redundant-alt
             <img src={image} className={style.ImageList} alt="note image" />
+          ) : (
+            <p>Image will go here!!</p>
           )}
         </Col>
+
         <Col fluid>Title: {title}</Col>
         <Col xs={2}>
           {/* {is_private ? (
@@ -373,7 +332,29 @@ const NoteItem = (props) => {
 
   return detailPage ? (
     <>
-      <Container>{noteDetailPage}</Container>
+      <Container>
+        {" "}
+        <Row>
+          <Col xs={8}>
+            <Link to={"/notes/"}>
+              <i className="fa-solid fa-arrow-left" />
+              &nbsp;
+            </Link>
+          </Col>
+          {/* <Col xs={2}>
+            <button
+              style={{
+                minWidth: "11vh",
+                backgroundColor: theme[activeTheme].pannelColor,
+                border: theme[activeTheme].border,
+              }}
+              onClick={toggleEditMode}
+            ></button>
+          </Col> */}
+        </Row>
+        {editModeDisabled}
+        {/* {imageContainer} */}
+      </Container>
     </>
   ) : (
     <>{noteListPage}</>

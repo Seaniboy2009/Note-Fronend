@@ -7,15 +7,18 @@ import { HashRouter } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import ScrollToTop from "./components/ScrollToTop";
 import { ThemeProvider } from "./contexts/ThemeSelection";
+import { UserProvider } from "./contexts/UserContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <HashRouter>
     <AuthProvider>
-      <ThemeProvider>
-        <ScrollToTop />
-        <App />
-      </ThemeProvider>
+      <UserProvider>
+        <ThemeProvider>
+          <ScrollToTop />
+          <App />
+        </ThemeProvider>
+      </UserProvider>
     </AuthProvider>
   </HashRouter>
 );

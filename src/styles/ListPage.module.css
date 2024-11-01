@@ -19,13 +19,11 @@
 
 .ListDetails {
   text-decoration: none;
-  color: #9d0913;
 }
 
 .ListDetails:hover,
 .List:hover {
   text-decoration: none;
-  background-color: #410000;
 }
 
 a {

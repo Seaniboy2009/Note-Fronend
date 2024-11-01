@@ -5,14 +5,16 @@ import appStyle from "../../styles/App.module.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { axiosInstance } from "../../api/axiosDefaults";
 import SearchPage from "../SearchPage";
 import { useTheme } from "../../contexts/ThemeSelection";
-import { Button } from "bootstrap";
+import { useUser } from "../../contexts/UserContext";
+import { addDoc } from "firebase/firestore";
+import { db, dbUsers, dbNotes } from "../../firebase";
 
 const NoteCreate = () => {
   const navigate = useNavigate();
   const imageInput = useRef(null);
+  const userFirestore = useUser();
   const [formData, setFormData] = useState({
     title: "",
     category: "Other",
@@ -29,40 +31,23 @@ const NoteCreate = () => {
   const { isDarkMode } = useTheme();
 
   const createNote = async () => {
-    const formDataSend = new FormData();
-
-    formDataSend.append("title", title);
-    formDataSend.append("category", category);
-    formDataSend.append("is_private", is_private);
-
-    console.log("Type of image:", typeof formData.image);
-    console.log("Type of image_url:", typeof formData.image_url);
-
-    if (formData.image) {
-      // Assuming formData.image is a local file
-      formDataSend.append("image", formData.image);
-    } else if (formData.image_url) {
-      // If formData.image is falsy, check formData.image_url
-      formDataSend.append("image_url", formData.image_url);
-    } else {
-      console.error("Either image or image_url must be provided");
-      console.log("Form Data:", formData);
-      // return;
-    }
-
-    console.log("Form Data:", formData); // Log the form data
+    if (!userFirestore) return;
+    if (!userFirestore.user) return;
+    console.log("userFirestore", userFirestore);
 
     try {
-      setSubmit(true);
-      await axiosInstance.post("/api/notes/", formDataSend, {
-        headers: {
-          "Content-Type": "multipart/form-data", // Use 'multipart/form-data' for FormData
-        },
+      const noteCreatedResponse = await addDoc(dbNotes, {
+        title: title,
+        category: category,
+        is_private: is_private,
+        image_url: formData.image_url,
+        date_created: new Date(),
+        userId: userFirestore.user.uid,
       });
-      setSubmit(false);
-      navigate("/notes/");
+
+      console.log("noteCreatedResponse", noteCreatedResponse);
     } catch (error) {
-      console.log(error);
+      console.log("Error updating payment db:", error);
     }
   };
 
