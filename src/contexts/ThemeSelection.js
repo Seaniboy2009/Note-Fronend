@@ -31,8 +31,8 @@ export const theme = {
     backgroundColor: "#4b1fa3",
     pannelColor: "#6739c4",
     border: "1px solid #a63c3a",
-    color: "#4b1fa3",
-    altColor: "#4b1fa3",
+    color: "#e9b8ff",
+    altColor: "#a63c3a",
   },
 };
 
