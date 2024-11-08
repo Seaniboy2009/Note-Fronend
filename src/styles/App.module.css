@@ -11,7 +11,7 @@
 /*  *********************************THEME************************************ */
 /* ***************************************Dark********************************* */
 
-.TextRed,
+/* .TextRed,
 .BodyRed {
   color: #9d0913 !important;
   padding: 0;
@@ -34,7 +34,7 @@
 .BackgroundRed,
 .BodyRed {
   background-color: #100000 !important;
-}
+} */
 
 /* For the header and border */
 /* .HeaderThemeRed {
@@ -151,12 +151,6 @@
   border: 1px solid #000000;
   text-align: center;
   margin-top: 12px;
-}
-
-.TableTest,
-.TableTest > tbody > tr > td {
-  border: 1px solid #000000 !important;
-  color: #000000;
 }
 
 .ButtonTest,

@@ -13,6 +13,7 @@ import {
   query,
   where,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useTheme } from "../../contexts/ThemeSelection";
@@ -51,7 +52,7 @@ const CalendarPage = () => {
   const [note, setNote] = useState(""); // Note input state
   const userFirestore = useUser();
   const currentUserId = userFirestore?.user?.uid;
-
+  const { activeTheme, theme } = useTheme();
   // Get array of days for a specific month in the current year
   const getDaysInMonth = (month) => {
     const days = [];
@@ -181,6 +182,26 @@ const CalendarPage = () => {
       console.error("Error adding/updating calendar entry: ", error);
     }
   };
+
+  // Function to handle deleting the entry
+  const handleDeleteEntry = async () => {
+    if (!dayEntry) return; // If no entry is selected, do nothing
+
+    try {
+      const entryRef = doc(db, "calendarEntry", dayEntry.id);
+      await deleteDoc(entryRef);
+      console.log("Calendar entry deleted: ", dayEntry.id);
+
+      // Remove the entry from the local state
+      setCalendarEntries((prevEntries) =>
+        prevEntries.filter((entry) => entry.id !== dayEntry.id)
+      );
+      setDayEntry(null); // Reset the selected day entry
+      setNote(""); // Clear the note input
+    } catch (error) {
+      console.error("Error deleting calendar entry: ", error);
+    }
+  };
   return (
     <Container className={style.calendarContainer}>
       <Row>
@@ -192,7 +213,15 @@ const CalendarPage = () => {
         <Col>
           <label>
             Select Month:
-            <select value={selectedMonth} onChange={handleMonthChange}>
+            <select
+              value={selectedMonth}
+              onChange={handleMonthChange}
+              style={{
+                backgroundColor: theme[activeTheme].pannelColor,
+                color: theme[activeTheme].color,
+                borderColor: theme[activeTheme].color,
+              }}
+            >
               {months.map((month, index) => (
                 <option key={index} value={month.value}>
                   {month.name}
@@ -256,6 +285,11 @@ const CalendarPage = () => {
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="Enter your note for this day"
+              style={{
+                backgroundColor: theme[activeTheme].pannelColor,
+                color: theme[activeTheme].color,
+                borderColor: theme[activeTheme].color,
+              }}
             />
           </label>
         </Col>
@@ -265,6 +299,17 @@ const CalendarPage = () => {
           <ThemedButton onClick={() => handleEntryClick()}>
             Save Entry
           </ThemedButton>
+        </Col>
+        <Col>
+          {dayEntry ? (
+            <div>
+              <ThemedButton onClick={handleDeleteEntry}>
+                Delete Entry
+              </ThemedButton>
+            </div>
+          ) : (
+            <p>No entry for this day.</p>
+          )}
         </Col>
       </Row>
     </Container>

@@ -35,10 +35,17 @@ const HomePage = () => {
                 </Link>
               </Col>
             </Row>
-            <Row>
+            <Row style={{ paddingBottom: "10px" }}>
               <Col>
                 <Link to={"/lists"}>
                   <ThemedButton>Lists</ThemedButton>
+                </Link>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Link to={"/calendar"}>
+                  <ThemedButton>Calendar</ThemedButton>
                 </Link>
               </Col>
             </Row>

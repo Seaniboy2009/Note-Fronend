@@ -64,7 +64,7 @@
     grid-template-columns: repeat(7, 1fr); /* Keeps 7 columns */
     font-size: 5px; /* Smaller font size on mobile */
     gap: 2px; /* Adjust gap for smaller screens */
-    overflow: scroll; /* Allows horizontal scrolling on mobile */
+    overflow: hidden; /* Allows horizontal scrolling on mobile */
   }
 
   .calendarDay {

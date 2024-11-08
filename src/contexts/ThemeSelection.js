@@ -18,37 +18,21 @@ export const theme = {
     pannelColor: "#240000",
     border: "1px solid #410004",
     color: "#9d0913",
-    link: {
-      active: "#9d0913",
-      color: "#9d0913",
-      hover: "#9d091a",
-    },
+    altColor: "#4b1fa3",
   },
   Starfield: {
-    backgroundColor: "#3b3e41",
-    pannelColor: "#84a6aa",
-    border: "1px solid #d73d00",
-    color: "#d73d00",
-    link: {
-      active: "#d73d00",
-      color: "#d73d00",
-      hover: "#d73d00",
-    },
-    button: {
-      backgroundColor: "#d73d00",
-      color: "#d73d00",
-    },
+    backgroundColor: "#265e70",
+    pannelColor: "#88c0c2",
+    border: "1px solid #88c0c2",
+    color: "#e5e9e6",
+    altColor: "#265e70",
   },
   purple: {
     backgroundColor: "#4b1fa3",
     pannelColor: "#6739c4",
     border: "1px solid #a63c3a",
-    color: "#9b1cba",
-    link: {
-      active: "#e38b4f",
-      color: "#e38b4f",
-      hover: "#e7b590",
-    },
+    color: "#4b1fa3",
+    altColor: "#4b1fa3",
   },
 };
 
