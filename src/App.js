@@ -17,6 +17,7 @@ import TestExternalDBAPI from "./pages/TestExternalDBAPI";
 import SignUp from "./pages/auth/SignUp";
 import SignIn from "./pages/auth/SignIn";
 import SignOut from "./pages/auth/SignOut";
+import CalendarPage from "./pages/calendar/CalendarPage";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-out" element={<SignOut />} />
+        <Route path="/calendar" element={<CalendarPage />} />
       </Routes>
     </div>
   );

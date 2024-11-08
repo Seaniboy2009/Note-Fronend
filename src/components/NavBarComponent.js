@@ -34,28 +34,38 @@ const NavBarComponent = () => {
             Home
           </Nav.Link>
         </Col>
-        <Col xs="auto" style={{ paddingRight: "1px" }}>
-          <Nav.Link
-            to={"/notes/"}
-            style={linkStyle}
-            as={NavLink}
-            className={appStyle.NavButtons}
-          >
-            Notes
-          </Nav.Link>
-        </Col>
-        <Col xs="auto" style={{ paddingRight: "1px" }}>
-          <Nav.Link
-            to={"/lists/"}
-            style={linkStyle}
-            as={NavLink}
-            className={appStyle.NavButtons}
-          >
-            List's
-          </Nav.Link>
-        </Col>
         {userFirestore?.user ? (
           <>
+            <Col xs="auto" style={{ paddingRight: "1px" }}>
+              <Nav.Link
+                to={"/notes/"}
+                style={linkStyle}
+                as={NavLink}
+                className={appStyle.NavButtons}
+              >
+                Notes
+              </Nav.Link>
+            </Col>
+            <Col xs="auto" style={{ paddingRight: "1px" }}>
+              <Nav.Link
+                to={"/lists/"}
+                style={linkStyle}
+                as={NavLink}
+                className={appStyle.NavButtons}
+              >
+                List's
+              </Nav.Link>
+            </Col>
+            <Col xs="auto" style={{ paddingRight: "1px" }}>
+              <Nav.Link
+                to={"/calendar/"}
+                style={linkStyle}
+                as={NavLink}
+                className={appStyle.NavButtons}
+              >
+                Calendar
+              </Nav.Link>
+            </Col>
             <Col xs="auto" style={{ paddingRight: "1px" }}>
               <Nav.Link
                 to={"/sign-out"}
@@ -101,11 +111,6 @@ const NavBarComponent = () => {
             </Col>
           </>
         )}
-        {/* {userFirestore?.user?.email ? (
-          <div style={{ padding: "10px 0px" }}>{userFirestore.user.email}</div>
-        ) : (
-          <div style={{ padding: "10px 0px" }}>Not signed in</div>
-        )} */}
       </Row>
     </Container>
   );
