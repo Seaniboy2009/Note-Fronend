@@ -4,6 +4,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useUser } from "../../contexts/UserContext";
+import appStyle from "../../styles/App.module.css";
 import {
   doc,
   addDoc,
@@ -181,7 +182,7 @@ const CalendarPage = () => {
     }
   };
   return (
-    <Container>
+    <Container className={style.calendarContainer}>
       <Row>
         <Col>
           <h2>Calendar Selection</h2>

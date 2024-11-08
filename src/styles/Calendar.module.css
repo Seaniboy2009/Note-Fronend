@@ -1,3 +1,4 @@
+/* Ensures the grid doesn't overflow */
 .calendarGrid {
   display: grid;
   grid-template-columns: repeat(
@@ -5,8 +6,21 @@
     1fr
   ); /* 7 equal columns for each day of the week */
   gap: 5px; /* Adjust as needed for spacing */
+  width: 100%; /* Ensure the grid is confined to the screen width */
+  box-sizing: border-box; /* Makes sure padding doesn't affect total width */
+  overflow: hidden; /* Prevents any overflow beyond the grid */
 }
 
+/* Restrict the maximum width for mobile */
+.calendarContainer {
+  max-width: 100%; /* Ensures no horizontal overflow */
+  max-height: 80vh; /* Prevents full screen height; adjust as needed */
+  overflow-y: auto; /* Allows scrolling if content is too tall */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  padding: 10px; /* Adds a bit of spacing */
+}
+
+/* Styling for calendar days */
 .calendarDay {
   padding: 0px 5px;
   background-color: #007bff;
@@ -16,14 +30,8 @@
   cursor: pointer;
   font-size: 12px;
   user-select: none;
-}
-
-.calendarDay:hover {
-  background-color: #4291e6;
-}
-
-.calendarDay:active {
-  background-color: #003cff;
+  width: 100%; /* Ensures buttons stretch to fill each grid cell */
+  box-sizing: border-box; /* Prevents padding from expanding width */
 }
 
 .calendarDay.selected {
@@ -31,24 +39,76 @@
   color: white;
 }
 
+/* Crossed out style for disabled or booked days */
 .crossedOut {
   background-color: #550f0a !important; /* Red background */
   border: 1px solid #0ad81c !important; /* Dark red border */
   color: #007bff !important;
-  text-decoration: line-through; /* Strikethrough text */
   cursor: not-allowed; /* Change cursor to indicate disabled state */
 }
 
+/* Styling for the day headers (Mon, Tue, etc.) */
 .dayHeader {
   font-weight: bold;
   text-align: center;
 }
 
-.calendarDay {
-  width: 100%; /* Ensures buttons stretch to fill each grid cell */
-  text-align: center;
-}
-
+/* Ensures empty days are hidden, keeping spacing in the grid */
 .emptyDay {
   visibility: hidden; /* Keeps spacing but hides empty cells */
+}
+
+/* Mobile-specific styles */
+@media (max-width: 767px) {
+  .calendarGrid {
+    grid-template-columns: repeat(7, 1fr); /* Keeps 7 columns */
+    font-size: 5px; /* Smaller font size on mobile */
+    gap: 2px; /* Adjust gap for smaller screens */
+    overflow: scroll; /* Allows horizontal scrolling on mobile */
+  }
+
+  .calendarDay {
+    padding: 5px; /* Adjust padding for smaller screens */
+    font-size: 5px; /* Smaller font size on mobile */
+  }
+
+  .dayHeader {
+    font-size: 12px; /* Smaller header font for mobile */
+  }
+}
+
+/* Tablet-specific styles */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .calendarGrid {
+    grid-template-columns: repeat(7, 1fr); /* 7 columns for tablets */
+    font-size: 12px; /* Adjust font size for tablets */
+  }
+
+  .calendarDay {
+    padding: 8px; /* Add padding for tablet size */
+    font-size: 12px; /* Set font size */
+  }
+
+  .dayHeader {
+    font-size: 14px; /* Slightly larger header font for tablets */
+    padding: 5px;
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 1025px) {
+  .calendarGrid {
+    grid-template-columns: repeat(7, 1fr); /* 7 columns for desktop */
+    font-size: 14px; /* Larger font size on desktop */
+  }
+
+  .calendarDay {
+    padding: 10px; /* Larger padding for desktop */
+    font-size: 14px; /* Set larger font size */
+  }
+
+  .dayHeader {
+    font-size: 16px; /* Larger header font for desktop */
+    padding: 10px;
+  }
 }
