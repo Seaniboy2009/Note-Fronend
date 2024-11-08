@@ -25,10 +25,10 @@ const ThemedButton = ({ children, size = "medium", ...props }) => {
     backgroundColor: theme[activeTheme].pannelColor,
     color: theme[activeTheme].color,
     borderColor: theme[activeTheme].color,
-    border: "2px solid", // Ensure consistent border
-    borderRadius: "4px", // Adjust the border radius to prevent concave effects
+    border: "1px solid", // Ensure consistent border
+    borderRadius: "2px", // Adjust the border radius to prevent concave effects
     padding: sizeStyles[size].padding,
-    fontSize: sizeStyles[size].fontSize,
+    // fontSize: sizeStyles[size].fontSize,
     cursor: "pointer", // Change cursor to pointer
     outline: "none", // Remove default focus outline
     transition: "background-color 0.3s ease, color 0.3s ease",

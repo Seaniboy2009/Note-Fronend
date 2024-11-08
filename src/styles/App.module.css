@@ -208,7 +208,7 @@
   }
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 667px) {
   a,
   h1,
   h2 {
@@ -218,5 +218,22 @@
   .NavButtons {
     font-size: 100%;
     padding: 5px 0;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  a,
+  h1,
+  h2 {
+    font-size: 55%;
+  }
+
+  p {
+    font-size: 80%;
+  }
+
+  .NavButtons {
+    font-size: 90%;
+    padding: 3px 0;
   }
 }
