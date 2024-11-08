@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import NoteItem from "../../components/NoteItem";
 import appStyle from "../../styles/App.module.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { axiosInstance } from "../../api/axiosDefaults";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { fetchMoreData } from "../../utils/utils";
-import AuthContext from "../../contexts/AuthContext";
 import Loader from "../../components/Loader";
 import { useUser } from "../../contexts/UserContext";
 import { getDocs, query, where } from "firebase/firestore";
@@ -19,7 +17,6 @@ const useNewDb = true; // ***********TODO remove this once new db is fully imple
 const NoteListPage = () => {
   const [myNotes, setMyNotes] = useState({ results: [] });
   const [hasLoaded, setHasLoaded] = useState(false);
-  let { user } = useContext(AuthContext);
   const userFirestore = useUser();
 
   useEffect(() => {
@@ -37,13 +34,6 @@ const NoteListPage = () => {
           }));
           setMyNotes({ results: userUpdatedResponse });
           console.log("Get my notes data:", userUpdatedResponse);
-        } else {
-          const { data } = await axiosInstance.get(
-            `/api/notes/?owner=${user.user_id}`
-          );
-          setMyNotes(data);
-          setHasLoaded(true);
-          console.log("Get my notes data:", data);
         }
       } catch (error) {
         const access = localStorage.getItem("access_token");
@@ -65,7 +55,7 @@ const NoteListPage = () => {
     return () => {
       clearTimeout(timer);
     };
-  }, [user, userFirestore]);
+  }, [userFirestore]);
 
   return (
     <Container fluid className={`text-center`}>

@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import AuthContext from "../../contexts/AuthContext";
 import { Col, Container, Row } from "react-bootstrap";
 import appStyle from "../../styles/App.module.css";
 import { useTheme } from "../../contexts/ThemeSelection";

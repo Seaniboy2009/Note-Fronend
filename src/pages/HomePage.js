@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -11,7 +11,7 @@ const HomePage = () => {
   const userFirestore = useUser();
 
   const { activeTheme, theme } = useTheme();
-
+  console.log("home page", userFirestore?.user);
   return (
     <Container
       style={{
@@ -21,7 +21,7 @@ const HomePage = () => {
       }}
     >
       <Container>
-        {userFirestore.user ? (
+        {userFirestore?.user ? (
           <>
             <Row style={{ paddingBottom: "20px" }}>
               <Col>

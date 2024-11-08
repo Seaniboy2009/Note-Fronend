@@ -82,25 +82,10 @@ const ListItem = ({ item, edit, getLists }) => {
         </Col>
       </Row>
       <Row>
-        <Col
-          xs={10}
-          // className={style.ListItemSecondary}
-          style={toggle ? { textDecoration: "line-through" } : null}
-        >
+        <Col xs={10} style={toggle ? { textDecoration: "line-through" } : null}>
           <p>{created}</p>
         </Col>
-        <Col xs={2} className={style.ListItemSecondary}>
-          {/* {owner === user.name && edit === true ? (
-            <button
-              onClick={() => handleDeleteItem()}
-              className={
-                isDarkMode ? appStyle.ButtonListItem : appStyle.ButtonListItem
-              }
-            >
-              Delete
-            </button>
-          ) : null} */}
-        </Col>
+        <Col xs={2} className={style.ListItemSecondary}></Col>
       </Row>
     </Container>
   );

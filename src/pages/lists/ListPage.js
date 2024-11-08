@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import style from "../../styles/ListPage.module.css";
 import appStyle from "../../styles/App.module.css";
@@ -9,7 +9,6 @@ import { axiosInstance } from "../../api/axiosDefaults";
 import { useUser } from "../../contexts/UserContext";
 import { getDocs, query, where } from "firebase/firestore";
 import { dbLists } from "../../firebase";
-import AuthContext from "../../contexts/AuthContext";
 import Loader from "../../components/Loader";
 import { useTheme } from "../../contexts/ThemeSelection";
 
@@ -18,7 +17,6 @@ const useNewDb = true; // ***********TODO remove this once new db is fully imple
 const ListPage = () => {
   const [myLists, setMyLists] = useState({ results: [] });
   const [hasLoaded, setHasLoaded] = useState(false);
-  let { user } = useContext(AuthContext);
   const userFirestore = useUser();
   const { activeTheme, theme } = useTheme();
 
@@ -37,14 +35,6 @@ const ListPage = () => {
           }));
           setMyLists({ results: userUpdatedResponse });
           console.log("Get my lists data:", userUpdatedResponse);
-        } else {
-          const { data } = await axiosInstance.get(
-            `/api/lists/?owner=${user.user_id}`
-          );
-          console.log(data);
-          setMyLists(data);
-          setHasLoaded(true);
-          console.log("myLists:", myLists);
         }
       } catch (error) {
         const access = localStorage.getItem("access_token");
@@ -66,7 +56,7 @@ const ListPage = () => {
     return () => {
       clearTimeout(timer);
     };
-  }, [userFirestore, user]);
+  }, [userFirestore]);
 
   return (
     <Container fluid className={`text-center ${appStyle.Container}`}>
