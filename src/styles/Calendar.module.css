@@ -31,37 +31,6 @@
   color: white;
 }
 
-.timeslotGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 columns for timeslots */
-  gap: 5px;
-  margin-top: 20px;
-}
-
-.timeslot {
-  padding: 10px;
-  background-color: #007bff;
-  border: 1px solid #bbb;
-  border-radius: 5px;
-  text-align: center;
-  cursor: pointer;
-  font-size: 14px;
-  user-select: none;
-}
-
-.timeslot:hover {
-  background-color: #4291e6;
-}
-
-.timeslot:active {
-  background-color: #003cff;
-}
-
-.timeslot.selected {
-  background-color: #4caf50;
-  color: white;
-}
-
 .crossedOut {
   background-color: #550f0a !important; /* Red background */
   border: 1px solid #0ad81c !important; /* Dark red border */
@@ -82,28 +51,4 @@
 
 .emptyDay {
   visibility: hidden; /* Keeps spacing but hides empty cells */
-}
-
-@media screen and (min-width: 1123px) {
-  .calendarDay {
-    padding: 5px;
-    background-color: #007bff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    text-align: center;
-    cursor: pointer;
-    font-size: 16px;
-    user-select: none;
-  }
-
-  .timeslot {
-    padding: 5px;
-    background-color: #007bff;
-    border: 1px solid #bbb;
-    border-radius: 5px;
-    text-align: center;
-    cursor: pointer;
-    font-size: 14px;
-    user-select: none;
-  }
 }
