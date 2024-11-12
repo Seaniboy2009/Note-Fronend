@@ -18,7 +18,7 @@ import {
 import { db } from "../../firebase";
 import { useTheme } from "../../contexts/ThemeSelection";
 import ThemedButton from "../../components/ThemedButton";
-
+import Loader from "../../components/Loader";
 const months = [
   { name: "January", value: 0 },
   { name: "February", value: 1 },
@@ -53,6 +53,9 @@ const CalendarPage = () => {
   const userFirestore = useUser();
   const currentUserId = userFirestore?.user?.uid;
   const { activeTheme, theme } = useTheme();
+  const [color, setColor] = useState("#ff0000"); // default color red
+  const [hasLoaded, setHasLoaded] = useState(false);
+
   // Get array of days for a specific month in the current year
   const getDaysInMonth = (month) => {
     const days = [];
@@ -97,6 +100,7 @@ const CalendarPage = () => {
       }));
       setCalendarEntries(entries);
       console.log("Loaded calendar entries for user: ", entries);
+      setHasLoaded(true);
     };
 
     fetchCalendarEntries();
@@ -149,6 +153,7 @@ const CalendarPage = () => {
         : new Date().toISOString(),
       month: selectedMonth,
       note: note,
+      color: color,
     };
 
     try {
@@ -203,115 +208,144 @@ const CalendarPage = () => {
     }
   };
   return (
-    <Container className={style.calendarContainer}>
-      <Row>
-        <Col>
-          <h2>Calendar Selection</h2>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <label>
-            Select Month:
-            <select
-              value={selectedMonth}
-              onChange={handleMonthChange}
-              style={{
-                backgroundColor: theme[activeTheme].pannelColor,
-                color: theme[activeTheme].color,
-                borderColor: theme[activeTheme].color,
-              }}
-            >
-              {months.map((month, index) => (
-                <option key={index} value={month.value}>
-                  {month.name}
-                </option>
-              ))}
-            </select>
-          </label>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <p>Days in {months[selectedMonth].name}</p>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          {/* Render days of the week headers */}
-          <div className={style.calendarGrid}>
-            {daysOfWeek.map((day, index) => (
-              <div key={index} className={style.dayHeader}>
-                {day}
-              </div>
-            ))}
-            {days.map((day, index) =>
-              day ? (
-                <ThemedButton
-                  key={index}
-                  className={`${style.calendarDay} ${
-                    selectedDay?.getTime() === day.getTime()
-                      ? style.selected
-                      : ""
-                  } ${doesDayHaveEntry(day) ? style.crossedOut : ""}`}
-                  onClick={() => handleDayClick(day)}
+    <Container fluid className={style.calendarContainer}>
+      {hasLoaded ? (
+        <>
+          <Row>
+            <Col>
+              <h2>Calendar Selection</h2>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <label>
+                Select Month:
+                <select
+                  value={selectedMonth}
+                  onChange={handleMonthChange}
+                  style={{
+                    backgroundColor: theme[activeTheme].pannelColor,
+                    color: theme[activeTheme].color,
+                    borderColor: theme[activeTheme].color,
+                  }}
                 >
-                  {day.getDate()}
-                </ThemedButton>
+                  {months.map((month, index) => (
+                    <option key={index} value={month.value}>
+                      {month.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <p>Days in {months[selectedMonth].name}</p>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              {/* Render days of the week headers */}
+              <div className={style.calendarGrid}>
+                {daysOfWeek.map((day, index) => (
+                  <div key={index} className={style.dayHeader}>
+                    {day}
+                  </div>
+                ))}
+                {days.map((day, index) =>
+                  day ? (
+                    <ThemedButton
+                      key={index}
+                      className={`${style.calendarDay} ${
+                        selectedDay?.getTime() === day.getTime()
+                          ? style.selected
+                          : ""
+                      } ${doesDayHaveEntry(day) ? "entryActive" : ""}`}
+                      onClick={() => handleDayClick(day)}
+                      style={{
+                        backgroundColor:
+                          doesDayHaveEntry(day) &&
+                          calendarEntries.find(
+                            (entry) => entry.day === day.getDate()
+                          )?.color
+                            ? calendarEntries.find(
+                                (entry) => entry.day === day.getDate()
+                              ).color
+                            : theme[activeTheme].pannelColor, // Use theme color if no entry
+                      }}
+                    >
+                      {day.getDate()}
+                    </ThemedButton>
+                  ) : (
+                    <div key={index} className={style.emptyDay}></div>
+                  )
+                )}
+              </div>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <p>Selected day: {selectedDay?.toDateString()}</p>
+              {dayEntry ? (
+                <div>
+                  <p>Note: {dayEntry.note || "No note added."}</p>
+                </div>
               ) : (
-                <div key={index} className={style.emptyDay}></div>
-              )
-            )}
-          </div>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <p>Selected day: {selectedDay?.toDateString()}</p>
-          {dayEntry ? (
-            <div>
-              <p>Note: {dayEntry.note || "No note added."}</p>
-            </div>
-          ) : (
-            <p>No entry for this day.</p>
-          )}
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <label>
-            Add/Edit Note:
-            <textarea
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder="Enter your note for this day"
-              style={{
-                backgroundColor: theme[activeTheme].pannelColor,
-                color: theme[activeTheme].color,
-                borderColor: theme[activeTheme].color,
-              }}
-            />
-          </label>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <ThemedButton onClick={() => handleEntryClick()}>
-            Save Entry
-          </ThemedButton>
-        </Col>
-        <Col>
-          {dayEntry ? (
-            <div>
-              <ThemedButton onClick={handleDeleteEntry}>
-                Delete Entry
+                <p>No entry for this day.</p>
+              )}
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <label>
+                Add/Edit Note:
+                <textarea
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  placeholder="Enter your note for this day"
+                  style={{
+                    backgroundColor: theme[activeTheme].pannelColor,
+                    color: theme[activeTheme].color,
+                    borderColor: theme[activeTheme].color,
+                  }}
+                />
+              </label>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <label>
+                Choose Color:
+                <input
+                  type="color"
+                  value={color}
+                  onChange={(e) => setColor(e.target.value)}
+                />
+              </label>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <ThemedButton onClick={() => handleEntryClick()}>
+                Save Entry
               </ThemedButton>
-            </div>
-          ) : (
-            <p>No entry for this day.</p>
-          )}
-        </Col>
-      </Row>
+            </Col>
+            <Col>
+              {dayEntry ? (
+                <div>
+                  <ThemedButton onClick={handleDeleteEntry}>
+                    Delete Entry
+                  </ThemedButton>
+                </div>
+              ) : (
+                <p>No entry for this day.</p>
+              )}
+            </Col>
+          </Row>
+        </>
+      ) : (
+        <Loader spinner text="Loading notes, please wait" />
+      )}
     </Container>
   );
 };

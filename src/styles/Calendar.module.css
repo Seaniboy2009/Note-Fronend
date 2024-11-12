@@ -13,7 +13,7 @@
 
 /* Restrict the maximum width for mobile */
 .calendarContainer {
-  max-width: 100%; /* Ensures no horizontal overflow */
+  max-width: 50%; /* Ensures no horizontal overflow */
   max-height: 80vh; /* Prevents full screen height; adjust as needed */
   overflow-y: auto; /* Allows scrolling if content is too tall */
   overflow-x: hidden; /* Prevent horizontal scrolling */
@@ -21,10 +21,10 @@
 }
 
 /* Styling for calendar days */
+/* Styling for calendar days with the full button color */
 .calendarDay {
+  position: relative;
   padding: 0px 5px;
-  background-color: #007bff;
-  border: 1px solid #ccc;
   border-radius: 1px;
   text-align: center;
   cursor: pointer;
@@ -32,6 +32,18 @@
   user-select: none;
   width: 100%; /* Ensures buttons stretch to fill each grid cell */
   box-sizing: border-box; /* Prevents padding from expanding width */
+  transition: background-color 0.3s ease; /* Smooth color transition */
+}
+
+/* Apply color to the whole button if it has an entry */
+.calendarDay.entryActive {
+  background-color: currentColor; /* Use the selected color */
+}
+
+/* Add styles for the selected day */
+.calendarDay.selected {
+  background-color: #4caf50 !important; /* Green background for selected day */
+  color: white;
 }
 
 .calendarDay.selected {
@@ -59,12 +71,16 @@
 }
 
 /* Mobile-specific styles */
-@media (max-width: 767px) {
+@media (max-width: 1280px) {
   .calendarGrid {
     grid-template-columns: repeat(7, 1fr); /* Keeps 7 columns */
     font-size: 5px; /* Smaller font size on mobile */
     gap: 2px; /* Adjust gap for smaller screens */
     overflow: hidden; /* Allows horizontal scrolling on mobile */
+  }
+
+  .calendarContainer {
+    max-width: 100%; /* Ensures no horizontal overflow */
   }
 
   .calendarDay {
