@@ -25,14 +25,16 @@
 .calendarDay {
   position: relative;
   padding: 0px 5px;
-  border-radius: 1px;
+  border: none; /* Remove border to avoid outline effect */
+  border-radius: 0; /* Optional: set to 0 if rounded corners are adding a visual depth */
   text-align: center;
   cursor: pointer;
   font-size: 12px;
   user-select: none;
-  width: 100%; /* Ensures buttons stretch to fill each grid cell */
-  box-sizing: border-box; /* Prevents padding from expanding width */
-  transition: background-color 0.3s ease; /* Smooth color transition */
+  width: 100%;
+  box-sizing: border-box;
+  color: white; /* Set text color */
+  box-shadow: none; /* Ensure no shadow is adding depth */
 }
 
 /* Apply color to the whole button if it has an entry */

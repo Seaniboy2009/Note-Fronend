@@ -19,6 +19,7 @@ import { db } from "../../firebase";
 import { useTheme } from "../../contexts/ThemeSelection";
 import ThemedButton from "../../components/ThemedButton";
 import Loader from "../../components/Loader";
+import ConfirmationModal from "../../components/ConfirmModal";
 const months = [
   { name: "January", value: 0 },
   { name: "February", value: 1 },
@@ -55,7 +56,9 @@ const CalendarPage = () => {
   const { activeTheme, theme } = useTheme();
   const [color, setColor] = useState("#ff0000"); // default color red
   const [hasLoaded, setHasLoaded] = useState(false);
-
+  const [showModal, setShowModal] = useState(false);
+  const [entryData, setEntryData] = useState(null);
+  const [actionType, setActionType] = useState(null);
   // Get array of days for a specific month in the current year
   const getDaysInMonth = (month) => {
     const days = [];
@@ -144,7 +147,7 @@ const CalendarPage = () => {
       (entry) => entry.year === entryYear && entry.day === entryDay
     );
 
-    const entryData = {
+    const newEntryData = {
       userId: userId,
       year: entryYear,
       day: entryDay,
@@ -153,59 +156,90 @@ const CalendarPage = () => {
         : new Date().toISOString(),
       month: selectedMonth,
       note: note,
-      color: color,
+      color: color, // Now included in both new and existing entries
     };
 
+    if (existingEntry) {
+      // Set the data and show confirmation modal if updating
+      setEntryData({ ...newEntryData, id: existingEntry.id });
+      setShowModal(true);
+      setActionType("edit"); // Set action type to 'edit' (update)
+    } else {
+      // Save new entry directly
+      await saveEntry(newEntryData);
+    }
+  };
+
+  const saveEntry = async (data) => {
     try {
-      if (existingEntry) {
-        // Update the existing entry
-        const entryRef = doc(db, "calendarEntry", existingEntry.id);
-        await updateDoc(entryRef, { note: note }); // Only update the note
-        console.log("Calendar entry updated: ", existingEntry.id);
+      if (data.id) {
+        // Update the existing entry with both note and color
+        const entryRef = doc(db, "calendarEntry", data.id);
+        await updateDoc(entryRef, { note: data.note, color: data.color });
+        console.log("Calendar entry updated: ", data.id);
 
         // Update the entry in the local state
         setCalendarEntries((prevEntries) =>
           prevEntries.map((entry) =>
-            entry.id === existingEntry.id ? { ...entry, note: note } : entry
+            entry.id === data.id
+              ? { ...entry, note: data.note, color: data.color }
+              : entry
           )
         );
       } else {
         // Add a new entry if none exists
-        const docRef = await addDoc(collection(db, "calendarEntry"), entryData);
+        const docRef = await addDoc(collection(db, "calendarEntry"), data);
         console.log("Calendar entry added with ID: ", docRef.id);
 
         // Update local state with the new entry
-        setCalendarEntries([
-          ...calendarEntries,
-          { id: docRef.id, ...entryData },
-        ]);
+        setCalendarEntries([...calendarEntries, { id: docRef.id, ...data }]);
       }
 
       // Set the updated or new entry to dayEntry to reflect immediately
-      setDayEntry(entryData);
+      setDayEntry(data);
+      setEntryData(null);
     } catch (error) {
       console.error("Error adding/updating calendar entry: ", error);
     }
   };
 
-  // Function to handle deleting the entry
-  const handleDeleteEntry = async () => {
-    if (!dayEntry) return; // If no entry is selected, do nothing
+  const handleDeleteClick = (existingEntry) => {
+    console.log("Entry for deletion: ", existingEntry); // Debugging line
+    setEntryData(existingEntry); // Set the entry data to delete
+    setActionType("delete"); // Set action type to 'delete'
+    setShowModal(true); // Show confirmation modal
+  };
+
+  const deleteEntry = async () => {
+    console.log("Deleting entry with ID: ", entryData?.id); // Debugging line
+    if (!entryData?.id) {
+      console.error("No entry ID found, cannot delete.");
+      return;
+    }
 
     try {
-      const entryRef = doc(db, "calendarEntry", dayEntry.id);
-      await deleteDoc(entryRef);
-      console.log("Calendar entry deleted: ", dayEntry.id);
+      const entryRef = doc(db, "calendarEntry", entryData.id);
+      await deleteDoc(entryRef); // Delete from Firestore
+      console.log("Calendar entry deleted: ", entryData.id);
 
-      // Remove the entry from the local state
+      // Remove the deleted entry from local state
       setCalendarEntries((prevEntries) =>
-        prevEntries.filter((entry) => entry.id !== dayEntry.id)
+        prevEntries.filter((entry) => entry.id !== entryData.id)
       );
-      setDayEntry(null); // Reset the selected day entry
-      setNote(""); // Clear the note input
+      setEntryData(null); // Clear entry data after deletion
     } catch (error) {
       console.error("Error deleting calendar entry: ", error);
     }
+  };
+
+  const confirmAction = () => {
+    console.log("Confirmed action: ", actionType);
+    if (actionType === "edit") {
+      saveEntry(entryData); // Update the entry if 'edit'
+    } else if (actionType === "delete") {
+      deleteEntry(); // Delete the entry if 'delete'
+    }
+    setShowModal(false); // Close the modal after action
   };
   return (
     <Container fluid className={style.calendarContainer}>
@@ -283,27 +317,24 @@ const CalendarPage = () => {
               </div>
             </Col>
           </Row>
+          <br />
           <Row>
             <Col>
-              <p>Selected day: {selectedDay?.toDateString()}</p>
-              {dayEntry ? (
-                <div>
-                  <p>Note: {dayEntry.note || "No note added."}</p>
-                </div>
-              ) : (
-                <p>No entry for this day.</p>
-              )}
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <label>
-                Add/Edit Note:
+              <label
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "5px",
+                  width: "100%",
+                }}
+              >
                 <textarea
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
-                  placeholder="Enter your note for this day"
+                  placeholder={dayEntry && dayEntry.note ? "" : "No note added"}
                   style={{
+                    width: "100%",
+                    minHeight: "50px",
                     backgroundColor: theme[activeTheme].pannelColor,
                     color: theme[activeTheme].color,
                     borderColor: theme[activeTheme].color,
@@ -333,7 +364,7 @@ const CalendarPage = () => {
             <Col>
               {dayEntry ? (
                 <div>
-                  <ThemedButton onClick={handleDeleteEntry}>
+                  <ThemedButton onClick={() => handleDeleteClick(dayEntry)}>
                     Delete Entry
                   </ThemedButton>
                 </div>
@@ -342,6 +373,18 @@ const CalendarPage = () => {
               )}
             </Col>
           </Row>
+          <div>
+            <ConfirmationModal
+              show={showModal}
+              onClose={() => setShowModal(false)}
+              onConfirm={confirmAction}
+              message={
+                actionType === "edit"
+                  ? "Are you sure you want to update this existing entry?"
+                  : "Are you sure you want to delete this entry?"
+              }
+            />
+          </div>
         </>
       ) : (
         <Loader spinner text="Loading notes, please wait" />
