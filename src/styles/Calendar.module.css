@@ -14,7 +14,7 @@
 /* Restrict the maximum width for mobile */
 .calendarContainer {
   max-width: 50%; /* Ensures no horizontal overflow */
-  max-height: 80vh; /* Prevents full screen height; adjust as needed */
+  max-height: 85vh; /* Prevents full screen height; adjust as needed */
   overflow-y: auto; /* Allows scrolling if content is too tall */
   overflow-x: hidden; /* Prevent horizontal scrolling */
   padding: 10px; /* Adds a bit of spacing */
@@ -35,6 +35,17 @@
   box-sizing: border-box;
   color: white; /* Set text color */
   box-shadow: none; /* Ensure no shadow is adding depth */
+  min-height: 80px;
+  max-height: 80px;
+  max-width: 120px;
+}
+
+.calendarDayNumber {
+  position: absolute;
+  top: 1px;
+  right: 103px;
+  margin: 0;
+  fontweight: bold;
 }
 
 /* Apply color to the whole button if it has an entry */
@@ -42,14 +53,9 @@
   background-color: currentColor; /* Use the selected color */
 }
 
-/* Add styles for the selected day */
 .calendarDay.selected {
-  background-color: #4caf50 !important; /* Green background for selected day */
-  color: white;
-}
-
-.calendarDay.selected {
-  background-color: #4caf50 !important; /* Green background */
+  background-color: #4caf4f71 !important;
+  outline: 1px solid #4caf4f !important;
   color: white;
 }
 
@@ -85,9 +91,20 @@
     max-width: 100%; /* Ensures no horizontal overflow */
   }
 
+  .calendarDayNumber {
+    position: absolute;
+    top: 1px;
+    right: 41px;
+    margin: 0;
+    fontweight: bold;
+  }
+
   .calendarDay {
-    padding: 3px; /* Adjust padding for smaller screens */
     font-size: 8px; /* Smaller font size on mobile */
+    min-height: 40px;
+    max-height: 40px;
+    max-width: 49px;
+    margin: 0px;
   }
 
   .dayHeader {

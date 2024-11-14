@@ -45,6 +45,8 @@ const daysOfWeek = [
   "Sunday",
 ];
 
+const daysOfWeekShort = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
 const CalendarPage = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedDay, setSelectedDay] = useState(null);
@@ -247,7 +249,7 @@ const CalendarPage = () => {
         <>
           <Row>
             <Col>
-              <h2>Calendar Selection</h2>
+              <h3>Calendar Selection</h3>
             </Col>
           </Row>
           <Row>
@@ -274,14 +276,9 @@ const CalendarPage = () => {
           </Row>
           <Row>
             <Col>
-              <p>Days in {months[selectedMonth].name}</p>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
               {/* Render days of the week headers */}
               <div className={style.calendarGrid}>
-                {daysOfWeek.map((day, index) => (
+                {daysOfWeekShort.map((day, index) => (
                   <div key={index} className={style.dayHeader}>
                     {day}
                   </div>
@@ -308,7 +305,25 @@ const CalendarPage = () => {
                             : theme[activeTheme].pannelColor, // Use theme color if no entry
                       }}
                     >
-                      {day.getDate()}
+                      <p className={style.calendarDayNumber}>{day.getDate()}</p>
+
+                      {/* Display the note if there's an entry for this day */}
+                      {doesDayHaveEntry(day) ? (
+                        <p
+                          style={{
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            paddingTop: "1px",
+                            margin: 0,
+                          }}
+                        >
+                          {
+                            calendarEntries.find(
+                              (entry) => entry.day === day.getDate()
+                            )?.note
+                          }
+                        </p>
+                      ) : null}
                     </ThemedButton>
                   ) : (
                     <div key={index} className={style.emptyDay}></div>
