@@ -25,16 +25,16 @@
 .calendarDay {
   position: relative;
   padding: 0px 5px;
-  border: none; /* Remove border to avoid outline effect */
-  border-radius: 0; /* Optional: set to 0 if rounded corners are adding a visual depth */
+  border: none;
+  border-radius: 0;
   text-align: center;
   cursor: pointer;
   font-size: 12px;
   user-select: none;
   width: 100%;
   box-sizing: border-box;
-  color: white; /* Set text color */
-  box-shadow: none; /* Ensure no shadow is adding depth */
+  color: white;
+  box-shadow: none;
   min-height: 80px;
   max-height: 80px;
   max-width: 120px;
@@ -42,10 +42,10 @@
 
 .calendarDayNumber {
   position: absolute;
-  top: 1px;
-  right: 103px;
+  top: 1px; /* Keeps it at the top */
+  left: 1px; /* Keeps it fixed to the left */
   margin: 0;
-  fontweight: bold;
+  font-weight: bold; /* Ensure text is bold */
 }
 
 /* Apply color to the whole button if it has an entry */
@@ -54,8 +54,7 @@
 }
 
 .calendarDay.selected {
-  background-color: #4caf4f71 !important;
-  outline: 1px solid #4caf4f !important;
+  background-color: #29b32d71 !important;
   color: white;
 }
 
@@ -96,7 +95,7 @@
     top: 1px;
     right: 41px;
     margin: 0;
-    fontweight: bold;
+    font-weight: bold;
   }
 
   .calendarDay {

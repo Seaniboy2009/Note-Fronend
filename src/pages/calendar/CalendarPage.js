@@ -50,10 +50,9 @@ const CalendarPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [entryData, setEntryData] = useState(null);
   const [actionType, setActionType] = useState(null);
-  const [selectedCalendar, setSelectedCalendar] = useState(currentUserId);
+  const [selectedCalendar, setSelectedCalendar] = useState(currentUserId || "");
 
   const sharedCalendars = userFirestore?.sharedCalendars;
-  console.log("Shared calendars: ", sharedCalendars); // Debugging line
   const isEditable = selectedCalendar === currentUserId;
   const advancedFeatures = true;
   const entryMap = new Map(
@@ -79,30 +78,49 @@ const CalendarPage = () => {
     return days;
   };
   const days = getDaysInMonth(selectedMonth);
-
+  useEffect(() => {
+    if (!userFirestore?.user?.uid) {
+      console.error("User is not authenticated");
+      return;
+    }
+    setSelectedCalendar(userFirestore.user.uid); // Ensure selectedCalendar is set correctly from userFirestore
+  }, [userFirestore]);
   useEffect(() => {
     const fetchCalendarEntries = async () => {
-      if (!userFirestore) return; // Ensure user is signed in
-      console.log("Fetching calendar entries for user: ", selectedCalendar);
+      if (!userFirestore || !selectedCalendar || !selectedMonth) {
+        console.error(
+          "Invalid state: either userFirestore or selectedCalendar or selectedMonth is undefined."
+        );
+        return; // Exit early if any required values are undefined
+      }
+
+      const calendarToUse = selectedCalendar || currentUserId; // Ensure selectedCalendar has a fallback value
+      console.log("Fetching calendar entries for user: ", calendarToUse);
 
       const calendarEntryRef = collection(db, "calendarEntry");
       const q = query(
         calendarEntryRef,
         where("month", "==", selectedMonth),
         where("year", "==", new Date().getFullYear()),
-        where("userId", "==", selectedCalendar) // Only fetch entries for the signed-in user
+        where("userId", "==", calendarToUse)
       );
-      const snapshot = await getDocs(q);
-      const entries = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setCalendarEntries(entries);
-      setHasLoaded(true);
+
+      try {
+        const snapshot = await getDocs(q);
+        const entries = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        console.log("Calendar entries fetched: ", entries);
+        setCalendarEntries(entries);
+        setHasLoaded(true); // Set this after fetching
+      } catch (error) {
+        console.error("Error fetching calendar entries: ", error);
+      }
     };
 
     fetchCalendarEntries();
-  }, [selectedMonth, selectedCalendar]);
+  }, [selectedMonth, selectedCalendar, userFirestore]);
 
   const handleMonthChange = (event) => {
     setSelectedMonth(parseInt(event.target.value));
@@ -265,8 +283,8 @@ const CalendarPage = () => {
                       {/* Option for personal calendar */}
                       <option value={currentUserId}>My Calendar</option>
                       {/* Options for shared calendars */}
-                      {sharedCalendars?.map((calendar, index) => (
-                        <option key={index} value={calendar.userId}>
+                      {sharedCalendars?.map((calendar) => (
+                        <option key={calendar.name} value={calendar.userId}>
                           {calendar.name}
                         </option>
                       ))}
@@ -274,28 +292,6 @@ const CalendarPage = () => {
                   </label>
                 </Col>
               </Row>
-              {/* <Row>
-                <Col>
-                  <label>
-                    Select Year:
-                    <select
-                      value={selectedMonth}
-                      onChange={handleMonthChange}
-                      style={{
-                        backgroundColor: theme[activeTheme].pannelColor,
-                        color: theme[activeTheme].color,
-                        borderColor: theme[activeTheme].color,
-                      }}
-                    >
-                      {months.map((month, index) => (
-                        <option key={index} value={month.value}>
-                          {month.name}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                </Col>
-              </Row> */}
             </>
           ) : null}
           <Row>
@@ -311,8 +307,8 @@ const CalendarPage = () => {
                     borderColor: theme[activeTheme].color,
                   }}
                 >
-                  {months.map((month, index) => (
-                    <option key={index} value={month.value}>
+                  {months.map((month) => (
+                    <option key={month.name} value={month.value}>
                       {month.name}
                     </option>
                   ))}
@@ -324,15 +320,15 @@ const CalendarPage = () => {
             <Col>
               {/* Render days of the week headers */}
               <div className={style.calendarGrid}>
-                {daysOfWeekShort.map((day, index) => (
-                  <div key={index} className={style.dayHeader}>
+                {daysOfWeekShort.map((day) => (
+                  <div key={day} className={style.dayHeader}>
                     {day}
                   </div>
                 ))}
-                {days.map((day, index) =>
+                {days.map((day) =>
                   day ? (
                     <ThemedButton
-                      key={index}
+                      key={day}
                       className={`${style.calendarDay} ${
                         selectedDay?.getTime() === day.getTime()
                           ? style.selected
@@ -372,7 +368,7 @@ const CalendarPage = () => {
                       ) : null}
                     </ThemedButton>
                   ) : (
-                    <div key={index} className={style.emptyDay}></div>
+                    <div key={day} className={style.emptyDay}></div>
                   )
                 )}
               </div>
@@ -462,7 +458,7 @@ const CalendarPage = () => {
           </div>
         </>
       ) : (
-        <Loader spinner text="Loading notes, please wait" />
+        <Loader spinner text="Loading calendar, please wait" />
       )}
     </Container>
   );
