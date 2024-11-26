@@ -4,7 +4,6 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useUser } from "../../contexts/UserContext";
-import appStyle from "../../styles/App.module.css";
 import {
   doc,
   addDoc,
@@ -35,16 +34,6 @@ const months = [
   { name: "December", value: 11 },
 ];
 
-const daysOfWeek = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
-
 const daysOfWeekShort = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 const CalendarPage = () => {
@@ -61,7 +50,16 @@ const CalendarPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [entryData, setEntryData] = useState(null);
   const [actionType, setActionType] = useState(null);
-  // Get array of days for a specific month in the current year
+  const [selectedCalendar, setSelectedCalendar] = useState(currentUserId);
+
+  const sharedCalendars = userFirestore?.sharedCalendars;
+  console.log("Shared calendars: ", sharedCalendars); // Debugging line
+  const isEditable = selectedCalendar === currentUserId;
+  const advancedFeatures = true;
+  const entryMap = new Map(
+    calendarEntries.map((entry) => [`${entry.year}-${entry.day}`, entry])
+  );
+
   const getDaysInMonth = (month) => {
     const days = [];
     const year = new Date().getFullYear();
@@ -82,21 +80,17 @@ const CalendarPage = () => {
   };
   const days = getDaysInMonth(selectedMonth);
 
-  // Fetch calendar entries from Firebase for the selected month
   useEffect(() => {
     const fetchCalendarEntries = async () => {
       if (!userFirestore) return; // Ensure user is signed in
-      console.log(
-        "Fetching calendar entries for user: ",
-        userFirestore.user.uid
-      );
+      console.log("Fetching calendar entries for user: ", selectedCalendar);
 
       const calendarEntryRef = collection(db, "calendarEntry");
       const q = query(
         calendarEntryRef,
         where("month", "==", selectedMonth),
         where("year", "==", new Date().getFullYear()),
-        where("userId", "==", currentUserId) // Only fetch entries for the signed-in user
+        where("userId", "==", selectedCalendar) // Only fetch entries for the signed-in user
       );
       const snapshot = await getDocs(q);
       const entries = snapshot.docs.map((doc) => ({
@@ -104,12 +98,11 @@ const CalendarPage = () => {
         ...doc.data(),
       }));
       setCalendarEntries(entries);
-      console.log("Loaded calendar entries for user: ", entries);
       setHasLoaded(true);
     };
 
     fetchCalendarEntries();
-  }, [selectedMonth, currentUserId]);
+  }, [selectedMonth, selectedCalendar]);
 
   const handleMonthChange = (event) => {
     setSelectedMonth(parseInt(event.target.value));
@@ -131,11 +124,8 @@ const CalendarPage = () => {
   };
 
   const doesDayHaveEntry = (day) => {
-    const dayOfMonth = day.getDate();
-    const year = day.getFullYear();
-    return calendarEntries.some(
-      (entry) => entry.year === year && entry.day === dayOfMonth
-    );
+    const key = `${day.getFullYear()}-${day.getDate()}`;
+    return entryMap.has(key);
   };
 
   const handleEntryClick = async () => {
@@ -243,6 +233,11 @@ const CalendarPage = () => {
     }
     setShowModal(false); // Close the modal after action
   };
+
+  const handleCalendarChange = (event) => {
+    setSelectedCalendar(event.target.value); // Set selected calendar to user’s personal or shared calendar
+  };
+
   return (
     <Container fluid className={style.calendarContainer}>
       {hasLoaded ? (
@@ -252,6 +247,57 @@ const CalendarPage = () => {
               <h3>Calendar Selection</h3>
             </Col>
           </Row>
+          {advancedFeatures ? (
+            <>
+              <Row>
+                <Col>
+                  <label>
+                    Select Calendar:
+                    <select
+                      value={selectedCalendar}
+                      onChange={handleCalendarChange}
+                      style={{
+                        backgroundColor: theme[activeTheme].pannelColor,
+                        color: theme[activeTheme].color,
+                        borderColor: theme[activeTheme].color,
+                      }}
+                    >
+                      {/* Option for personal calendar */}
+                      <option value={currentUserId}>My Calendar</option>
+                      {/* Options for shared calendars */}
+                      {sharedCalendars?.map((calendar, index) => (
+                        <option key={index} value={calendar.userId}>
+                          {calendar.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </Col>
+              </Row>
+              {/* <Row>
+                <Col>
+                  <label>
+                    Select Year:
+                    <select
+                      value={selectedMonth}
+                      onChange={handleMonthChange}
+                      style={{
+                        backgroundColor: theme[activeTheme].pannelColor,
+                        color: theme[activeTheme].color,
+                        borderColor: theme[activeTheme].color,
+                      }}
+                    >
+                      {months.map((month, index) => (
+                        <option key={index} value={month.value}>
+                          {month.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </Col>
+              </Row> */}
+            </>
+          ) : null}
           <Row>
             <Col>
               <label>
@@ -333,61 +379,75 @@ const CalendarPage = () => {
             </Col>
           </Row>
           <br />
-          <Row>
-            <Col>
-              <label
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "5px",
-                  width: "100%",
-                }}
-              >
-                <textarea
-                  value={note}
-                  onChange={(e) => setNote(e.target.value)}
-                  placeholder={dayEntry && dayEntry.note ? "" : "No note added"}
-                  style={{
-                    width: "100%",
-                    minHeight: "50px",
-                    backgroundColor: theme[activeTheme].pannelColor,
-                    color: theme[activeTheme].color,
-                    borderColor: theme[activeTheme].color,
-                  }}
-                />
-              </label>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <label>
-                Choose Color:
-                <input
-                  type="color"
-                  value={color}
-                  onChange={(e) => setColor(e.target.value)}
-                />
-              </label>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <ThemedButton onClick={() => handleEntryClick()}>
-                Save Entry
-              </ThemedButton>
-            </Col>
-            <Col>
-              {dayEntry ? (
-                <div>
-                  <ThemedButton onClick={() => handleDeleteClick(dayEntry)}>
-                    Delete Entry
+          {isEditable ? (
+            <>
+              <Row>
+                <Col>
+                  <label
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "5px",
+                      width: "100%",
+                    }}
+                  >
+                    <textarea
+                      disabled={!isEditable}
+                      value={note}
+                      onChange={(e) => setNote(e.target.value)}
+                      placeholder={
+                        dayEntry && dayEntry.note ? "" : "No note added"
+                      }
+                      style={{
+                        width: "100%",
+                        minHeight: "50px",
+                        backgroundColor: theme[activeTheme].pannelColor,
+                        color: theme[activeTheme].color,
+                        borderColor: theme[activeTheme].color,
+                      }}
+                    />
+                  </label>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <label>
+                    Choose Color:
+                    <input
+                      disabled={!isEditable}
+                      type="color"
+                      value={color}
+                      onChange={(e) => setColor(e.target.value)}
+                    />
+                  </label>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <ThemedButton
+                    disabled={!isEditable}
+                    onClick={() => handleEntryClick()}
+                  >
+                    Save Entry
                   </ThemedButton>
-                </div>
-              ) : (
-                <p>No entry for this day.</p>
-              )}
-            </Col>
-          </Row>
+                </Col>
+                <Col>
+                  {dayEntry ? (
+                    <div>
+                      <ThemedButton
+                        disabled={!isEditable}
+                        onClick={() => handleDeleteClick(dayEntry)}
+                      >
+                        Delete Entry
+                      </ThemedButton>
+                    </div>
+                  ) : (
+                    <p>No entry for this day.</p>
+                  )}
+                </Col>
+              </Row>
+            </>
+          ) : null}
           <div>
             <ConfirmationModal
               show={showModal}

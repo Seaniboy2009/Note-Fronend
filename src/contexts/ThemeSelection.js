@@ -46,7 +46,6 @@ export const ThemeProvider = ({ children }) => {
     document.body.style.backgroundColor = currentTheme.backgroundColor;
     document.body.style.color = currentTheme.color;
     localStorage.setItem("theme", activeTheme);
-    console.log("Active theme: ", activeTheme);
   }, [activeTheme]);
 
   const changeTheme = (newTheme) => {
