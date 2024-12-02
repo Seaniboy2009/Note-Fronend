@@ -37,7 +37,7 @@
   box-shadow: none;
   min-height: 80px;
   max-height: 80px;
-  max-width: 120px;
+  /* max-width: 120px; testing this */
 }
 
 .calendarDayNumber {
@@ -74,75 +74,49 @@
 
 /* Ensures empty days are hidden, keeping spacing in the grid */
 .emptyDay {
-  visibility: hidden; /* Keeps spacing but hides empty cells */
+  /* visibility: hidden; */
+  background-color: rgba(255, 0, 0, 0.089);
 }
 
 /* Mobile-specific styles */
 @media (max-width: 1280px) {
-  .calendarGrid {
-    grid-template-columns: repeat(7, 1fr); /* Keeps 7 columns */
-    font-size: 5px; /* Smaller font size on mobile */
-    gap: 2px; /* Adjust gap for smaller screens */
-    overflow: hidden; /* Allows horizontal scrolling on mobile */
-  }
-
   .calendarContainer {
-    max-width: 100%; /* Ensures no horizontal overflow */
+    max-width: 100%;
   }
+}
 
-  .calendarDayNumber {
-    position: absolute;
-    top: 1px;
-    right: 41px;
-    margin: 0;
-    font-weight: bold;
-  }
-
+@media (max-width: 768px) {
   .calendarDay {
-    font-size: 8px; /* Smaller font size on mobile */
+    font-size: 8px;
     min-height: 40px;
     max-height: 40px;
-    max-width: 49px;
+    /* max-width: 49px; */
     margin: 0px;
-  }
-
-  .dayHeader {
-    font-size: 10px; /* Smaller header font for mobile */
   }
 }
 
 /* Tablet-specific styles */
-@media (min-width: 768px) and (max-width: 1024px) {
+/* @media (min-width: 768px) and (max-width: 1024px) {
   .calendarGrid {
-    grid-template-columns: repeat(7, 1fr); /* 7 columns for tablets */
-    font-size: 12px; /* Adjust font size for tablets */
+    grid-template-columns: repeat(7, 1fr);
+    font-size: 12px;
   }
 
   .calendarDay {
-    padding: 8px; /* Add padding for tablet size */
-    font-size: 12px; /* Set font size */
+    padding: 8px;
+    font-size: 12px;
   }
 
   .dayHeader {
-    font-size: 14px; /* Slightly larger header font for tablets */
+    font-size: 14px;
     padding: 5px;
   }
-}
+} */
 
-/* Desktop styles */
-@media (min-width: 1025px) {
-  .calendarGrid {
-    grid-template-columns: repeat(7, 1fr); /* 7 columns for desktop */
-    font-size: 14px; /* Larger font size on desktop */
-  }
-
-  .calendarDay {
-    padding: 10px; /* Larger padding for desktop */
-    font-size: 14px; /* Set larger font size */
-  }
-
-  .dayHeader {
-    font-size: 16px; /* Larger header font for desktop */
-    padding: 10px;
-  }
-}
+/* .calendarDay {
+  font-size: 8px;
+  min-height: 40px;
+  max-height: 40px;
+  max-width: 49px;
+  margin: 0px;
+} */

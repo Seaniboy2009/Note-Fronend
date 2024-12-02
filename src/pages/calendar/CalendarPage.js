@@ -37,6 +37,7 @@ const months = [
 const daysOfWeekShort = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 const CalendarPage = () => {
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedDay, setSelectedDay] = useState(null);
   const [calendarEntries, setCalendarEntries] = useState([]);
@@ -58,26 +59,33 @@ const CalendarPage = () => {
   const entryMap = new Map(
     calendarEntries.map((entry) => [`${entry.year}-${entry.day}`, entry])
   );
-
-  const getDaysInMonth = (month) => {
+  const getDaysInMonth = (month, year) => {
     const days = [];
-    const year = new Date().getFullYear();
     const date = new Date(year, month, 1);
 
-    // Calculate the first day position (e.g., if the month starts on a Wednesday, add empty days for Monday and Tuesday)
-    const firstDayOfWeek = (date.getDay() + 6) % 7; // Adjust Sunday as the last day of the week
+    // Calculate the starting position
+    const firstDayOfWeek = (date.getDay() + 6) % 7; // Adjust Sunday (0) to be last
+
+    console.log(
+      `Month: ${month}, Year: ${year}, First Day: ${date}, firstDayOfWeek: ${firstDayOfWeek}`
+    );
+
+    // Add null placeholders for days before the start of the month
     for (let i = 0; i < firstDayOfWeek; i++) {
-      days.push(null); // Empty cells to align the starting day
+      days.push(null);
     }
 
-    // Populate the calendar days for the month
+    // Populate days in the current month
     while (date.getMonth() === month) {
-      days.push(new Date(date));
-      date.setDate(date.getDate() + 1);
+      days.push(new Date(date)); // Push the current day
+      date.setDate(date.getDate() + 1); // Move to the next day
     }
+
     return days;
   };
-  const days = getDaysInMonth(selectedMonth);
+
+  const days = getDaysInMonth(selectedMonth, selectedYear);
+
   useEffect(() => {
     if (!userFirestore?.user?.uid) {
       console.error("User is not authenticated");
@@ -85,6 +93,7 @@ const CalendarPage = () => {
     }
     setSelectedCalendar(userFirestore.user.uid); // Ensure selectedCalendar is set correctly from userFirestore
   }, [userFirestore]);
+
   useEffect(() => {
     const fetchCalendarEntries = async () => {
       if (!userFirestore || !selectedCalendar || !selectedMonth) {
@@ -123,7 +132,17 @@ const CalendarPage = () => {
   }, [selectedMonth, selectedCalendar, userFirestore]);
 
   const handleMonthChange = (event) => {
-    setSelectedMonth(parseInt(event.target.value));
+    const newMonth = parseInt(event.target.value);
+    let newYear = selectedYear;
+
+    if (newMonth < selectedMonth && selectedMonth === 0) {
+      newYear -= 1; // Wrap from January to December of the previous year
+    } else if (newMonth > selectedMonth && selectedMonth === 11) {
+      newYear += 1; // Wrap from December to January of the next year
+    }
+
+    setSelectedMonth(newMonth);
+    setSelectedYear(newYear);
     setSelectedDay(null);
     setDayEntry(null); // Clear the day entry when month changes
   };
@@ -262,73 +281,66 @@ const CalendarPage = () => {
         <>
           <Row>
             <Col>
-              <h3>Calendar Selection</h3>
+              <h4>Calendar</h4>
             </Col>
           </Row>
           {advancedFeatures ? (
             <>
-              <Row>
+              <Row style={{ paddingBottom: "5px" }}>
                 <Col>
-                  <label>
-                    Select Calendar:
-                    <select
-                      value={selectedCalendar}
-                      onChange={handleCalendarChange}
-                      style={{
-                        backgroundColor: theme[activeTheme].pannelColor,
-                        color: theme[activeTheme].color,
-                        borderColor: theme[activeTheme].color,
-                      }}
-                    >
-                      {/* Option for personal calendar */}
-                      <option value={currentUserId}>My Calendar</option>
-                      {/* Options for shared calendars */}
-                      {sharedCalendars?.map((calendar) => (
-                        <option key={calendar.name} value={calendar.userId}>
-                          {calendar.name}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                  <select
+                    value={selectedCalendar}
+                    onChange={handleCalendarChange}
+                    style={{
+                      backgroundColor: theme[activeTheme].pannelColor,
+                      color: theme[activeTheme].color,
+                      borderColor: theme[activeTheme].color,
+                    }}
+                  >
+                    {/* Option for personal calendar */}
+                    <option value={currentUserId}>My Calendar</option>
+                    {/* Options for shared calendars */}
+                    {sharedCalendars?.map((calendar) => (
+                      <option key={calendar.name} value={calendar.userId}>
+                        {calendar.name}
+                      </option>
+                    ))}
+                  </select>
                 </Col>
               </Row>
             </>
           ) : null}
           <Row>
             <Col>
-              <label>
-                Select Month:
-                <select
-                  value={selectedMonth}
-                  onChange={handleMonthChange}
-                  style={{
-                    backgroundColor: theme[activeTheme].pannelColor,
-                    color: theme[activeTheme].color,
-                    borderColor: theme[activeTheme].color,
-                  }}
-                >
-                  {months.map((month) => (
-                    <option key={month.name} value={month.value}>
-                      {month.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <select
+                value={selectedMonth}
+                onChange={handleMonthChange}
+                style={{
+                  backgroundColor: theme[activeTheme].pannelColor,
+                  color: theme[activeTheme].color,
+                  borderColor: theme[activeTheme].color,
+                }}
+              >
+                {months.map((month) => (
+                  <option key={month.name} value={month.value}>
+                    {month.name} {selectedYear}
+                  </option>
+                ))}
+              </select>
             </Col>
           </Row>
           <Row>
             <Col>
-              {/* Render days of the week headers */}
               <div className={style.calendarGrid}>
                 {daysOfWeekShort.map((day) => (
                   <div key={day} className={style.dayHeader}>
-                    {day}
+                    <p>{day}</p>
                   </div>
                 ))}
-                {days.map((day) =>
+                {days.map((day, index) =>
                   day ? (
                     <ThemedButton
-                      key={day}
+                      key={index}
                       className={`${style.calendarDay} ${
                         selectedDay?.getTime() === day.getTime()
                           ? style.selected
@@ -344,12 +356,10 @@ const CalendarPage = () => {
                             ? calendarEntries.find(
                                 (entry) => entry.day === day.getDate()
                               ).color
-                            : theme[activeTheme].pannelColor, // Use theme color if no entry
+                            : theme[activeTheme].pannelColor,
                       }}
                     >
                       <p className={style.calendarDayNumber}>{day.getDate()}</p>
-
-                      {/* Display the note if there's an entry for this day */}
                       {doesDayHaveEntry(day) ? (
                         <p
                           style={{
@@ -368,7 +378,7 @@ const CalendarPage = () => {
                       ) : null}
                     </ThemedButton>
                   ) : (
-                    <div key={day} className={style.emptyDay}></div>
+                    <div key={index} className={style.emptyDay}></div>
                   )
                 )}
               </div>

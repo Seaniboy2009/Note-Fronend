@@ -2,58 +2,10 @@
   display: flex;
 }
 
-/* This is to separe the header and rest of app */
 .Main {
   min-height: 140vh;
   padding-top: 90px;
 }
-
-/*  *********************************THEME************************************ */
-/* ***************************************Dark********************************* */
-
-/* .TextRed,
-.BodyRed {
-  color: #9d0913 !important;
-  padding: 0;
-}
-
-.inputRed {
-  color: #9d0913 !important;
-  background-color: #240000 !important;
-  border: 0px;
-}
-
-.BorderRed {
-  border: 1px solid #9d0913 !important;
-}
-
-.BorderRedBottom {
-  border-bottom: 1px solid #9d0913;
-}
-
-.BackgroundRed,
-.BodyRed {
-  background-color: #100000 !important;
-} */
-
-/* For the header and border */
-/* .HeaderThemeRed {
-  background-color: #240000 !important;
-  border-bottom: 1px solid #410004;
-}
-
-.BackgroundRedContrast {
-  background-color: #240000 !important;
-  border-radius: 10px;
-  border: 1px solid #410004;
-  margin-top: 12px;
-}
-
-.BackgroundContainerRed,
-.BackgroundContainerSmallRed {
-  text-align: center;
-  margin-top: 12px;
-} */
 
 .BackgroundContainer {
   text-align: center;
@@ -189,8 +141,6 @@
 .ButtonNavBar {
   height: 60px;
   width: 60px;
-  /* background-color: #240000;
-  color: #9d0913; */
   border: none;
   font-size: 200%;
 }
@@ -203,8 +153,8 @@
 /* Small screen */
 @media screen and (max-width: 1024px) {
   .Main {
-    padding-top: 50px;
-    padding-bottom: 50px;
+    padding-top: 20px;
+    padding-bottom: 20px;
   }
 }
 
