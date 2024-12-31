@@ -18,6 +18,7 @@ type userData = {
   dateCreated: string;
   admin: boolean;
   sharedCalendars: string[]; // Assume sharedCalendars is always a string array
+  advancedUser: boolean; // Add advancedUser field
 };
 
 const UserContext = createContext<userData | null>(null);
@@ -54,6 +55,7 @@ export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
             dateCreated: data.dateCreated || "",
             admin: data.admin || false,
             sharedCalendars: data.sharedCalendars || [],
+            advancedUser: data.advancedUser || false,
           });
           console.log("User details fetched successfully:", data);
         } else {
@@ -63,6 +65,7 @@ export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
             dateCreated: "",
             admin: false,
             sharedCalendars: [],
+            advancedUser: false,
           });
         }
       } catch (error) {

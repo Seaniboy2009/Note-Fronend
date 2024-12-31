@@ -19,6 +19,7 @@ export const theme = {
     border: "1px solid #410004",
     color: "#9d0913",
     altColor: "#4b1fa3",
+    hoverColor: "#a63c3a",
   },
   Starfield: {
     backgroundColor: "#265e70",
@@ -26,6 +27,7 @@ export const theme = {
     border: "1px solid #88c0c2",
     color: "#e5e9e6",
     altColor: "#265e70",
+    hoverColor: "#a63c3a",
   },
   purple: {
     backgroundColor: "#4b1fa3",
@@ -33,6 +35,7 @@ export const theme = {
     border: "1px solid #a63c3a",
     color: "#e9b8ff",
     altColor: "#a63c3a",
+    hoverColor: "#7830db",
   },
 };
 

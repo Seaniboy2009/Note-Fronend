@@ -4,6 +4,8 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useUser } from "../../contexts/UserContext";
+import appStyle from "../../styles/App.module.css";
+import AddEntryModal from "../../components/AddEntryModal";
 import {
   doc,
   addDoc,
@@ -19,32 +21,22 @@ import { useTheme } from "../../contexts/ThemeSelection";
 import ThemedButton from "../../components/ThemedButton";
 import Loader from "../../components/Loader";
 import ConfirmationModal from "../../components/ConfirmModal";
-const months = [
-  { name: "January", value: 0 },
-  { name: "February", value: 1 },
-  { name: "March", value: 2 },
-  { name: "April", value: 3 },
-  { name: "May", value: 4 },
-  { name: "June", value: 5 },
-  { name: "July", value: 6 },
-  { name: "August", value: 7 },
-  { name: "September", value: 8 },
-  { name: "October", value: 9 },
-  { name: "November", value: 10 },
-  { name: "December", value: 11 },
-];
-
-const daysOfWeekShort = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+import {
+  months,
+  daysOfWeekShort,
+  getDaysInMonth,
+} from "../../utils/CalendarData";
 
 const CalendarPage = () => {
+  const userFirestore = useUser();
+  const currentUserId = userFirestore?.user?.uid;
+
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedDay, setSelectedDay] = useState(null);
   const [calendarEntries, setCalendarEntries] = useState([]);
   const [dayEntry, setDayEntry] = useState(null); // Entry details for selected day
   const [note, setNote] = useState(""); // Note input state
-  const userFirestore = useUser();
-  const currentUserId = userFirestore?.user?.uid;
   const { activeTheme, theme } = useTheme();
   const [color, setColor] = useState("#ff0000"); // default color red
   const [hasLoaded, setHasLoaded] = useState(false);
@@ -52,36 +44,26 @@ const CalendarPage = () => {
   const [entryData, setEntryData] = useState(null);
   const [actionType, setActionType] = useState(null);
   const [selectedCalendar, setSelectedCalendar] = useState(currentUserId || "");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const sharedCalendars = userFirestore?.sharedCalendars;
   const isEditable = selectedCalendar === currentUserId;
-  const advancedFeatures = true;
-  const entryMap = new Map(
-    calendarEntries.map((entry) => [`${entry.year}-${entry.day}`, entry])
-  );
-  const getDaysInMonth = (month, year) => {
-    const days = [];
-    const date = new Date(year, month, 1);
 
-    // Calculate the starting position
-    const firstDayOfWeek = (date.getDay() + 6) % 7; // Adjust Sunday (0) to be last
+  const advancedFeatures = userFirestore?.advancedUser || false;
 
-    console.log(
-      `Month: ${month}, Year: ${year}, First Day: ${date}, firstDayOfWeek: ${firstDayOfWeek}`
-    );
+  const entryMap = new Map();
 
-    // Add null placeholders for days before the start of the month
-    for (let i = 0; i < firstDayOfWeek; i++) {
-      days.push(null);
+  calendarEntries.forEach((entry) => {
+    const key = `${entry.year}-${entry.day}`;
+    if (!entryMap.has(key)) {
+      entryMap.set(key, []);
     }
+    entryMap.get(key).push(entry);
+  });
 
-    // Populate days in the current month
-    while (date.getMonth() === month) {
-      days.push(new Date(date)); // Push the current day
-      date.setDate(date.getDate() + 1); // Move to the next day
-    }
-
-    return days;
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   const days = getDaysInMonth(selectedMonth, selectedYear);
@@ -91,7 +73,7 @@ const CalendarPage = () => {
       console.error("User is not authenticated");
       return;
     }
-    setSelectedCalendar(userFirestore.user.uid); // Ensure selectedCalendar is set correctly from userFirestore
+    setSelectedCalendar(userFirestore.user.uid);
   }, [userFirestore]);
 
   useEffect(() => {
@@ -100,12 +82,10 @@ const CalendarPage = () => {
         console.error(
           "Invalid state: either userFirestore or selectedCalendar or selectedMonth is undefined."
         );
-        return; // Exit early if any required values are undefined
+        return;
       }
 
-      const calendarToUse = selectedCalendar || currentUserId; // Ensure selectedCalendar has a fallback value
-      console.log("Fetching calendar entries for user: ", calendarToUse);
-
+      const calendarToUse = selectedCalendar || currentUserId;
       const calendarEntryRef = collection(db, "calendarEntry");
       const q = query(
         calendarEntryRef,
@@ -120,7 +100,6 @@ const CalendarPage = () => {
           id: doc.id,
           ...doc.data(),
         }));
-        console.log("Calendar entries fetched: ", entries);
         setCalendarEntries(entries);
         setHasLoaded(true); // Set this after fetching
       } catch (error) {
@@ -145,101 +124,119 @@ const CalendarPage = () => {
     setSelectedYear(newYear);
     setSelectedDay(null);
     setDayEntry(null); // Clear the day entry when month changes
+    setIsDropdownOpen(false);
   };
+  //   setSelectedDay(day);
+  //   const dayOfMonth = day.getDate();
+  //   const year = day.getFullYear();
 
-  const handleDayClick = (day) => {
-    setSelectedDay(day);
-    const dayOfMonth = day.getDate();
-    const year = day.getFullYear();
-
-    // Find entry for the selected day and display its details
-    const entry = calendarEntries.find(
-      (entry) => entry.year === year && entry.day === dayOfMonth
-    );
-    setDayEntry(entry || null);
-    setNote(entry?.note || ""); // Load existing note if available
-  };
+  //   // Find entry for the selected day and display its details
+  //   const entry = calendarEntries.find(
+  //     (entry) => entry.year === year && entry.day === dayOfMonth
+  //   );
+  //   setDayEntry(entry || null);
+  //   setNote(entry?.note || ""); // Load existing note if available
+  // };
 
   const doesDayHaveEntry = (day) => {
     const key = `${day.getFullYear()}-${day.getDate()}`;
-    return entryMap.has(key);
+    return entryMap.has(key) && entryMap.get(key).length > 0;
   };
 
-  const handleEntryClick = async () => {
+  const handleCreateEntry = async ({ note, color }) => {
     const userId = userFirestore?.user?.uid;
     if (!selectedDay) return;
 
     const entryYear = selectedDay.getFullYear();
     const entryDay = selectedDay.getDate();
 
-    const existingEntry = calendarEntries.find(
-      (entry) => entry.year === entryYear && entry.day === entryDay
-    );
+    console.log("Creating entry for: ", entryYear, entryDay);
 
+    // const existingEntry = calendarEntries.find(
+    //   (entry) => entry.year === entryYear && entry.day === entryDay
+    // );
+
+    // Prepare the entry data, including default values for new entries
     const newEntryData = {
       userId: userId,
       year: entryYear,
       day: entryDay,
-      createdAt: existingEntry
-        ? existingEntry.createdAt
-        : new Date().toISOString(),
+      // createdAt: existingEntry
+      //   ? existingEntry.createdAt
+      //   : new Date().toISOString(),
+      createdAt: new Date().toISOString(),
       month: selectedMonth,
-      note: note,
-      color: color, // Now included in both new and existing entries
+      note: note || "", // Use the note passed or set empty for new entries
+      color: color || "", // Use the color passed or set empty for new entries
     };
 
-    if (existingEntry) {
-      // Set the data and show confirmation modal if updating
-      setEntryData({ ...newEntryData, id: existingEntry.id });
-      setShowModal(true);
-      setActionType("edit"); // Set action type to 'edit' (update)
-    } else {
-      // Save new entry directly
-      await saveEntry(newEntryData);
+    const docRef = await addDoc(collection(db, "calendarEntry"), newEntryData);
+    console.log("Created new calendar entry with ID: ", docRef.id);
+
+    // Update the state with the newly created entry
+    setCalendarEntries((prevEntries) => [
+      ...prevEntries,
+      { id: docRef.id, ...newEntryData },
+    ]);
+
+    setSelectedDay(null); // Clear the selected day after creating
+  };
+
+  const handleUpdateEntry = async (entry) => {
+    if (!entry) {
+      console.error("entry is undefined");
+      return;
     }
+
+    console.log("Updating entry: ", entry);
+
+    const userId = userFirestore?.user?.uid;
+    const entryDataToSave = {
+      userId: userId,
+      year: selectedDay.getFullYear(),
+      day: selectedDay.getDate(),
+      createdAt: new Date().toISOString(),
+      month: selectedMonth,
+      note: entry.note,
+      color: entry.color,
+    };
+
+    const entryRef = doc(db, "calendarEntry", entry.id);
+    await updateDoc(entryRef, {
+      note: entry.note,
+      color: entry.color,
+    });
+
+    console.log("Calendar entry updated: ", entry.id);
+
+    setCalendarEntries((prevEntries) =>
+      prevEntries.map((entryItem) =>
+        entryItem.id === entry.id
+          ? { ...entryItem, ...entryDataToSave }
+          : entryItem
+      )
+    );
+
+    setSelectedDay(null); // Clear the selected day after updating
   };
 
-  const saveEntry = async (data) => {
-    try {
-      if (data.id) {
-        // Update the existing entry with both note and color
-        const entryRef = doc(db, "calendarEntry", data.id);
-        await updateDoc(entryRef, { note: data.note, color: data.color });
-        console.log("Calendar entry updated: ", data.id);
-
-        // Update the entry in the local state
-        setCalendarEntries((prevEntries) =>
-          prevEntries.map((entry) =>
-            entry.id === data.id
-              ? { ...entry, note: data.note, color: data.color }
-              : entry
-          )
-        );
-      } else {
-        // Add a new entry if none exists
-        const docRef = await addDoc(collection(db, "calendarEntry"), data);
-        console.log("Calendar entry added with ID: ", docRef.id);
-
-        // Update local state with the new entry
-        setCalendarEntries([...calendarEntries, { id: docRef.id, ...data }]);
-      }
-
-      // Set the updated or new entry to dayEntry to reflect immediately
-      setDayEntry(data);
-      setEntryData(null);
-    } catch (error) {
-      console.error("Error adding/updating calendar entry: ", error);
+  // Modal confirmation action buttons
+  const confirmAction = (entry) => {
+    console.log("Confirmed action: ", actionType);
+    if (actionType === "edit") {
+      handleUpdateEntry(entryData);
+    } else if (actionType === "delete") {
+      handleDeleteEntry();
     }
+    setShowModal(false);
   };
 
-  const handleDeleteClick = (existingEntry) => {
-    console.log("Entry for deletion: ", existingEntry); // Debugging line
-    setEntryData(existingEntry); // Set the entry data to delete
-    setActionType("delete"); // Set action type to 'delete'
-    setShowModal(true); // Show confirmation modal
+  const handleCalendarChange = (event) => {
+    setSelectedCalendar(event.target.value);
+    setIsDropdownOpen(false);
   };
 
-  const deleteEntry = async () => {
+  const handleDeleteEntry = async () => {
     console.log("Deleting entry with ID: ", entryData?.id); // Debugging line
     if (!entryData?.id) {
       console.error("No entry ID found, cannot delete.");
@@ -259,20 +256,34 @@ const CalendarPage = () => {
     } catch (error) {
       console.error("Error deleting calendar entry: ", error);
     }
+
+    setSelectedDay(null); // Clear the selected day after deletion
   };
 
-  const confirmAction = () => {
-    console.log("Confirmed action: ", actionType);
-    if (actionType === "edit") {
-      saveEntry(entryData); // Update the entry if 'edit'
-    } else if (actionType === "delete") {
-      deleteEntry(); // Delete the entry if 'delete'
-    }
-    setShowModal(false); // Close the modal after action
+  const handleUpdateClick = async (entry) => {
+    console.log("Updating entry: ", entry);
+    setEntryData(entry);
+    setActionType("edit");
+    setShowModal(true); // Show the confirmation modal
   };
 
-  const handleCalendarChange = (event) => {
-    setSelectedCalendar(event.target.value); // Set selected calendar to user’s personal or shared calendar
+  const handleDeleteClick = (entry) => {
+    setEntryData(entry); // Set the specific entry for deletion
+    setActionType("delete");
+    setShowModal(true); // Show the confirmation modal
+  };
+
+  const handleDayClick = (day) => {
+    setSelectedDay(day);
+    const dayOfMonth = day.getDate();
+    const year = day.getFullYear();
+
+    // Filter all entries for the selected day
+    const entries = calendarEntries.filter(
+      (entry) => entry.year === year && entry.day === dayOfMonth
+    );
+    setDayEntry(entries); // Store as an array of entries
+    setNote(""); // Clear the note input for a new entry
   };
 
   return (
@@ -280,53 +291,88 @@ const CalendarPage = () => {
       {hasLoaded ? (
         <>
           <Row>
-            <Col>
+            <Col xs={6}>
               <h4>Calendar</h4>
             </Col>
-          </Row>
-          {advancedFeatures ? (
-            <>
-              <Row style={{ paddingBottom: "5px" }}>
-                <Col>
-                  <select
-                    value={selectedCalendar}
-                    onChange={handleCalendarChange}
-                    style={{
-                      backgroundColor: theme[activeTheme].pannelColor,
-                      color: theme[activeTheme].color,
-                      borderColor: theme[activeTheme].color,
-                    }}
-                  >
-                    {/* Option for personal calendar */}
-                    <option value={currentUserId}>My Calendar</option>
-                    {/* Options for shared calendars */}
-                    {sharedCalendars?.map((calendar) => (
-                      <option key={calendar.name} value={calendar.userId}>
-                        {calendar.name}
-                      </option>
-                    ))}
-                  </select>
-                </Col>
-              </Row>
-            </>
-          ) : null}
-          <Row>
-            <Col>
-              <select
-                value={selectedMonth}
-                onChange={handleMonthChange}
+            <Col xs={6} style={{ textAlign: "right" }}>
+              <button
+                onClick={toggleDropdown}
                 style={{
-                  backgroundColor: theme[activeTheme].pannelColor,
-                  color: theme[activeTheme].color,
-                  borderColor: theme[activeTheme].color,
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: "24px",
                 }}
+                aria-label="Toggle Dropdown"
               >
-                {months.map((month) => (
-                  <option key={month.name} value={month.value}>
-                    {month.name} {selectedYear}
-                  </option>
-                ))}
-              </select>
+                ☰ {/* Simple Hamburger Icon */}
+              </button>
+              {isDropdownOpen && (
+                <ul
+                  style={{
+                    position: "absolute",
+                    top: "100%",
+                    right: "10%",
+                    margin: "0",
+                    padding: "10px",
+                    listStyle: "none",
+                    backgroundColor: theme[activeTheme].pannelColor,
+                    boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+                    borderRadius: "4px",
+                    zIndex: 100,
+                  }}
+                >
+                  <li>
+                    {" "}
+                    {advancedFeatures ? (
+                      <>
+                        <Row style={{ paddingBottom: "5px" }}>
+                          <Col>
+                            <select
+                              value={selectedCalendar}
+                              onChange={handleCalendarChange}
+                              style={{
+                                backgroundColor: theme[activeTheme].pannelColor,
+                                color: theme[activeTheme].color,
+                                borderColor: theme[activeTheme].color,
+                              }}
+                            >
+                              {/* Option for personal calendar */}
+                              <option value={currentUserId}>My Calendar</option>
+                              {/* Options for shared calendars */}
+                              {sharedCalendars?.map((calendar) => (
+                                <option
+                                  key={calendar.name}
+                                  value={calendar.userId}
+                                >
+                                  {calendar.name}
+                                </option>
+                              ))}
+                            </select>
+                          </Col>
+                        </Row>
+                      </>
+                    ) : null}
+                  </li>
+                  <li>
+                    <select
+                      value={selectedMonth}
+                      onChange={handleMonthChange}
+                      style={{
+                        backgroundColor: theme[activeTheme].pannelColor,
+                        color: theme[activeTheme].color,
+                        borderColor: theme[activeTheme].color,
+                      }}
+                    >
+                      {months.map((month) => (
+                        <option key={month.name} value={month.value}>
+                          {month.name} {selectedYear}
+                        </option>
+                      ))}
+                    </select>
+                  </li>
+                </ul>
+              )}
             </Col>
           </Row>
           <Row>
@@ -348,33 +394,23 @@ const CalendarPage = () => {
                       } ${doesDayHaveEntry(day) ? "entryActive" : ""}`}
                       onClick={() => handleDayClick(day)}
                       style={{
-                        backgroundColor:
-                          doesDayHaveEntry(day) &&
-                          calendarEntries.find(
-                            (entry) => entry.day === day.getDate()
-                          )?.color
-                            ? calendarEntries.find(
-                                (entry) => entry.day === day.getDate()
-                              ).color
-                            : theme[activeTheme].pannelColor,
+                        backgroundColor: theme[activeTheme].pannelColor,
                       }}
                     >
                       <p className={style.calendarDayNumber}>{day.getDate()}</p>
                       {doesDayHaveEntry(day) ? (
-                        <p
-                          style={{
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            paddingTop: "1px",
-                            margin: 0,
-                          }}
-                        >
-                          {
-                            calendarEntries.find(
-                              (entry) => entry.day === day.getDate()
-                            )?.note
-                          }
-                        </p>
+                        <div className={style.entryContainer}>
+                          {entryMap
+                            .get(`${day.getFullYear()}-${day.getDate()}`)
+                            ?.map((entry, idx) => (
+                              <div
+                                key={idx}
+                                className={style.calendarDayBanner}
+                                style={{ backgroundColor: entry.color }}
+                                title={entry.note}
+                              ></div>
+                            ))}
+                        </div>
                       ) : null}
                     </ThemedButton>
                   ) : (
@@ -385,75 +421,113 @@ const CalendarPage = () => {
             </Col>
           </Row>
           <br />
-          {isEditable ? (
+          {isEditable && selectedDay ? (
             <>
-              <Row>
-                <Col>
-                  <label
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "5px",
-                      width: "100%",
-                    }}
-                  >
-                    <textarea
-                      disabled={!isEditable}
-                      value={note}
-                      onChange={(e) => setNote(e.target.value)}
-                      placeholder={
-                        dayEntry && dayEntry.note ? "" : "No note added"
-                      }
-                      style={{
-                        width: "100%",
-                        minHeight: "50px",
-                        backgroundColor: theme[activeTheme].pannelColor,
-                        color: theme[activeTheme].color,
-                        borderColor: theme[activeTheme].color,
-                      }}
-                    />
-                  </label>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <label>
-                    Choose Color:
-                    <input
-                      disabled={!isEditable}
-                      type="color"
-                      value={color}
-                      onChange={(e) => setColor(e.target.value)}
-                    />
-                  </label>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <ThemedButton
-                    disabled={!isEditable}
-                    onClick={() => handleEntryClick()}
-                  >
-                    Save Entry
-                  </ThemedButton>
-                </Col>
-                <Col>
-                  {dayEntry ? (
-                    <div>
-                      <ThemedButton
-                        disabled={!isEditable}
-                        onClick={() => handleDeleteClick(dayEntry)}
+              {dayEntry?.length > 0 ? (
+                dayEntry.map((entry) => (
+                  <Row>
+                    <Col key={entry.id} style={{ marginBottom: "10px" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center", // Aligns items vertically
+                          gap: "10px", // Adds space between the textarea and button
+                        }}
                       >
-                        Delete Entry
-                      </ThemedButton>
-                    </div>
-                  ) : (
-                    <p>No entry for this day.</p>
-                  )}
+                        <p>
+                          {new Date(entry.createdAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </p>
+
+                        <textarea
+                          disabled={!isEditable}
+                          value={entry.note}
+                          onChange={(e) =>
+                            setDayEntry((prev) =>
+                              prev.map((item) =>
+                                item.id === entry.id
+                                  ? { ...item, note: e.target.value }
+                                  : item
+                              )
+                            )
+                          }
+                          placeholder={entry.note ? "" : "No note added"}
+                          style={{
+                            flex: 1, // Makes the textarea take up available space
+                            height: "auto",
+                            backgroundColor: theme[activeTheme].pannelColor,
+                            color: theme[activeTheme].color,
+                            border: "0",
+                            padding: "8px", // Add padding for a better user experience
+                          }}
+                        />
+                        <Row>
+                          <Col style={{ display: "grid", gap: "5px" }}>
+                            <ThemedButton
+                              fullWidth={false}
+                              size="small"
+                              onClick={() => handleUpdateClick(entry)}
+                            >
+                              Update
+                            </ThemedButton>
+                            <ThemedButton
+                              onClick={() => handleDeleteClick(entry)}
+                              fullWidth={false}
+                              size="small"
+                            >
+                              Delete
+                            </ThemedButton>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col> </Col>
+                        </Row>
+                      </div>
+                      {/* Display color picker only if advanced features are enabled */}
+                      {advancedFeatures ? (
+                        <div>
+                          <label>Choose Color:</label>
+                          <input
+                            type="color"
+                            value={entry.color || "#000000"} // Default color if entry.color is undefined
+                            onChange={(e) =>
+                              setDayEntry((prev) =>
+                                prev.map((item) =>
+                                  item.id === entry.id
+                                    ? { ...item, color: e.target.value }
+                                    : item
+                                )
+                              )
+                            }
+                          />
+                        </div>
+                      ) : null}
+                    </Col>
+                  </Row>
+                ))
+              ) : (
+                <Col>
+                  <p>No entries for this day.</p>
                 </Col>
+              )}
+              <Row>
+                <button
+                  className={appStyle.ButtonCreate}
+                  onClick={() => setIsCreateModalOpen(true)}
+                >
+                  <i className="fa-sharp fa-solid fa-plus" />
+                </button>
               </Row>
             </>
-          ) : null}
+          ) : (
+            <Row>
+              <Col>
+                <p>{note}</p>
+              </Col>
+            </Row>
+          )}
           <div>
             <ConfirmationModal
               show={showModal}
@@ -464,6 +538,11 @@ const CalendarPage = () => {
                   ? "Are you sure you want to update this existing entry?"
                   : "Are you sure you want to delete this entry?"
               }
+            />
+            <AddEntryModal
+              isOpen={isCreateModalOpen}
+              onClose={() => setIsCreateModalOpen(false)}
+              onCreate={handleCreateEntry}
             />
           </div>
         </>

@@ -1,7 +1,7 @@
 import React from "react";
 import { useTheme } from "../contexts/ThemeSelection";
 
-// Define sizes without specific `minWidth` for responsiveness
+// Define sizes for buttons
 const sizeStyles = {
   small: {
     padding: "4px 8px",
@@ -17,26 +17,50 @@ const sizeStyles = {
   },
 };
 
-const ThemedButton = ({ children, size = "medium", ...props }) => {
+const ThemedButton = ({
+  children,
+  size = "medium",
+  fullWidth = true, // New prop to control button width
+  ...props
+}) => {
   const { theme, activeTheme } = useTheme();
 
-  // Get the button style based on the active theme
+  // Button styles based on the active theme
   const buttonStyle = {
     backgroundColor: theme[activeTheme].pannelColor,
     color: theme[activeTheme].color,
     borderColor: theme[activeTheme].color,
-    border: "1px solid", // Ensure consistent border
-    borderRadius: "2px", // Adjust the border radius to prevent concave effects
+    border: "1px solid",
+    borderRadius: "2px",
     padding: sizeStyles[size].padding,
-    // fontSize: sizeStyles[size].fontSize,
-    cursor: "pointer", // Change cursor to pointer
-    outline: "none", // Remove default focus outline
+    fontSize: sizeStyles[size].fontSize,
+    cursor: "pointer",
+    outline: "none",
     transition: "background-color 0.3s ease, color 0.3s ease",
-    width: "100%", // Make button width flexible to fill container
+    width: fullWidth ? "100%" : "auto", // Width depends on `fullWidth` prop
+  };
+
+  // Additional hover and focus styles
+  const hoverFocusStyle = {
+    ":hover": {
+      backgroundColor:
+        theme[activeTheme].hoverColor || theme[activeTheme].color,
+      color: theme[activeTheme].pannelColor,
+    },
+    ":focus": {
+      outline: "2px solid",
+      outlineColor: theme[activeTheme].color,
+    },
   };
 
   return (
-    <button style={buttonStyle} {...props}>
+    <button
+      style={{
+        ...buttonStyle,
+        ...hoverFocusStyle,
+      }}
+      {...props}
+    >
       {children}
     </button>
   );
