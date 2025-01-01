@@ -33,6 +33,11 @@ export const daysOfWeek = [
   "Sunday",
 ];
 
+export const years = Array.from(
+  { length: 10 },
+  (_, i) => new Date().getFullYear() - 5 + i
+);
+
 export const getDaysInMonth = (month, year) => {
   const days = [];
   const date = new Date(year, month, 1);

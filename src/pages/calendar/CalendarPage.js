@@ -25,6 +25,7 @@ import {
   months,
   daysOfWeekShort,
   getDaysInMonth,
+  years,
 } from "../../utils/CalendarData";
 
 const CalendarPage = () => {
@@ -78,7 +79,11 @@ const CalendarPage = () => {
 
   useEffect(() => {
     const fetchCalendarEntries = async () => {
-      if (!userFirestore || !selectedCalendar || !selectedMonth) {
+      if (
+        userFirestore == null ||
+        selectedCalendar == null ||
+        selectedMonth == null
+      ) {
         console.error(
           "Invalid state: either userFirestore or selectedCalendar or selectedMonth is undefined."
         );
@@ -90,7 +95,7 @@ const CalendarPage = () => {
       const q = query(
         calendarEntryRef,
         where("month", "==", selectedMonth),
-        where("year", "==", new Date().getFullYear()),
+        where("year", "==", selectedYear),
         where("userId", "==", calendarToUse)
       );
 
@@ -108,7 +113,7 @@ const CalendarPage = () => {
     };
 
     fetchCalendarEntries();
-  }, [selectedMonth, selectedCalendar, userFirestore]);
+  }, [selectedMonth, selectedCalendar, userFirestore, selectedYear]);
 
   const handleMonthChange = (event) => {
     const newMonth = parseInt(event.target.value);
@@ -125,18 +130,11 @@ const CalendarPage = () => {
     setSelectedDay(null);
     setDayEntry(null); // Clear the day entry when month changes
     setIsDropdownOpen(false);
-  };
-  //   setSelectedDay(day);
-  //   const dayOfMonth = day.getDate();
-  //   const year = day.getFullYear();
 
-  //   // Find entry for the selected day and display its details
-  //   const entry = calendarEntries.find(
-  //     (entry) => entry.year === year && entry.day === dayOfMonth
-  //   );
-  //   setDayEntry(entry || null);
-  //   setNote(entry?.note || ""); // Load existing note if available
-  // };
+    console.log("Selected year: ", selectedYear);
+    console.log("Selected month: ", selectedMonth);
+    console.log("Selected day: ", selectedDay);
+  };
 
   const doesDayHaveEntry = (day) => {
     const key = `${day.getFullYear()}-${day.getDate()}`;
@@ -180,6 +178,13 @@ const CalendarPage = () => {
     ]);
 
     setSelectedDay(null); // Clear the selected day after creating
+  };
+
+  const handleYearChange = (event) => {
+    setSelectedYear(Number(event.target.value));
+    console.log("Selected year: ", selectedYear);
+    console.log("Selected month: ", selectedMonth);
+    console.log("Selected day: ", selectedDay);
   };
 
   const handleUpdateEntry = async (entry) => {
@@ -275,6 +280,7 @@ const CalendarPage = () => {
 
   const handleDayClick = (day) => {
     setSelectedDay(day);
+    console.log("Selected day: ", day);
     const dayOfMonth = day.getDate();
     const year = day.getFullYear();
 
@@ -284,6 +290,9 @@ const CalendarPage = () => {
     );
     setDayEntry(entries); // Store as an array of entries
     setNote(""); // Clear the note input for a new entry
+    console.log("Selected year: ", selectedYear);
+    console.log("Selected month: ", selectedMonth);
+    console.log("Selected day: ", selectedDay);
   };
 
   return (
@@ -367,6 +376,24 @@ const CalendarPage = () => {
                       {months.map((month) => (
                         <option key={month.name} value={month.value}>
                           {month.name} {selectedYear}
+                        </option>
+                      ))}
+                    </select>
+                  </li>
+                  <li>
+                    {/* Year Selector */}
+                    <select
+                      value={selectedYear}
+                      onChange={handleYearChange}
+                      style={{
+                        backgroundColor: theme[activeTheme].pannelColor,
+                        color: theme[activeTheme].color,
+                        borderColor: theme[activeTheme].color,
+                      }}
+                    >
+                      {years.map((year) => (
+                        <option key={year} value={year}>
+                          {year}
                         </option>
                       ))}
                     </select>

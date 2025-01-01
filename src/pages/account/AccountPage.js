@@ -1,14 +1,17 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import appStyle from "../../styles/App.module.css";
 import { useTheme } from "../../contexts/ThemeSelection";
+import { getDocs } from "firebase/firestore";
 import { useUser } from "../../contexts/UserContext";
+import { dbUsers } from "../../firebase";
+import ThemedButton from "../../components/ThemedButton";
+import AdminPage from "./AdminPage";
 
 const AccountPage = () => {
   const userFirestore = useUser();
   const { isDarkMode, changeTheme, activeTheme, theme } = useTheme();
   const admin = userFirestore?.admin || false;
-  const advancedUser = userFirestore?.advancedUser || false;
 
   return (
     <Container style={{ marginBottom: admin ? 100 : undefined }}>
@@ -37,12 +40,9 @@ const AccountPage = () => {
             <p>Created: {userFirestore?.dateCreated}</p>
           </Col>
         </Row>
-        <br />
         <Row>
           <Col xl={12}>
             <p>Theme</p>
-
-            {advancedUser && <p>Advanced User</p>}
           </Col>
           {Object.entries(theme).map(([themeName], index) => (
             <>
@@ -71,15 +71,16 @@ const AccountPage = () => {
           className={appStyle.BackgroundContainer}
         >
           <Row>
-            <Col>
-              <p> {admin && <p>Admin</p>}</p>
-            </Col>
+            <Col>{admin && <p>Admin</p>}</Col>
           </Row>
 
           {Object.entries(userFirestore).map(([key, value]) => (
-            <Row style={{ padding: "5px", textAlign: "left" }}>
+            <Row
+              key={`${value} ${key}`}
+              style={{ padding: "5px", textAlign: "left" }}
+            >
               {" "}
-              <Col key={key}>
+              <Col>
                 <strong>{key}:</strong>{" "}
                 {typeof value === "object" && !Array.isArray(value) ? (
                   // If it's an object, format its properties
@@ -96,6 +97,7 @@ const AccountPage = () => {
           ))}
         </Container>
       )}
+      {admin && <AdminPage />}
     </Container>
   );
 };
