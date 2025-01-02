@@ -13,10 +13,7 @@ const AccountPage = () => {
   const { isDarkMode, changeTheme, activeTheme, theme } = useTheme();
   const admin = userFirestore?.admin || false;
   const [userEmailToGrantAccess, setUserEmailToGrantAccess] = useState("");
-  // const calendarsSharedWithUser = userFirestore?.sharedCalendars || [];
-  const [calendarsSharedWithUser, setCalendarsSharedWithUser] = useState(
-    userFirestore?.sharedCalendars || []
-  );
+  const calendarsSharedWithUser = userFirestore?.sharedCalendars || [];
   const [calendarsWithAccess, setCalendarsWithAccess] = useState([]);
   const [error, setError] = useState("");
   const [loadingData, setLoadingData] = useState(false);
