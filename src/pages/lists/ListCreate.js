@@ -34,7 +34,7 @@ const ListCreate = () => {
       const listCreatedResponse = await addDoc(dbLists, {
         title: title,
         is_private: is_private,
-        date_created: new Date(),
+        date_created: new Date().toISOString(),
         userId: userFirestore.user.uid,
       });
       setSubmit(false);

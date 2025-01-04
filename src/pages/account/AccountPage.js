@@ -4,9 +4,11 @@ import appStyle from "../../styles/App.module.css";
 import { useTheme } from "../../contexts/ThemeSelection";
 import { updateDoc, getDocs } from "firebase/firestore";
 import { useUser } from "../../contexts/UserContext";
-import { dbUsers } from "../../firebase";
+import { dbUsers, auth } from "../../firebase";
 import ThemedButton from "../../components/ThemedButton";
 import AdminPage from "./AdminPage";
+import { signOut } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 const AccountPage = () => {
   const userFirestore = useUser();
@@ -21,6 +23,9 @@ const AccountPage = () => {
   const [requestingRemovingAccess, setRequestingRemovingAccess] =
     useState(false);
   const advancedFeatures = userFirestore?.advancedUser || false;
+  const user = auth.currentUser;
+
+  let navigate = useNavigate();
 
   // Fetch the calendars the user has access to
   useEffect(() => {
@@ -256,6 +261,20 @@ const AccountPage = () => {
     }
   };
 
+  const handleSignOut = async () => {
+    try {
+      signOut(auth)
+        .then(() => {
+          navigate("/");
+        })
+        .catch((error) => {
+          console.error("Error signing out:", error);
+        });
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
   if (userFirestore) {
     return (
       <Container style={{ marginBottom: admin ? "10vh" : undefined }}>
@@ -265,6 +284,9 @@ const AccountPage = () => {
             <p>
               <bold>{userFirestore?.user?.email}</bold>
             </p>
+          </Col>
+          <Col>
+            <ThemedButton onClick={handleSignOut}>Sign out</ThemedButton>
           </Col>
         </Row>
         {/* Account details */}

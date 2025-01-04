@@ -6,11 +6,13 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { axiosInstance } from "../../api/axiosDefaults";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { useUser } from "../../contexts/UserContext";
 import { getDocs, query, where } from "firebase/firestore";
 import { dbLists } from "../../firebase";
 import Loader from "../../components/Loader";
 import { useTheme } from "../../contexts/ThemeSelection";
+import { fetchMoreData } from "../../utils/utils";
 
 const useNewDb = true; // ***********TODO remove this once new db is fully implemented**********
 
@@ -29,12 +31,47 @@ const ListPage = () => {
             where("userId", "==", userFirestore.user.uid)
           );
           const querySnapshot = await getDocs(queryLists);
-          const userUpdatedResponse = querySnapshot.docs.map((doc) => ({
-            docId: doc.id, // Firestore document ID
-            ...doc.data(), // Document data
-          }));
-          setMyLists({ results: userUpdatedResponse });
-          console.log("Get my lists data:", userUpdatedResponse);
+          console.log("querySnapshot:", querySnapshot);
+
+          const userUpdatedResponse = querySnapshot.docs.map((doc) => {
+            const data = doc.data();
+
+            // Check and normalize `date_created`
+            let dateCreated = null;
+            if (data.date_created) {
+              if (
+                typeof data.date_created === "object" &&
+                "seconds" in data.date_created
+              ) {
+                // Convert Firestore timestamp to ISO string
+                dateCreated = new Date(
+                  data.date_created.seconds * 1000
+                ).toISOString();
+              } else {
+                // Assume it's already an ISO string
+                dateCreated = data.date_created;
+              }
+            }
+
+            return {
+              docId: doc.id, // Firestore document ID
+              ...data, // Spread the document data
+              dateCreated: dateCreated, // Overwrite `date_created` with normalized value
+            };
+          });
+
+          const sortedResponse = userUpdatedResponse.sort((a, b) => {
+            const dateA = new Date(a.dateCreated);
+            const dateB = new Date(b.dateCreated);
+            return dateB - dateA; // Descending order
+          });
+
+          setMyLists({ results: sortedResponse });
+          console.log(
+            "Get my lists data unsortedResponse:",
+            userUpdatedResponse
+          );
+          console.log("Get my lists data sortedResponse:", sortedResponse);
         }
       } catch (error) {
         const access = localStorage.getItem("access_token");
@@ -59,7 +96,7 @@ const ListPage = () => {
   }, [userFirestore]);
 
   return (
-    <Container fluid className={`text-center ${appStyle.Container}`}>
+    <Container className={`text-center`}>
       {hasLoaded ? (
         <>
           <Row>
@@ -69,7 +106,7 @@ const ListPage = () => {
               </Link>
             </Col>
             <Col xs={10}>
-              <h4>Lists</h4> <p> {useNewDb && "Using new db"}</p>
+              <h4>Lists</h4>
             </Col>
           </Row>
           <br />
@@ -84,29 +121,51 @@ const ListPage = () => {
               </Col>
             </Row>
           ) : null}
-
-          {myLists?.results?.map((list, index) => (
-            <Container
-              style={{
-                backgroundColor: theme[activeTheme].pannelColor,
-                border: theme[activeTheme].border,
-              }}
-              className={` text-left  ${appStyle.BackgroundContainer}`}
+          {myLists?.results?.length !== 0 ? (
+            <InfiniteScroll
+              dataLength={myLists.results.length}
+              next={() => fetchMoreData(myLists, setMyLists)}
+              hasMore={!!myLists.next}
+              loader={<Loader spinner text="Loading, please wait" />}
             >
-              <Link key={list.id} to={`list/${list.docId}`}>
-                <Row>
-                  <Col xs={10}>
-                    <h5 className={style.ListDetails}>{list.title}</h5>
-                  </Col>
-                  <Col>
-                    {list.is_private ? (
-                      <i className={`fa-solid fa-lock ${style.Private}`}></i>
-                    ) : null}
-                  </Col>
-                </Row>
-              </Link>
-            </Container>
-          ))}
+              {myLists?.results?.map((list, index) => (
+                <Link key={list.id} to={`list/${list.docId}`}>
+                  <Row
+                    style={{
+                      backgroundColor: theme[activeTheme].pannelColor,
+                      color: theme[activeTheme].color,
+                      border: theme[activeTheme].border,
+                    }}
+                    className={style.listObject}
+                  >
+                    <Col xs={6}>
+                      <p>{list.title}</p>
+                    </Col>
+                    <Col xs={4}>
+                      <p>
+                        {list.date_created
+                          ? new Date(list.dateCreated).toLocaleTimeString([], {
+                              year: "numeric",
+                              month: "2-digit",
+                              day: "2-digit",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })
+                          : null}
+                      </p>
+                    </Col>
+                    <Col>
+                      {list.is_private ? (
+                        <i className={`fa-solid fa-lock ${style.Private}`}></i>
+                      ) : null}
+                    </Col>
+                  </Row>
+                </Link>
+              ))}
+            </InfiniteScroll>
+          ) : (
+            <p>No lists yet</p>
+          )}
         </>
       ) : (
         <Loader spinner text="Loading lists, please wait" />

@@ -68,7 +68,7 @@ const NoteListPage = () => {
               </Link>
             </Col>
             <Col xs={10}>
-              <h4>Notes</h4> <p> {useNewDb && "Using new db"}</p>
+              <h4>Notes</h4>
             </Col>
           </Row>
           <br />

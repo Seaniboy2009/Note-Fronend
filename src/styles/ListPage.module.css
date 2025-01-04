@@ -12,6 +12,14 @@
   text-align: left;
 }
 
+.listObject {
+  margin-bottom: 12px;
+  font-size: 100%;
+  overflow-wrap: break-word;
+  width: 100%;
+  display: inline-flex;
+}
+
 .List:hover {
   background-color: #410004;
   border: 1px solid #240000;
@@ -28,11 +36,9 @@
 
 a {
   text-decoration: none;
-  /* color: #9d0913; */
   font-size: 140%;
 }
 
 a:hover {
   text-decoration: none;
-  /* color: #470307; */
 }

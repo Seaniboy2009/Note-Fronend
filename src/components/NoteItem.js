@@ -296,7 +296,7 @@ const NoteItem = (props) => {
   // layout for the notes list page
   const noteListPage = (
     //<Link to={`note/${id}`} className={style.Link}> // this is the original line
-    <Link to={`note/${docId}`} className={style.Link}>
+    <Link to={`note/${docId}`}>
       <Row
         style={{
           backgroundColor: theme[activeTheme].pannelColor,

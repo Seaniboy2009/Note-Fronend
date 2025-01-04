@@ -111,7 +111,14 @@ const CalendarPage = () => {
     };
 
     fetchCalendarEntries();
-  }, [selectedMonth, selectedCalendar, userFirestore, selectedYear]);
+  }, [
+    selectedMonth,
+    selectedCalendar,
+    userFirestore,
+    selectedYear,
+    calendarEntries,
+    currentUserId,
+  ]);
 
   const handleMonthChange = (event) => {
     const newMonth = parseInt(event.target.value);
@@ -154,18 +161,11 @@ const CalendarPage = () => {
 
     console.log("Creating entry for: ", entryYear, entryDay);
 
-    // const existingEntry = calendarEntries.find(
-    //   (entry) => entry.year === entryYear && entry.day === entryDay
-    // );
-
     // Prepare the entry data, including default values for new entries
     const newEntryData = {
       userId: userId,
       year: entryYear,
       day: entryDay,
-      // createdAt: existingEntry
-      //   ? existingEntry.createdAt
-      //   : new Date().toISOString(),
       createdAt: new Date().toISOString(),
       month: selectedMonth,
       note: note || "", // Use the note passed or set empty for new entries
