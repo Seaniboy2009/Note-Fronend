@@ -4,8 +4,6 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useTheme } from "../contexts/ThemeSelection";
 import { Container } from "react-bootstrap";
-import { deleteDoc, doc } from "firebase/firestore";
-import { dbListItems } from "../firebase"; // Make sure you import your Firestore collection
 import ThemedButton from "./ThemedButton";
 
 const ListItem = ({ listItem, onToggle, onDelete }) => {
@@ -49,11 +47,7 @@ const ListItem = ({ listItem, onToggle, onDelete }) => {
             <strong>{listItem?.content}</strong>
           </p>
         </Col>
-        <Col
-          xs={2}
-          className={style.ListItem}
-          style={{ textAlign: "right", paddingTop: "10px" }}
-        >
+        <Col xs={2} style={{ textAlign: "right", paddingTop: "10px" }}>
           <input
             id={checkBoxId}
             type="checkbox"

@@ -66,16 +66,6 @@ const NavBarComponent = () => {
                 Calendar
               </Nav.Link>
             </Col>
-            <Col xs="auto" style={{ paddingRight: "1px" }}>
-              <Nav.Link
-                to={"/sign-out"}
-                style={linkStyle}
-                as={NavLink}
-                className={appStyle.NavButtons}
-              >
-                Sign out
-              </Nav.Link>
-            </Col>
             <Col xs="auto">
               <Nav.Link
                 to="/account"

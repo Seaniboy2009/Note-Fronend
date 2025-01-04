@@ -1,37 +1,39 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Form from "react-bootstrap/Form";
 import appStyle from "../../styles/App.module.css";
 import { useUser } from "../../contexts/UserContext";
 import { addDoc } from "firebase/firestore";
-import { dbListItems, dbLists } from "../../firebase";
+import { dbLists } from "../../firebase";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import ThemedButton from "../../components/ThemedButton";
+import ThemedToggle from "../../components/ThemedToggle";
+import { useTheme } from "../../contexts/ThemeSelection";
 
 const ListCreate = () => {
   const navigate = useNavigate();
   const userFirestore = useUser();
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     title: "",
     is_private: false,
   });
-
+  const { theme, activeTheme } = useTheme();
   const { title, is_private } = formData;
   const [submit, setSubmit] = useState(false);
 
-  // Send the tile and private to the API and create the new list
+  // Send the title and private status to the API and create the new list
   const createList = async () => {
-    if (!userFirestore) return;
-    if (!userFirestore.user) return;
-    console.log("userFirestore", userFirestore);
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("is_private", is_private);
+    if (!userFirestore || !userFirestore.user) return;
+    if (!title) {
+      setError("Title is required");
+      return;
+    }
 
     try {
       setSubmit(true);
-      const listCreatedResponse = await addDoc(dbLists, {
+      await addDoc(dbLists, {
         title: title,
         is_private: is_private,
         date_created: new Date().toISOString(),
@@ -39,23 +41,19 @@ const ListCreate = () => {
       });
       setSubmit(false);
       navigate("/lists/");
-
-      console.log("noteCreatedResponse", listCreatedResponse);
     } catch (error) {
-      console.log("Error updating payment db:", error);
+      console.log("Error creating list:", error);
     }
   };
 
-  // Handle is private checkbox change
-  const handleChecked = (event) => {
+  // Handle toggle change
+  const handleToggle = (event) => {
     setFormData({ ...formData, is_private: event.target.checked });
-    console.log(formData);
   };
 
   // Handle title change
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
-    console.log(formData);
   };
 
   // Text for when the form is submitted
@@ -69,40 +67,15 @@ const ListCreate = () => {
     </Container>
   );
 
-  // Text for the user to input there list details
+  // Text for the user to input their list details
   const defaultText = (
-    <Container>
-      <Row>
-        <Col>
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="title">
-              <h4>Title</h4>
-            </Form.Label>
-            <Form.Control
-              type="text"
-              id="title"
-              name="title"
-              aria-describedby="title"
-              onChange={handleChange}
-            />
-            <br />
-            <Form.Check
-              type="checkbox"
-              name="is_private"
-              id="is_private"
-              label="Set Private?"
-              onChange={handleChecked}
-            />
-          </Form.Group>
-        </Col>
-      </Row>
-      <Row>
-        <Col md={1}>
-          <button onClick={createList} className={appStyle.Button}>
-            Create
-          </button>
-        </Col>
-      </Row>
+    <Container
+      style={{
+        backgroundColor: theme[activeTheme].pannelColor,
+        border: theme[activeTheme].border,
+        marginBottom: "10px",
+      }}
+    >
       <Row>
         <Col md={1}>
           <Link to={"/lists/"} className={appStyle.ButtonLink}>
@@ -110,8 +83,46 @@ const ListCreate = () => {
           </Link>
         </Col>
       </Row>
+      <Row>
+        <Col>
+          {" "}
+          <h4>Title</h4>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            value={title}
+            onChange={handleChange}
+            style={{
+              backgroundColor: theme[activeTheme].backgroundColor,
+              width: "100%",
+              padding: "8px",
+              borderRadius: "4px",
+            }}
+          />
+          {error ? <span style={{ color: "red" }}>{error}</span> : null}
+        </Col>
+      </Row>
+      <br />
+
+      <ThemedToggle
+        isChecked={formData.is_private}
+        handleToggle={handleToggle}
+        text="Toggle Private"
+      />
+
+      <Row>
+        <Col md={1}>
+          <ThemedButton onClick={createList}>Create</ThemedButton>
+        </Col>
+      </Row>
     </Container>
   );
+
   return (
     <Container fluid className={appStyle.Container}>
       {submit ? submittingText : defaultText}

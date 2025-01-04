@@ -40,6 +40,7 @@ const ListDetailPage = () => {
   const { activeTheme, theme } = useTheme();
   const [content, setContent] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [error, setError] = useState(null);
 
   const getLists = async () => {
     console.log("Get list detail called");
@@ -96,6 +97,12 @@ const ListDetailPage = () => {
   const handleCreateItem = async () => {
     if (!userFirestore) return;
     if (!userFirestore.user) return;
+
+    if (!content) {
+      console.log("Content is empty");
+      setError("Content is empty");
+      return;
+    }
 
     const newEntryData = {
       content: content,
@@ -249,6 +256,7 @@ const ListDetailPage = () => {
                     width: "100%",
                   }}
                 ></input>
+                {error ? <span style={{ color: "red" }}>{error}</span> : null}
               </Col>
               <Col>
                 <ThemedButton size="small" onClick={handleCreateItem}>
