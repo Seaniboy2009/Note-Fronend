@@ -1,19 +1,10 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import appStyle from "../../styles/App.module.css";
 import { useTheme } from "../../contexts/ThemeSelection";
 import { useUser } from "../../contexts/UserContext";
-import { dbUsers, db } from "../../firebase";
-import {
-  doc,
-  addDoc,
-  getDocs,
-  collection,
-  query,
-  where,
-  updateDoc,
-  deleteDoc,
-} from "firebase/firestore";
+import { dbUsers } from "../../firebase";
+import { getDocs, updateDoc } from "firebase/firestore";
 import ThemedButton from "../../components/ThemedButton";
 
 const AdminPage = ({ props }) => {

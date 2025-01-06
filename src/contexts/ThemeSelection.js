@@ -20,8 +20,8 @@ export const theme = {
     color: "#9d0913",
     altColor: "#4b1fa3",
     hoverColor: "#a63c3a",
-    textUnavailable: "#5c060a", // Slightly darker greyish red
-    toggleColor: "#410004", // Background color when checkbox is toggled
+    textUnavailable: "#5c060a",
+    toggleColor: "#410004",
   },
   Blue: {
     backgroundColor: "#265e70",
@@ -30,8 +30,8 @@ export const theme = {
     color: "#e5e9e6",
     altColor: "#265e70",
     hoverColor: "#a63c3a",
-    textUnavailable: "#a3b3b4", // Slightly darker greyish cyan
-    toggleColor: "#265e70", // Background color when checkbox is toggled
+    textUnavailable: "#a3b3b4",
+    toggleColor: "#265e70",
   },
   Purple: {
     backgroundColor: "#4b1fa3",
@@ -40,11 +40,10 @@ export const theme = {
     color: "#e9b8ff",
     altColor: "#a63c3a",
     hoverColor: "#7830db",
-    textUnavailable: "#9b86c1", // Slightly darker greyish purple
-    toggleColor: "#7830db", // Background color when checkbox is toggled
+    textUnavailable: "#9b86c1",
+    toggleColor: "#7830db",
   },
   Green: {
-    // New Green Theme
     backgroundColor: "#021428",
     panelColor: "#002627",
     border: "1px solid #004f4f",
@@ -97,7 +96,6 @@ export const ThemeProvider = ({ children }) => {
     localStorage.setItem("theme", newTheme);
   };
 
-  // Memoize the context value to prevent unnecessary re-renders
   const contextValue = useMemo(
     () => ({
       theme,

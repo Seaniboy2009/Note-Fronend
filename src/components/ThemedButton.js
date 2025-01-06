@@ -20,7 +20,7 @@ const sizeStyles = {
 const ThemedButton = ({
   children,
   size = "medium",
-  fullWidth = true, // New prop to control button width
+  fullWidth = true,
   ...props
 }) => {
   const { theme, activeTheme } = useTheme();
@@ -37,15 +37,24 @@ const ThemedButton = ({
     cursor: "pointer",
     outline: "none",
     transition: "background-color 0.3s ease, color 0.3s ease",
-    width: fullWidth ? "100%" : "auto", // Width depends on `fullWidth` prop
+    width: fullWidth ? "100%" : "auto",
   };
 
-  // Additional hover and focus styles
+  // const hoverFocusStyle = {
+  //   ":hover": {
+  //     backgroundColor:
+  //       theme[activeTheme].hoverColor || theme[activeTheme].color,
+  //     color: theme[activeTheme].panelColor,
+  //   },
+  //   ":focus": {
+  //     outline: "2px solid",
+  //     outlineColor: theme[activeTheme].color,
+  //   },
+  // };
+
   const hoverFocusStyle = {
     ":hover": {
-      backgroundColor:
-        theme[activeTheme].hoverColor || theme[activeTheme].color,
-      color: theme[activeTheme].panelColor,
+      backgroundColor: "red",
     },
     ":focus": {
       outline: "2px solid",

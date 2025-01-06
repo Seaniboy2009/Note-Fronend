@@ -4,13 +4,21 @@ import { Col, Row } from "react-bootstrap";
 
 const ThemedInput = ({
   id,
+  type,
   placeholder = "Type here...",
   value,
   onChange,
+  border,
   label,
 }) => {
   const { theme, activeTheme } = useTheme();
   const inputId = id || `themed-input-${Math.random()}`;
+
+  const handleChange = (event) => {
+    if (onChange) {
+      onChange(event);
+    }
+  };
 
   const withLabel = (
     <Row>
@@ -30,9 +38,9 @@ const ThemedInput = ({
         )}
         <input
           id={inputId}
-          type="text"
+          type={type}
           value={value}
-          onChange={onChange}
+          onChange={handleChange}
           placeholder={placeholder}
           style={{
             width: "100%",
@@ -56,9 +64,9 @@ const ThemedInput = ({
   const withoutLabel = (
     <input
       id={inputId}
-      type="text"
+      type={type}
       value={value}
-      onChange={onChange}
+      onChange={handleChange}
       placeholder={placeholder}
       style={{
         width: "100%",
@@ -69,7 +77,7 @@ const ThemedInput = ({
         outline: "none",
         fontSize: "16px",
         textDecoration: "none",
-        border: "none", // Removes the border
+        border: border ? "1px solid" : "none", // Removes the border
         boxShadow: "none", // Removes any default shadow
         outline: "none", // Removes the focus outline
         padding: "8px", // Optional: Add some padding for better appearance

@@ -10,17 +10,15 @@ import Col from "react-bootstrap/Col";
 import ThemedButton from "../../components/ThemedButton";
 import ThemedToggle from "../../components/ThemedToggle";
 import { useTheme } from "../../contexts/ThemeSelection";
+import ThemedInput from "../../components/ThemedInput";
 
 const ListCreate = () => {
   const navigate = useNavigate();
   const userFirestore = useUser();
   const [error, setError] = useState(null);
-  const [formData, setFormData] = useState({
-    title: "",
-    is_private: false,
-  });
+  const [title, setTitle] = useState("");
+  const [isPrivate, setIsPrivate] = useState(false);
   const { theme, activeTheme } = useTheme();
-  const { title, is_private } = formData;
   const [submit, setSubmit] = useState(false);
 
   // Send the title and private status to the API and create the new list
@@ -35,7 +33,7 @@ const ListCreate = () => {
       setSubmit(true);
       await addDoc(dbLists, {
         title: title,
-        is_private: is_private,
+        is_private: isPrivate,
         date_created: new Date().toISOString(),
         userId: userFirestore.user.uid,
       });
@@ -48,12 +46,13 @@ const ListCreate = () => {
 
   // Handle toggle change
   const handleToggle = (event) => {
-    setFormData({ ...formData, is_private: event.target.checked });
+    setIsPrivate(event.target.checked);
   };
 
   // Handle title change
   const handleChange = (event) => {
-    setFormData({ ...formData, [event.target.name]: event.target.value });
+    console.log("event.target.value:", event.target.value);
+    setTitle(event.target.value);
   };
 
   // Text for when the form is submitted
@@ -86,23 +85,16 @@ const ListCreate = () => {
       <Row>
         <Col>
           {" "}
-          <h4>Title</h4>
+          <h5>Name your list</h5>
         </Col>
       </Row>
       <Row>
         <Col>
-          <input
-            type="text"
-            id="title"
-            name="title"
+          <ThemedInput
             value={title}
+            name="title"
             onChange={handleChange}
-            style={{
-              backgroundColor: theme[activeTheme].backgroundColor,
-              width: "100%",
-              padding: "8px",
-              borderRadius: "4px",
-            }}
+            border={true}
           />
           {error ? <span style={{ color: "red" }}>{error}</span> : null}
         </Col>
@@ -110,16 +102,17 @@ const ListCreate = () => {
       <br />
 
       <ThemedToggle
-        isChecked={formData.is_private}
+        isChecked={isPrivate}
         handleToggle={handleToggle}
-        text="Toggle Private"
+        text="Make Private"
       />
 
       <Row>
-        <Col md={1}>
+        <Col>
           <ThemedButton onClick={createList}>Create</ThemedButton>
         </Col>
       </Row>
+      <br />
     </Container>
   );
 

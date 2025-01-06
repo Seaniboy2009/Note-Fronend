@@ -5,7 +5,6 @@ import appStyle from "../../styles/App.module.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { axiosInstance } from "../../api/axiosDefaults";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useUser } from "../../contexts/UserContext";
 import { getDocs, query, where } from "firebase/firestore";
@@ -13,9 +12,6 @@ import { dbLists } from "../../firebase";
 import Loader from "../../components/Loader";
 import { useTheme } from "../../contexts/ThemeSelection";
 import { fetchMoreData } from "../../utils/utils";
-import ThemedButton from "../../components/ThemedButton";
-
-const useNewDb = true; // ***********TODO remove this once new db is fully implemented**********
 
 const ListPage = () => {
   const [myLists, setMyLists] = useState({ results: [] });
@@ -26,63 +22,45 @@ const ListPage = () => {
   useEffect(() => {
     const handleGetLists = async () => {
       try {
-        if (useNewDb) {
-          const queryLists = query(
-            dbLists,
-            where("userId", "==", userFirestore.user.uid)
-          );
-          const querySnapshot = await getDocs(queryLists);
-          console.log("querySnapshot:", querySnapshot);
+        const queryLists = query(
+          dbLists,
+          where("userId", "==", userFirestore.user.uid)
+        );
+        const querySnapshot = await getDocs(queryLists);
 
-          const userUpdatedResponse = querySnapshot.docs.map((doc) => {
-            const data = doc.data();
+        const userUpdatedResponse = querySnapshot.docs.map((doc) => {
+          const data = doc.data();
 
-            // Check and normalize `date_created`
-            let dateCreated = null;
-            if (data.date_created) {
-              if (
-                typeof data.date_created === "object" &&
-                "seconds" in data.date_created
-              ) {
-                // Convert Firestore timestamp to ISO string
-                dateCreated = new Date(
-                  data.date_created.seconds * 1000
-                ).toISOString();
-              } else {
-                // Assume it's already an ISO string
-                dateCreated = data.date_created;
-              }
+          let dateCreated = null;
+          if (data.date_created) {
+            if (
+              typeof data.date_created === "object" &&
+              "seconds" in data.date_created
+            ) {
+              dateCreated = new Date(
+                data.date_created.seconds * 1000
+              ).toISOString();
+            } else {
+              dateCreated = data.date_created;
             }
+          }
 
-            return {
-              docId: doc.id, // Firestore document ID
-              ...data, // Spread the document data
-              dateCreated: dateCreated, // Overwrite `date_created` with normalized value
-            };
-          });
+          return {
+            docId: doc.id, // Firestore document ID
+            ...data, // Spread the document data
+            dateCreated: dateCreated, // Overwrite `date_created` with normalized value
+          };
+        });
 
-          const sortedResponse = userUpdatedResponse.sort((a, b) => {
-            const dateA = new Date(a.dateCreated);
-            const dateB = new Date(b.dateCreated);
-            return dateB - dateA; // Descending order
-          });
+        const sortedResponse = userUpdatedResponse.sort((a, b) => {
+          const dateA = new Date(a.dateCreated);
+          const dateB = new Date(b.dateCreated);
+          return dateB - dateA; // Descending order
+        });
 
-          setMyLists({ results: sortedResponse });
-          console.log(
-            "Get my lists data unsortedResponse:",
-            userUpdatedResponse
-          );
-          console.log("Get my lists data sortedResponse:", sortedResponse);
-        }
+        setMyLists({ results: sortedResponse });
       } catch (error) {
-        const access = localStorage.getItem("access_token");
-        if (error.response?.status === 401 && access) {
-          window.location.reload();
-        } else if (!access) {
-          //navigate("/");
-        } else {
-          console.log("Other error");
-        }
+        console.log("error", error);
       }
       setHasLoaded(true);
     };

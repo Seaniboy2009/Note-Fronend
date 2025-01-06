@@ -23,11 +23,9 @@ const AccountPage = () => {
   const [requestingRemovingAccess, setRequestingRemovingAccess] =
     useState(false);
   const advancedFeatures = userFirestore?.advancedUser || false;
-  const user = auth.currentUser;
 
   let navigate = useNavigate();
 
-  // Fetch the calendars the user has access to
   useEffect(() => {
     const fetchCalendarsYouHaveAccessTo = async () => {
       try {

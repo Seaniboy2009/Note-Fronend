@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import style from "../styles/NoteItem.module.css";
 import appStyle from "../styles/App.module.css";
@@ -8,8 +8,6 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import { useTheme } from "../contexts/ThemeSelection";
-
-const useNewDb = true; // ***********TODO remove this once new db is fully implemented**********
 
 const NoteItem = (props) => {
   const {
@@ -295,7 +293,6 @@ const NoteItem = (props) => {
   );
   // layout for the notes list page
   const noteListPage = (
-    //<Link to={`note/${id}`} className={style.Link}> // this is the original line
     <Link to={`note/${docId}`}>
       <Row
         style={{
@@ -309,9 +306,6 @@ const NoteItem = (props) => {
           {image_url ? (
             // eslint-disable-next-line jsx-a11y/img-redundant-alt
             <img src={image_url} className={style.ImageList} alt="note image" />
-          ) : !useNewDb ? (
-            // eslint-disable-next-line jsx-a11y/img-redundant-alt
-            <img src={image} className={style.ImageList} alt="note image" />
           ) : (
             <p>Image will go here!!</p>
           )}

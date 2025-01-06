@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import style from "../styles/ListDetailPage.module.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useTheme } from "../contexts/ThemeSelection";
@@ -10,7 +9,6 @@ import ThemedToggle from "./ThemedToggle";
 const ListItem = ({ listItem, onToggle, onDelete }) => {
   const { activeTheme, theme } = useTheme();
   const [isChecked, setIsChecked] = useState(listItem.toggle);
-  const checkBoxId = `custom-checkbox-${listItem.docId}`;
 
   const handleToggle = () => {
     setIsChecked((prev) => !prev);
@@ -73,18 +71,6 @@ const ListItem = ({ listItem, onToggle, onDelete }) => {
                     minute: "2-digit",
                   })}`
                 : null}
-              {""}
-              {/* {listItem.completedDate
-                ? `Completed on: ${new Date(
-                    listItem?.completedDate
-                  ).toLocaleTimeString([], {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}`
-                : null} */}
             </p>
           </Col>
         </Col>

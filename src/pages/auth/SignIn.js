@@ -2,20 +2,20 @@
 import React, { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
-import { Button, Col, Container, Row } from "react-bootstrap";
-import { useUser } from "../../contexts/UserContext";
-import { Link, useNavigate } from "react-router-dom";
-import style from "../../styles/App.module.css";
+import { Col, Container, Row } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
-const SignIn: React.FC = () => {
+import ThemedButton from "../../components/ThemedButton";
+import ThemedInput from "../../components/ThemedInput";
+
+const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const user = useUser();
   let navigate = useNavigate();
 
-  const handleSignUp = async (e: React.FormEvent) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
     try {
       signInWithEmailAndPassword(auth, email, password)
@@ -44,9 +44,9 @@ const SignIn: React.FC = () => {
       <Row style={{ textAlign: "center" }}>
         <Col xs={12}>
           <form onSubmit={handleSignUp}>
-            <Row>
+            <Row style={{ textAlign: "center", marginBottom: "1rem" }}>
               <Col>
-                <input
+                <ThemedInput
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -54,9 +54,9 @@ const SignIn: React.FC = () => {
                 />
               </Col>
             </Row>
-            <Row>
+            <Row style={{ textAlign: "center", marginBottom: "1rem" }}>
               <Col>
-                <input
+                <ThemedInput
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -64,12 +64,10 @@ const SignIn: React.FC = () => {
                 />
               </Col>
             </Row>
-            <br />
-            <Row className="justify-content-md-center">
+            <Row style={{ textAlign: "center", marginBottom: "1rem" }}>
               <Col>
-                <Button className={style.Button} type="submit">
-                  Sign in
-                </Button>
+                <ThemedButton type="submit">Sign in </ThemedButton>
+
                 {error && <p style={{ color: "red" }}>{error}</p>}
               </Col>
             </Row>
