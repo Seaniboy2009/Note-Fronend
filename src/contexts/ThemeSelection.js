@@ -20,6 +20,8 @@ export const theme = {
     color: "#9d0913",
     altColor: "#4b1fa3",
     hoverColor: "#a63c3a",
+    textUnavailable: "#5c060a", // Slightly darker greyish red
+    toggleColor: "#410004", // Background color when checkbox is toggled
   },
   Starfield: {
     backgroundColor: "#265e70",
@@ -28,6 +30,8 @@ export const theme = {
     color: "#e5e9e6",
     altColor: "#265e70",
     hoverColor: "#a63c3a",
+    textUnavailable: "#a3b3b4", // Slightly darker greyish cyan
+    toggleColor: "#265e70", // Background color when checkbox is toggled
   },
   purple: {
     backgroundColor: "#4b1fa3",
@@ -36,6 +40,8 @@ export const theme = {
     color: "#e9b8ff",
     altColor: "#a63c3a",
     hoverColor: "#7830db",
+    textUnavailable: "#9b86c1", // Slightly darker greyish purple
+    toggleColor: "#7830db", // Background color when checkbox is toggled
   },
 };
 

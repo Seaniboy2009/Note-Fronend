@@ -28,6 +28,7 @@ import { addDoc } from "firebase/firestore";
 import { useTheme } from "../../contexts/ThemeSelection";
 import ThemedButton from "../../components/ThemedButton";
 import DeleteModal from "../../components/DeleteModal";
+import ThemedInput from "../../components/ThemedInput";
 
 const ListDetailPage = () => {
   const navigate = useNavigate();
@@ -112,7 +113,9 @@ const ListDetailPage = () => {
 
     try {
       const listItemCreatedResponse = await addDoc(dbListItems, newEntryData);
-      getLists();
+      setContent(""); // Clear the input field
+      setError(null); // Clear any error message
+      getLists(); // Refresh the list items
       console.log("noteCreatedResponse", listItemCreatedResponse);
     } catch (error) {
       console.log(error);
@@ -224,18 +227,20 @@ const ListDetailPage = () => {
                 <i className="fa-solid fa-arrow-left" />
               </Link>
             </Col>
-            <Col xs={6}>
+            <Col xs={7}>
               <h5>List: {list.title}</h5>
             </Col>
-            <Col xs={2}>
+            <Col xs={4}>
               <ThemedButton
                 onClick={() => handleShowDeletelistModal()}
-                className={appStyle.ButtonLists}
+                // className={appStyle.ButtonLists}
+                // style={{ padding: "5px" }}
               >
-                <i className="fa-solid fa-trash" />
+                Delete List
               </ThemedButton>
             </Col>
           </Row>
+          <br />
           <Container
             className={style.ListContainer}
             style={{
@@ -244,21 +249,11 @@ const ListDetailPage = () => {
             }}
           >
             <Row>
-              <Col xs={10}>
-                <input
-                  id="textInput"
-                  onChange={handleChange}
-                  autofocus
-                  placeholder="Type here"
-                  style={{
-                    backgroundColor: theme[activeTheme].pannelColor,
-                    color: theme[activeTheme].textColor,
-                    width: "100%",
-                  }}
-                ></input>
+              <Col xs={9}>
+                <ThemedInput value={content} onChange={handleChange} />
                 {error ? <span style={{ color: "red" }}>{error}</span> : null}
               </Col>
-              <Col>
+              <Col xs={3}>
                 <ThemedButton size="small" onClick={handleCreateItem}>
                   Add
                 </ThemedButton>
