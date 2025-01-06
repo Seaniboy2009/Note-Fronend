@@ -13,6 +13,7 @@ import { dbLists } from "../../firebase";
 import Loader from "../../components/Loader";
 import { useTheme } from "../../contexts/ThemeSelection";
 import { fetchMoreData } from "../../utils/utils";
+import ThemedButton from "../../components/ThemedButton";
 
 const useNewDb = true; // ***********TODO remove this once new db is fully implemented**********
 
@@ -130,36 +131,43 @@ const ListPage = () => {
             >
               {myLists?.results?.map((list, index) => (
                 <Link key={list.id} to={`list/${list.docId}`}>
-                  <Row
+                  <Container
                     style={{
                       backgroundColor: theme[activeTheme].pannelColor,
                       color: theme[activeTheme].color,
                       border: theme[activeTheme].border,
+                      marginBottom: "10px",
                     }}
-                    className={style.listObject}
                   >
-                    <Col xs={6}>
-                      <p>{list.title}</p>
-                    </Col>
-                    <Col xs={4}>
-                      <p>
-                        {list.date_created
-                          ? new Date(list.dateCreated).toLocaleTimeString([], {
-                              year: "numeric",
-                              month: "2-digit",
-                              day: "2-digit",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })
-                          : null}
-                      </p>
-                    </Col>
-                    <Col>
-                      {list.is_private ? (
-                        <i className={`fa-solid fa-lock ${style.Private}`}></i>
-                      ) : null}
-                    </Col>
-                  </Row>
+                    {" "}
+                    <Row
+                      style={{
+                        textAlign: "left",
+                        display: "flex",
+                      }}
+                      className={style.listObject}
+                    >
+                      <Col>
+                        <p>{list.title}</p>
+                      </Col>
+                      <Col>
+                        <p>
+                          {list.date_created
+                            ? new Date(list.dateCreated).toLocaleTimeString(
+                                [],
+                                {
+                                  year: "numeric",
+                                  month: "2-digit",
+                                  day: "2-digit",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
+                              )
+                            : null}
+                        </p>
+                      </Col>
+                    </Row>
+                  </Container>
                 </Link>
               ))}
             </InfiniteScroll>

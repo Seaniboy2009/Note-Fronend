@@ -43,6 +43,17 @@ export const theme = {
     textUnavailable: "#9b86c1", // Slightly darker greyish purple
     toggleColor: "#7830db", // Background color when checkbox is toggled
   },
+  green: {
+    // New Green Theme
+    backgroundColor: "#021428",
+    pannelColor: "#002627",
+    border: "1px solid #004f4f",
+    color: "#a3f7bf",
+    altColor: "#72c59a",
+    hoverColor: "#004f4f",
+    textColor: "#ffffff",
+    toggleColor: "#006666",
+  },
 };
 
 export const ThemeProvider = ({ children }) => {

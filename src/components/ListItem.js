@@ -46,36 +46,6 @@ const ListItem = ({ listItem, onToggle, onDelete }) => {
           alignItems: "center", // Ensures all elements are vertically aligned
         }}
       >
-        {/* <Col xs={1} style={{ textAlign: "right" }}>
-          <input
-            id={checkBoxId}
-            type="checkbox"
-            checked={isChecked}
-            onChange={handleToggle}
-            style={{ display: "none" }}
-          />
-          <label
-            htmlFor={checkBoxId}
-            style={{
-              cursor: "pointer",
-              width: "20px",
-              height: "20px",
-              display: "flex", // Use flex to align the "X"
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: isChecked
-                ? theme[activeTheme].toggleColor // Use toggleColor when toggled
-                : theme[activeTheme].backgroundColor, // Use default background color
-              border: `2px solid ${theme[activeTheme].textColor}`,
-              borderRadius: "4px",
-              color: isChecked ? "white" : theme[activeTheme].textColor,
-              fontSize: "16px",
-              fontWeight: "bold",
-            }}
-          >
-            {isChecked ? "X" : ""}
-          </label>
-        </Col> */}
         <ThemedToggle isChecked={isChecked} handleToggle={handleToggle} />
         <Col
           xs={8}
@@ -132,8 +102,6 @@ const ListItem = ({ listItem, onToggle, onDelete }) => {
           </ThemedButton>
         </Col>
       </Row>
-
-      {/* Media query styling */}
     </Container>
   );
 };

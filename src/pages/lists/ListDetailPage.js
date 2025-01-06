@@ -228,7 +228,7 @@ const ListDetailPage = () => {
               </Link>
             </Col>
             <Col xs={7}>
-              <h5>List: {list.title}</h5>
+              <h5>{list.title}</h5>
             </Col>
             <Col xs={4}>
               <ThemedButton

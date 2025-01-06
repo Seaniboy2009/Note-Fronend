@@ -39,10 +39,14 @@ const ThemedInput = ({
             padding: "10px",
             backgroundColor: theme[activeTheme].pannelColor,
             color: theme[activeTheme].textColor,
-            border: `1px solid ${theme[activeTheme].textColor}`,
             borderRadius: "4px",
             outline: "none",
             fontSize: "16px",
+            textDecoration: "none",
+            border: "none", // Removes the border
+            boxShadow: "none", // Removes any default shadow
+            outline: "none", // Removes the focus outline
+            padding: "8px", // Optional: Add some padding for better appearance
           }}
         />
       </Col>
@@ -61,10 +65,14 @@ const ThemedInput = ({
         padding: "10px",
         backgroundColor: theme[activeTheme].pannelColor,
         color: theme[activeTheme].textColor,
-        border: `1px solid ${theme[activeTheme].textColor}`,
         borderRadius: "4px",
         outline: "none",
         fontSize: "16px",
+        textDecoration: "none",
+        border: "none", // Removes the border
+        boxShadow: "none", // Removes any default shadow
+        outline: "none", // Removes the focus outline
+        padding: "8px", // Optional: Add some padding for better appearance
       }}
     />
   );
