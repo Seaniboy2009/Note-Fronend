@@ -133,7 +133,7 @@ const ListPage = () => {
                 <Link key={list.id} to={`list/${list.docId}`}>
                   <Container
                     style={{
-                      backgroundColor: theme[activeTheme].pannelColor,
+                      backgroundColor: theme[activeTheme].panelColor,
                       color: theme[activeTheme].color,
                       border: theme[activeTheme].border,
                       marginBottom: "10px",

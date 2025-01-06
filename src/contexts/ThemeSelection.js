@@ -13,9 +13,9 @@ export const useTheme = () => {
 };
 
 export const theme = {
-  Cyberpunk: {
+  Red: {
     backgroundColor: "#100000",
-    pannelColor: "#240000",
+    panelColor: "#240000",
     border: "1px solid #410004",
     color: "#9d0913",
     altColor: "#4b1fa3",
@@ -23,9 +23,9 @@ export const theme = {
     textUnavailable: "#5c060a", // Slightly darker greyish red
     toggleColor: "#410004", // Background color when checkbox is toggled
   },
-  Starfield: {
+  Blue: {
     backgroundColor: "#265e70",
-    pannelColor: "#88c0c2",
+    panelColor: "#88c0c2",
     border: "1px solid #88c0c2",
     color: "#e5e9e6",
     altColor: "#265e70",
@@ -33,9 +33,9 @@ export const theme = {
     textUnavailable: "#a3b3b4", // Slightly darker greyish cyan
     toggleColor: "#265e70", // Background color when checkbox is toggled
   },
-  purple: {
+  Purple: {
     backgroundColor: "#4b1fa3",
-    pannelColor: "#6739c4",
+    panelColor: "#6739c4",
     border: "1px solid #a63c3a",
     color: "#e9b8ff",
     altColor: "#a63c3a",
@@ -43,10 +43,10 @@ export const theme = {
     textUnavailable: "#9b86c1", // Slightly darker greyish purple
     toggleColor: "#7830db", // Background color when checkbox is toggled
   },
-  green: {
+  Green: {
     // New Green Theme
     backgroundColor: "#021428",
-    pannelColor: "#002627",
+    panelColor: "#002627",
     border: "1px solid #004f4f",
     color: "#a3f7bf",
     altColor: "#72c59a",
@@ -54,11 +54,34 @@ export const theme = {
     textColor: "#ffffff",
     toggleColor: "#006666",
   },
+  Basic: {
+    backgroundColor: "#f9f9f9",
+    panelColor: "#e0e0e0",
+    border: "1px solid #d0d0d0",
+    color: "#333333",
+    altColor: "#d0d0d0",
+    hoverColor: "#cccccc",
+    textUnavailable: "#b0b0b0",
+    toggleColor: "#d0d0d0",
+  },
+  BasicLessContrast: {
+    backgroundColor: "#e0f0f0",
+    panelColor: "#f9f9f9",
+    border: "1px solid #d0d0d0",
+    color: "#333333",
+    altColor: "#d0d0d0",
+    hoverColor: "#cccccc",
+    textUnavailable: "#b0b0b0",
+    toggleColor: "#d0d0d0",
+  },
 };
 
 export const ThemeProvider = ({ children }) => {
+  const availableThemes = Object.keys(theme);
+  const storedTheme = localStorage.getItem("theme");
+
   const [activeTheme, setActiveTheme] = useState(
-    localStorage.getItem("theme") || "Cyberpunk"
+    availableThemes.includes(storedTheme) ? storedTheme : "Basic"
   );
 
   useEffect(() => {

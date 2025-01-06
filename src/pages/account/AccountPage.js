@@ -292,7 +292,7 @@ const AccountPage = () => {
         {/* Account details */}
         <Container
           style={{
-            backgroundColor: theme[activeTheme].pannelColor,
+            backgroundColor: theme[activeTheme].panelColor,
             border: theme[activeTheme].border,
           }}
           className={appStyle.BackgroundContainer}
@@ -311,24 +311,31 @@ const AccountPage = () => {
             <Col xl={12}>
               <p>Theme</p>
             </Col>
-            {Object.entries(theme).map(([themeName], index) => (
-              <>
-                <Col xs={6}>
-                  <p key={index}>{themeName}</p>
-                </Col>
-                <Col xs={6}>
-                  <input
-                    name="theme"
-                    className={
-                      isDarkMode ? appStyle.TextTest : appStyle.TextRed
-                    }
-                    checked={activeTheme === themeName}
-                    type="radio"
-                    onChange={() => changeTheme(themeName)}
-                  />
-                </Col>
-              </>
-            ))}
+            {Object.entries(theme)
+              .filter(
+                ([themeName]) =>
+                  advancedFeatures ||
+                  themeName === "Basic" ||
+                  themeName === "BasicLessContrast"
+              )
+              .map(([themeName], index) => (
+                <>
+                  <Col xs={6} key={index}>
+                    <p>{themeName}</p>
+                  </Col>
+                  <Col xs={6}>
+                    <input
+                      name="theme"
+                      className={
+                        isDarkMode ? appStyle.TextTest : appStyle.TextRed
+                      }
+                      checked={activeTheme === themeName}
+                      type="radio"
+                      onChange={() => changeTheme(themeName)}
+                    />
+                  </Col>
+                </>
+              ))}
           </Row>
         </Container>
         {/* Shared Access */}
@@ -336,7 +343,7 @@ const AccountPage = () => {
           <>
             <Container
               style={{
-                backgroundColor: theme[activeTheme].pannelColor,
+                backgroundColor: theme[activeTheme].panelColor,
                 border: theme[activeTheme].border,
                 paddingBottom: 10,
               }}
@@ -365,7 +372,7 @@ const AccountPage = () => {
                     placeholder="Enter email address"
                     style={{
                       padding: "8px",
-                      backgroundColor: theme[activeTheme].pannelColor,
+                      backgroundColor: theme[activeTheme].panelColor,
                       color: theme[activeTheme].color,
                       border: "1px solid",
                     }}
@@ -394,7 +401,7 @@ const AccountPage = () => {
             {/* Users with Access to Your Calendar */}
             <Container
               style={{
-                backgroundColor: theme[activeTheme].pannelColor,
+                backgroundColor: theme[activeTheme].panelColor,
                 border: theme[activeTheme].border,
                 paddingBottom: 10,
               }}
@@ -447,7 +454,7 @@ const AccountPage = () => {
             {/* Calendars You Have Access To */}
             <Container
               style={{
-                backgroundColor: theme[activeTheme].pannelColor,
+                backgroundColor: theme[activeTheme].panelColor,
                 border: theme[activeTheme].border,
                 paddingBottom: 10,
               }}
@@ -497,7 +504,7 @@ const AccountPage = () => {
         ) : (
           <Container
             style={{
-              backgroundColor: theme[activeTheme].pannelColor,
+              backgroundColor: theme[activeTheme].panelColor,
               border: theme[activeTheme].border,
             }}
             className={appStyle.BackgroundContainer}
@@ -518,7 +525,7 @@ const AccountPage = () => {
         {admin && (
           <Container
             style={{
-              backgroundColor: theme[activeTheme].pannelColor,
+              backgroundColor: theme[activeTheme].panelColor,
               border: theme[activeTheme].border,
             }}
             className={appStyle.BackgroundContainer}

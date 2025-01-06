@@ -10,7 +10,7 @@ const ConfirmationModal = ({ show, onClose, onConfirm, message }) => {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    backgroundColor: theme[activeTheme].pannelColor,
+    backgroundColor: theme[activeTheme].panelColor,
     color: theme[activeTheme].color,
     padding: "20px",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",

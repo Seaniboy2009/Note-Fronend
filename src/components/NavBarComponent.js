@@ -4,7 +4,7 @@ import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Nav from "react-bootstrap/Nav";
 import appStyle from "../styles/App.module.css";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import style from "../styles/Header.module.css";
 import { useTheme } from "../contexts/ThemeSelection";
 import { useUser } from "../contexts/UserContext";
@@ -19,7 +19,7 @@ const NavBarComponent = () => {
       fluid
       className={`${style.FixedNavbar}`}
       style={{
-        backgroundColor: theme[activeTheme].pannelColor,
+        backgroundColor: theme[activeTheme].panelColor,
         color: theme[activeTheme].color,
       }}
     >

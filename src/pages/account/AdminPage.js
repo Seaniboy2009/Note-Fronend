@@ -85,7 +85,7 @@ const AdminPage = ({ props }) => {
   return (
     <Container
       style={{
-        backgroundColor: theme[activeTheme].pannelColor,
+        backgroundColor: theme[activeTheme].panelColor,
         border: theme[activeTheme].border,
       }}
       className={appStyle.BackgroundContainer}

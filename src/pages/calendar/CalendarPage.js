@@ -339,7 +339,7 @@ const CalendarPage = () => {
                     margin: "0",
                     padding: "10px",
                     listStyle: "none",
-                    backgroundColor: theme[activeTheme].pannelColor,
+                    backgroundColor: theme[activeTheme].panelColor,
                     boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
                     borderRadius: "4px",
                     zIndex: 100,
@@ -355,7 +355,7 @@ const CalendarPage = () => {
                               value={selectedCalendar}
                               onChange={handleCalendarChange}
                               style={{
-                                backgroundColor: theme[activeTheme].pannelColor,
+                                backgroundColor: theme[activeTheme].panelColor,
                                 color: theme[activeTheme].color,
                                 borderColor: theme[activeTheme].color,
                               }}
@@ -382,7 +382,7 @@ const CalendarPage = () => {
                       value={selectedMonth}
                       onChange={handleMonthChange}
                       style={{
-                        backgroundColor: theme[activeTheme].pannelColor,
+                        backgroundColor: theme[activeTheme].panelColor,
                         color: theme[activeTheme].color,
                         borderColor: theme[activeTheme].color,
                       }}
@@ -400,7 +400,7 @@ const CalendarPage = () => {
                       value={selectedYear}
                       onChange={handleYearChange}
                       style={{
-                        backgroundColor: theme[activeTheme].pannelColor,
+                        backgroundColor: theme[activeTheme].panelColor,
                         color: theme[activeTheme].color,
                         borderColor: theme[activeTheme].color,
                       }}
@@ -435,7 +435,7 @@ const CalendarPage = () => {
                       } ${doesDayHaveEntry(day) ? "entryActive" : ""}`}
                       onClick={() => handleDayClick(day)}
                       style={{
-                        backgroundColor: theme[activeTheme].pannelColor,
+                        backgroundColor: theme[activeTheme].panelColor,
                       }}
                     >
                       <p className={style.calendarDayNumber}>{day.getDate()}</p>
@@ -499,7 +499,7 @@ const CalendarPage = () => {
                         style={{
                           flex: 1, // Makes the textarea take up available space
                           height: "auto",
-                          backgroundColor: theme[activeTheme].pannelColor,
+                          backgroundColor: theme[activeTheme].panelColor,
                           color: theme[activeTheme].color,
                           border: "0",
                           padding: "8px", // Add padding for a better user experience

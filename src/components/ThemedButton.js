@@ -27,7 +27,7 @@ const ThemedButton = ({
 
   // Button styles based on the active theme
   const buttonStyle = {
-    backgroundColor: theme[activeTheme].pannelColor,
+    backgroundColor: theme[activeTheme].panelColor,
     color: theme[activeTheme].color,
     borderColor: theme[activeTheme].color,
     border: "1px solid",
@@ -45,7 +45,7 @@ const ThemedButton = ({
     ":hover": {
       backgroundColor:
         theme[activeTheme].hoverColor || theme[activeTheme].color,
-      color: theme[activeTheme].pannelColor,
+      color: theme[activeTheme].panelColor,
     },
     ":focus": {
       outline: "2px solid",

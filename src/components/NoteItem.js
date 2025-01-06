@@ -109,7 +109,7 @@ const NoteItem = (props) => {
   const imageContainer = (
     <Container
       style={{
-        backgroundColor: theme[activeTheme].pannelColor,
+        backgroundColor: theme[activeTheme].panelColor,
         border: theme[activeTheme].border,
       }}
       className={` text-left  ${appStyle.BackgroundContainer}`}
@@ -140,7 +140,7 @@ const NoteItem = (props) => {
   const editModeEnabled = (
     <Container
       style={{
-        backgroundColor: theme[activeTheme].pannelColor,
+        backgroundColor: theme[activeTheme].panelColor,
         border: theme[activeTheme].border,
       }}
       className={` text-left  ${appStyle.BackgroundContainer}`}
@@ -229,7 +229,7 @@ const NoteItem = (props) => {
     <>
       <Container
         style={{
-          backgroundColor: theme[activeTheme].pannelColor,
+          backgroundColor: theme[activeTheme].panelColor,
           border: theme[activeTheme].border,
         }}
         className={` text-left  ${appStyle.BackgroundContainer}`}
@@ -272,7 +272,7 @@ const NoteItem = (props) => {
       </Container>
       <Container
         style={{
-          backgroundColor: theme[activeTheme].pannelColor,
+          backgroundColor: theme[activeTheme].panelColor,
           border: theme[activeTheme].border,
         }}
         className={` text-left  ${appStyle.BackgroundContainer}`}
@@ -299,7 +299,7 @@ const NoteItem = (props) => {
     <Link to={`note/${docId}`}>
       <Row
         style={{
-          backgroundColor: theme[activeTheme].pannelColor,
+          backgroundColor: theme[activeTheme].panelColor,
           color: theme[activeTheme].color,
           border: theme[activeTheme].border,
         }}
@@ -345,7 +345,7 @@ const NoteItem = (props) => {
             <button
               style={{
                 minWidth: "11vh",
-                backgroundColor: theme[activeTheme].pannelColor,
+                backgroundColor: theme[activeTheme].panelColor,
                 border: theme[activeTheme].border,
               }}
               onClick={toggleEditMode}

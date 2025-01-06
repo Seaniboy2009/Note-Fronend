@@ -37,7 +37,7 @@ const ThemedInput = ({
           style={{
             width: "100%",
             padding: "10px",
-            backgroundColor: theme[activeTheme].pannelColor,
+            backgroundColor: theme[activeTheme].panelColor,
             color: theme[activeTheme].textColor,
             borderRadius: "4px",
             outline: "none",
@@ -63,7 +63,7 @@ const ThemedInput = ({
       style={{
         width: "100%",
         padding: "10px",
-        backgroundColor: theme[activeTheme].pannelColor,
+        backgroundColor: theme[activeTheme].panelColor,
         color: theme[activeTheme].textColor,
         borderRadius: "4px",
         outline: "none",

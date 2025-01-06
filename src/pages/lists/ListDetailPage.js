@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import style from "../../styles/ListDetailPage.module.css";
 import { useParams, useNavigate } from "react-router-dom";
 import appStyle from "../../styles/App.module.css";
@@ -6,8 +6,6 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Link } from "react-router-dom";
-import { axiosInstance } from "../../api/axiosDefaults";
-import Modal from "react-bootstrap/Modal";
 import Loader from "../../components/Loader";
 import ListItem from "../../components/ListItem";
 import {
@@ -19,10 +17,9 @@ import {
   updateDoc,
   Timestamp,
   deleteDoc,
-  collection,
   writeBatch,
 } from "firebase/firestore";
-import { dbLists, dbListItems, db } from "../../firebase";
+import { dbListItems, db } from "../../firebase";
 import { useUser } from "../../contexts/UserContext";
 import { addDoc } from "firebase/firestore";
 import { useTheme } from "../../contexts/ThemeSelection";
@@ -244,7 +241,7 @@ const ListDetailPage = () => {
           <Container
             className={style.ListContainer}
             style={{
-              backgroundColor: theme[activeTheme].pannelColor,
+              backgroundColor: theme[activeTheme].panelColor,
               border: theme[activeTheme].border,
             }}
           >

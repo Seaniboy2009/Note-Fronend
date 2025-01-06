@@ -33,7 +33,7 @@ const ListItem = ({ listItem, onToggle, onDelete }) => {
   return (
     <Container
       style={{
-        backgroundColor: theme[activeTheme].pannelColor,
+        backgroundColor: theme[activeTheme].panelColor,
         border: theme[activeTheme].border,
         marginBottom: "10px",
       }}
