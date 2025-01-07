@@ -40,18 +40,6 @@ const ThemedButton = ({
     width: fullWidth ? "100%" : "auto",
   };
 
-  // const hoverFocusStyle = {
-  //   ":hover": {
-  //     backgroundColor:
-  //       theme[activeTheme].hoverColor || theme[activeTheme].color,
-  //     color: theme[activeTheme].panelColor,
-  //   },
-  //   ":focus": {
-  //     outline: "2px solid",
-  //     outlineColor: theme[activeTheme].color,
-  //   },
-  // };
-
   const hoverFocusStyle = {
     ":hover": {
       backgroundColor: "red",

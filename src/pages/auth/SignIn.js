@@ -66,7 +66,7 @@ const SignIn = () => {
             </Row>
             <Row style={{ textAlign: "center", marginBottom: "1rem" }}>
               <Col>
-                <ThemedButton type="submit">Sign in </ThemedButton>
+                <ThemedButton type="submit">Log in</ThemedButton>
 
                 {error && <p style={{ color: "red" }}>{error}</p>}
               </Col>

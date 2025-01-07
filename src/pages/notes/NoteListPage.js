@@ -11,14 +11,15 @@ import Loader from "../../components/Loader";
 import { useUser } from "../../contexts/UserContext";
 import { getDocs, query, where } from "firebase/firestore";
 import { dbNotes } from "../../firebase";
-
+import { useTheme } from "../../contexts/ThemeSelection";
+import ThemedCreateButton from "../../components/ThemedCreateButton";
 const useNewDb = true; // ***********TODO remove this once new db is fully implemented**********
 
 const NoteListPage = () => {
   const [myNotes, setMyNotes] = useState({ results: [] });
   const [hasLoaded, setHasLoaded] = useState(false);
   const userFirestore = useUser();
-
+  const { activeTheme, theme } = useTheme();
   useEffect(() => {
     const handleGetNotes = async () => {
       try {
@@ -75,11 +76,7 @@ const NoteListPage = () => {
           {userFirestore?.user ? (
             <Row>
               <Col xs={5}>
-                <Link to={"note/create"}>
-                  <button className={appStyle.ButtonCreate}>
-                    <i className="fa-sharp fa-solid fa-plus" />
-                  </button>
-                </Link>
+                <ThemedCreateButton url={"note/create"} />
               </Col>
             </Row>
           ) : null}

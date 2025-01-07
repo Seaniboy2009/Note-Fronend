@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import appStyle from "../styles/App.module.css";
 import style from "../styles/Test.module.css";
 import Container from "react-bootstrap/Container";
 import { Col, Row } from "react-bootstrap";
 import Loader from "../components/Loader";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { fetchMoreData, fetchMoreDataURL } from "../utils/utils";
+import { fetchMoreDataURL } from "../utils/utils";
+import ThemedButton from "../components/ThemedButton";
 import { useTheme } from "../contexts/ThemeSelection";
-// import { useTheme } from '../contexts/ThemeSelection';
-
 const SearchPage = ({
   searchText,
   searchPage,
@@ -20,9 +18,8 @@ const SearchPage = ({
   const [hasLoaded, setHasLoaded] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [data, setData] = useState({ results: [] });
-  const { isDarkMode, toggleDarkMode } = useTheme();
   const [searchList, setSearchList] = useState("Movie");
-
+  const { theme, activeTheme } = useTheme();
   // Movie DB
   const autoSearch = {
     method: "GET",
@@ -38,38 +35,26 @@ const SearchPage = ({
   };
 
   // Games DB
+  // https://rawg.io/apidocs
   const gameOptions = {
     method: "GET",
-    url: "https://rawg-video-games-database.p.rapidapi.com/games",
-    headers: {
-      "X-RapidAPI-Key": "2c53ff4e4fmshe49848acaec3f07p1e278ajsn6f3e8b171bbf",
-      "X-RapidAPI-Host": "rawg-video-games-database.p.rapidapi.com",
+    url: "https://api.rawg.io/api/games?",
+    params: {
+      key: "0d185fccaba345f3af4c725478c4b7f7", // API key as a query parameter
+      dates: "2019-09-01,2019-09-30", // Date range as query parameter
+      platforms: "18,1,7", // Platforms as query parameter
     },
+
+    // method: "GET",
+    // url: "https://rawg-video-games-database.p.rapidapi.com/games",
+    // headers: {
+    //   "X-RapidAPI-Key": "2c53ff4e4fmshe49848acaec3f07p1e278ajsn6f3e8b171bbf",
+    //   "X-RapidAPI-Host": "rawg-video-games-database.p.rapidapi.com",
+    // },
   };
 
   // Get api data after query is updated
   useEffect(() => {
-    console.log("useEffect Called");
-    const getDataOld = async () => {
-      try {
-        // Search passed down from movies note title text
-        if (searchPage && hasSearched) {
-          const response = await axios.request(autoSearch);
-          console.log("auto Search list: ", response.data);
-          setData(response.data);
-          setHasLoaded(true);
-        } else if (gameSearch && hasSearched) {
-          // Search passed down from games note title
-          const response = await axios.request(gameOptions);
-          console.log("game Search list: ", response.data);
-          setData(response.data);
-          setHasLoaded(true);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     const getDataNew = async () => {
       if (hasSearched) {
         try {
@@ -117,44 +102,31 @@ const SearchPage = ({
     };
   }, [searchText, searchPage, gameSearch, category, searchList, hasSearched]);
 
-  // const movieList = (
-  //     <>
-  //     <Row key={index}>
-  //         <Col xs={8}>{data.titleText?.text}</Col>
-  //         <Col xs={4}>{data.releaseYear?.year}</Col>
-  //     </Row>
-  //     <Row>
-  //         <Col xs={12}><img className={style.Image} src={data.primaryImage?.url ? data.primaryImage.url : null} /></Col>
-  //     </Row>
-  //     <Row>
-  //         {data.primaryImage?.url ? (
-  //             <Col xs={12}><button className={appStyle.Button} onClick={() => pickedImage(data.primaryImage.url)} value={data.primaryImage.url}>Use image</button></Col>
-  //         ) : null}
-  //     </Row>
-  //     </>
-  // )
-
-  // const gameList = (
-  //     <>
-  //     <Row key={index}>
-  //         <Col xs={8}>{data.titleText?.text}</Col>
-  //         <Col xs={4}>{data.releaseYear?.year}</Col>
-  //     </Row>
-  //     <Row>
-  //         <Col xs={12}><img className={style.Image} src={data.primaryImage?.url ? data.primaryImage.url : null} /></Col>
-  //     </Row>
-  //     <Row>
-  //         {data.primaryImage?.url ? (
-  //             <Col xs={12}><button className={appStyle.Button} onClick={() => pickedImage(data.primaryImage.url)} value={data.primaryImage.url}>Use image</button></Col>
-  //         ) : null}
-  //     </Row>
-  //     </>
-  // )
-
-  const loadMore = (
+  return (
     <>
-      {hasLoaded ? (
-        <>
+      <Container>
+        <Row>
+          <Col>
+            <ThemedButton onClick={() => setSearchList("Game")}>
+              Games
+            </ThemedButton>
+          </Col>
+          <Col>
+            <ThemedButton onClick={() => setSearchList("Movie")}>
+              Movies
+            </ThemedButton>
+          </Col>
+        </Row>
+      </Container>
+      <br />
+      {hasSearched && hasLoaded ? (
+        <Container
+          style={{
+            backgroundColor: theme[activeTheme].panelColor,
+            border: theme[activeTheme].border,
+            marginBottom: "10px",
+          }}
+        >
           <InfiniteScroll
             dataLength={data.results.length}
             next={() => fetchMoreDataURL(data, setData)}
@@ -163,79 +135,117 @@ const SearchPage = ({
           >
             {data.results.map((data, index) => (
               <>
-                <Row key={index}>
-                  <Col xs={8}>{data.titleText?.text}</Col>
-                  <Col xs={4}>{data.releaseYear?.year}</Col>
-                </Row>
-                <Row>
-                  <Col xs={12}>
-                    <img
-                      className={style.Image}
-                      src={
-                        data.primaryImage?.url ? data.primaryImage.url : null
-                      }
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  {data.primaryImage?.url ? (
-                    <Col xs={12}>
-                      <button
-                        className={appStyle.Button}
-                        onClick={() =>
-                          handlePickedImageFromList(data.primaryImage.url)
-                        }
-                        value={data.primaryImage.url}
-                      >
-                        Use image
-                      </button>
-                    </Col>
-                  ) : null}
-                </Row>
+                {searchList === "Movie" ? (
+                  <>
+                    {" "}
+                    <Row key={index}>
+                      <Col xs={8}>{data.titleText?.text}</Col>
+                    </Row>
+                    <Row>
+                      <Col xs={12}>
+                        <img
+                          className={style.Image}
+                          src={
+                            data.primaryImage?.url
+                              ? data.primaryImage.url
+                              : null
+                          }
+                          alt={data.titleText?.text}
+                        />
+                      </Col>
+                    </Row>
+                    <Row>
+                      {data.primaryImage?.url ? (
+                        <Col
+                          xs={12}
+                          style={{
+                            paddingBottom: "10px",
+                            borderBottom: "4px solid black",
+                          }}
+                        >
+                          <ThemedButton
+                            onClick={() => {
+                              handlePickedImageFromList(data.primaryImage.url);
+                              window.scrollTo(0, 0);
+                            }}
+                            value={data.primaryImage.url}
+                          >
+                            Use image
+                          </ThemedButton>
+                        </Col>
+                      ) : null}
+                    </Row>
+                  </>
+                ) : (
+                  <>
+                    {" "}
+                    <Row key={index}>
+                      <Col xs={8}>
+                        {data.titleText?.text ? data.titleText?.text : null}
+                        {data.name ? data.name : null}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col xs={12}>
+                        {data.background_image ? (
+                          <img
+                            className={style.Image}
+                            src={data.background_image}
+                            alt={data.titleText?.text}
+                          />
+                        ) : null}
+                      </Col>
+                    </Row>
+                    <Row>
+                      {data.primaryImage?.url ? (
+                        <Col
+                          xs={12}
+                          style={{
+                            paddingBottom: "10px",
+                            borderBottom: "4px solid black",
+                          }}
+                        >
+                          <ThemedButton
+                            onClick={() => {
+                              handlePickedImageFromList(data.primaryImage.url);
+                              window.scrollTo(0, 0);
+                            }}
+                            value={data.primaryImage.url}
+                          >
+                            Use image
+                          </ThemedButton>
+                        </Col>
+                      ) : null}
+                      {data.background_image ? (
+                        <Col
+                          xs={12}
+                          style={{
+                            paddingBottom: "10px",
+                            borderBottom: "4px solid black",
+                          }}
+                        >
+                          <ThemedButton
+                            onClick={() => {
+                              handlePickedImageFromList(data.background_image);
+                              window.scrollTo(0, 0);
+                            }}
+                            value={data.background_image}
+                          >
+                            Use image
+                          </ThemedButton>
+                        </Col>
+                      ) : null}
+                    </Row>
+                  </>
+                )}
               </>
             ))}
           </InfiniteScroll>
-        </>
+        </Container>
       ) : (
-        <Loader spinner text="Loading Recomended" />
+        <Loader text="Please begin typing to get suggestions below" />
       )}
     </>
-  );
-
-  return (
-    <Container
-      className={`${
-        isDarkMode
-          ? appStyle.BackgroundContainerTest
-          : appStyle.BackgroundContainerSmallRed
-      }`}
-    >
-      <Row>
-        <Col>
-          <button
-            className={`${
-              isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
-            } ${appStyle.ButtonLarge}`}
-            onClick={() => setSearchList("Game")}
-          >
-            Game
-          </button>
-          <button
-            className={`${
-              isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
-            } ${appStyle.ButtonLarge}`}
-            onClick={() => setSearchList("Movie")}
-          >
-            Movie
-          </button>
-        </Col>
-      </Row>
-      {hasSearched ? (
-        loadMore
-      ) : (
-        <Loader text="Please begin typing to get sugestions below" />
-      )}
-    </Container>
   );
 };
 

@@ -10,6 +10,7 @@ const ThemedInput = ({
   onChange,
   border,
   label,
+  options = [],
 }) => {
   const { theme, activeTheme } = useTheme();
   const inputId = id || `themed-input-${Math.random()}`;
@@ -20,72 +21,70 @@ const ThemedInput = ({
     }
   };
 
-  const withLabel = (
+  const inputStyle = {
+    width: "100%",
+    padding: "10px",
+    backgroundColor: theme[activeTheme].panelColor,
+    color: theme[activeTheme].color,
+    borderRadius: "4px",
+    outline: "none",
+    fontSize: "16px",
+    textDecoration: "none",
+    border: border ? "1px solid" : "none",
+    borderColor: theme[activeTheme].color,
+    boxShadow: "none",
+  };
+
+  const renderInput = () => {
+    if (type === "select") {
+      return (
+        <select
+          id={inputId}
+          value={value}
+          onChange={handleChange}
+          style={inputStyle}
+        >
+          {options.map((option, index) => (
+            <option key={index} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      );
+    }
+
+    return (
+      <input
+        id={inputId}
+        type={type}
+        value={value}
+        onChange={handleChange}
+        placeholder={placeholder}
+        style={inputStyle}
+      />
+    );
+  };
+
+  return (
     <Row>
-      <Col>
-        {label && (
+      {label && (
+        <Col>
           <label
             htmlFor={inputId}
             style={{
               display: "block",
               marginBottom: "5px",
-              color: theme[activeTheme].textColor,
+              color: theme[activeTheme].color,
               fontWeight: "bold",
             }}
           >
             {label}
           </label>
-        )}
-        <input
-          id={inputId}
-          type={type}
-          value={value}
-          onChange={handleChange}
-          placeholder={placeholder}
-          style={{
-            width: "100%",
-            padding: "10px",
-            backgroundColor: theme[activeTheme].panelColor,
-            color: theme[activeTheme].textColor,
-            borderRadius: "4px",
-            outline: "none",
-            fontSize: "16px",
-            textDecoration: "none",
-            border: "none", // Removes the border
-            boxShadow: "none", // Removes any default shadow
-            outline: "none", // Removes the focus outline
-            padding: "8px", // Optional: Add some padding for better appearance
-          }}
-        />
-      </Col>
+        </Col>
+      )}
+      <Col>{renderInput()}</Col>
     </Row>
   );
-
-  const withoutLabel = (
-    <input
-      id={inputId}
-      type={type}
-      value={value}
-      onChange={handleChange}
-      placeholder={placeholder}
-      style={{
-        width: "100%",
-        padding: "10px",
-        backgroundColor: theme[activeTheme].panelColor,
-        color: theme[activeTheme].textColor,
-        borderRadius: "4px",
-        outline: "none",
-        fontSize: "16px",
-        textDecoration: "none",
-        border: border ? "1px solid" : "none", // Removes the border
-        boxShadow: "none", // Removes any default shadow
-        outline: "none", // Removes the focus outline
-        padding: "8px", // Optional: Add some padding for better appearance
-      }}
-    />
-  );
-
-  return <>{label ? withLabel : withoutLabel}</>;
 };
 
 export default ThemedInput;

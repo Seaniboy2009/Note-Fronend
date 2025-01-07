@@ -75,16 +75,8 @@ const ListCreate = () => {
         marginBottom: "10px",
       }}
     >
-      <Row>
-        <Col md={1}>
-          <Link to={"/lists/"} className={appStyle.ButtonLink}>
-            Back
-          </Link>
-        </Col>
-      </Row>
-      <Row>
+      <Row style={{ paddingTop: "10px" }}>
         <Col>
-          {" "}
           <h5>Name your list</h5>
         </Col>
       </Row>
@@ -118,6 +110,13 @@ const ListCreate = () => {
 
   return (
     <Container fluid className={appStyle.Container}>
+      <Row>
+        <Col md={1}>
+          <Link to={"/lists/"} className={appStyle.ButtonLink}>
+            <i className="fa-solid fa-arrow-left" />
+          </Link>
+        </Col>
+      </Row>
       {submit ? submittingText : defaultText}
     </Container>
   );

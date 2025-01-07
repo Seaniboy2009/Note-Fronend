@@ -12,6 +12,7 @@ import { dbLists } from "../../firebase";
 import Loader from "../../components/Loader";
 import { useTheme } from "../../contexts/ThemeSelection";
 import { fetchMoreData } from "../../utils/utils";
+import ThemedCreateButton from "../../components/ThemedCreateButton";
 
 const ListPage = () => {
   const [myLists, setMyLists] = useState({ results: [] });
@@ -92,11 +93,7 @@ const ListPage = () => {
           {userFirestore?.user ? (
             <Row>
               <Col xs={5}>
-                <Link to={"list/create"}>
-                  <button className={appStyle.ButtonCreate}>
-                    <i className="fa-sharp fa-solid fa-plus" />
-                  </button>
-                </Link>
+                <ThemedCreateButton url={"list/create"} />
               </Col>
             </Row>
           ) : null}

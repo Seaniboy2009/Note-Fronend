@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -6,12 +6,23 @@ import { Link } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeSelection";
 import { useUser } from "../contexts/UserContext";
 import ThemedButton from "../components/ThemedButton";
+import { Spinner } from "react-bootstrap";
 
 const HomePage = () => {
   const userFirestore = useUser();
-
   const { activeTheme, theme } = useTheme();
-  console.log("home page", userFirestore?.user);
+  const [hasLoaded, setHasLoaded] = useState(false);
+
+  useEffect(() => {
+    if (userFirestore) {
+      setHasLoaded(true);
+    }
+
+    setTimeout(() => {
+      setHasLoaded(true);
+    }, 1000);
+  }, [userFirestore]);
+
   return (
     <Container
       style={{
@@ -20,63 +31,67 @@ const HomePage = () => {
         marginTop: "12px",
       }}
     >
-      <Container>
-        {userFirestore?.user ? (
-          <>
-            <Row style={{ paddingBottom: "20px" }}>
-              <Col>
-                <h4>Welcome</h4>
-              </Col>
-            </Row>
-            <Row style={{ paddingBottom: "10px" }}>
-              <Col>
-                <Link to={"/notes"}>
-                  <ThemedButton>Notes</ThemedButton>
-                </Link>
-              </Col>
-            </Row>
-            <Row style={{ paddingBottom: "10px" }}>
-              <Col>
-                <Link to={"/lists"}>
-                  <ThemedButton>Lists</ThemedButton>
-                </Link>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Link to={"/calendar"}>
-                  <ThemedButton>Calendar</ThemedButton>
-                </Link>
-              </Col>
-            </Row>
-            <br />
-          </>
-        ) : (
-          <>
-            {" "}
-            <Row style={{ paddingBottom: "20px" }}>
-              <Col>
-                <h4>Welcome</h4>
-                <h5>Please sign up to start using the app</h5>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Link to={"/sign-up"}>
-                  <ThemedButton> Sign up</ThemedButton>
-                </Link>
-              </Col>
-            </Row>
-            <Row style={{ paddingBottom: "10px" }}>
-              <Col>
-                <Link to={"/sign-in"}>
-                  <p> Log in</p>
-                </Link>
-              </Col>
-            </Row>
-          </>
-        )}
-      </Container>
+      {hasLoaded ? (
+        <Container>
+          {userFirestore?.user ? (
+            <>
+              <Row style={{ paddingBottom: "20px" }}>
+                <Col>
+                  <h4>Welcome</h4>
+                </Col>
+              </Row>
+              <Row style={{ paddingBottom: "10px" }}>
+                <Col>
+                  <Link to={"/notes"}>
+                    <ThemedButton>Notes</ThemedButton>
+                  </Link>
+                </Col>
+              </Row>
+              <Row style={{ paddingBottom: "10px" }}>
+                <Col>
+                  <Link to={"/lists"}>
+                    <ThemedButton>Lists</ThemedButton>
+                  </Link>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Link to={"/calendar"}>
+                    <ThemedButton>Calendar</ThemedButton>
+                  </Link>
+                </Col>
+              </Row>
+              <br />
+            </>
+          ) : (
+            <>
+              {" "}
+              <Row style={{ paddingBottom: "20px" }}>
+                <Col>
+                  <h4>Welcome</h4>
+                  <p>Please sign up to start using the app</p>
+                </Col>
+              </Row>
+              <Row style={{ paddingBottom: "10px" }}>
+                <Col>
+                  <Link to={"/sign-up"}>
+                    <ThemedButton>Sign up</ThemedButton>
+                  </Link>
+                </Col>
+              </Row>
+              <Row style={{ paddingBottom: "10px" }}>
+                <Col>
+                  <Link to={"/sign-in"}>
+                    <ThemedButton>Log in</ThemedButton>
+                  </Link>
+                </Col>
+              </Row>
+            </>
+          )}
+        </Container>
+      ) : (
+        <Spinner animation="border" />
+      )}
     </Container>
   );
 };

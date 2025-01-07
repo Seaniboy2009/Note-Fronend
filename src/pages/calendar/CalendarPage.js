@@ -27,6 +27,7 @@ import {
   getDaysInMonth,
   years,
 } from "../../utils/CalendarData";
+import ThemedCreateButton from "../../components/ThemedCreateButton";
 
 const CalendarPage = () => {
   const userFirestore = useUser();
@@ -558,6 +559,10 @@ const CalendarPage = () => {
                 >
                   <i className="fa-sharp fa-solid fa-plus" />
                 </button>
+                <ThemedCreateButton
+                  onClick={() => setIsCreateModalOpen(true)}
+                  link={false}
+                />
               </Row>
             </>
           ) : (

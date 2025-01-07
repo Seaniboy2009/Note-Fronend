@@ -22,6 +22,7 @@ export const theme = {
     hoverColor: "#a63c3a",
     textUnavailable: "#5c060a",
     toggleColor: "#410004",
+    createButton: "#4b1fa3",
   },
   Blue: {
     backgroundColor: "#265e70",
@@ -32,6 +33,7 @@ export const theme = {
     hoverColor: "#a63c3a",
     textUnavailable: "#a3b3b4",
     toggleColor: "#265e70",
+    createButton: "#265e70",
   },
   Purple: {
     backgroundColor: "#4b1fa3",
@@ -42,6 +44,7 @@ export const theme = {
     hoverColor: "#7830db",
     textUnavailable: "#9b86c1",
     toggleColor: "#7830db",
+    createButton: "#7830db",
   },
   Green: {
     backgroundColor: "#021428",
@@ -52,6 +55,7 @@ export const theme = {
     hoverColor: "#004f4f",
     textColor: "#ffffff",
     toggleColor: "#006666",
+    createButton: "#006666",
   },
   Basic: {
     backgroundColor: "#f9f9f9",
@@ -62,6 +66,7 @@ export const theme = {
     hoverColor: "#cccccc",
     textUnavailable: "#b0b0b0",
     toggleColor: "#d0d0d0",
+    createButton: "#d0d0d0",
   },
   BasicLessContrast: {
     backgroundColor: "#e0f0f0",
@@ -72,6 +77,7 @@ export const theme = {
     hoverColor: "#cccccc",
     textUnavailable: "#b0b0b0",
     toggleColor: "#d0d0d0",
+    createButton: "#d0d0d0",
   },
 };
 

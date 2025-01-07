@@ -38,12 +38,12 @@ const ThemedToggle = ({ id, handleToggle, isChecked, text }) => {
             backgroundColor: isChecked
               ? theme[activeTheme].toggleColor // Use toggleColor when toggled
               : theme[activeTheme].backgroundColor, // Use default background color
-            border: `2px solid ${theme[activeTheme].textColor}`,
+            border: `2px solid ${theme[activeTheme].color}`,
             borderRadius: "4px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: isChecked ? "white" : theme[activeTheme].textColor,
+            color: isChecked ? "white" : theme[activeTheme].color,
             fontSize: "16px",
             fontWeight: "bold",
           }}
@@ -73,17 +73,17 @@ const ThemedToggle = ({ id, handleToggle, isChecked, text }) => {
           backgroundColor: isChecked
             ? theme[activeTheme].toggleColor // Use toggleColor when toggled
             : theme[activeTheme].backgroundColor, // Use default background color
-          border: `2px solid ${theme[activeTheme].textColor}`,
+          border: `2px solid ${theme[activeTheme].color}`,
           borderRadius: "4px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          color: isChecked ? "white" : theme[activeTheme].textColor,
+          color: isChecked ? "white" : theme[activeTheme].color,
           fontSize: "16px",
           fontWeight: "bold",
         }}
       >
-        {isChecked ? "X" : ""}
+        {isChecked ? "x" : ""}
       </label>
     </Col>
   );
