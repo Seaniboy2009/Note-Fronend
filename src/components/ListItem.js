@@ -38,55 +38,75 @@ const ListItem = ({ listItem, onToggle, onDelete }) => {
     >
       <Row
         style={{
-          textAlign: "left",
-          lineHeight: "30px",
           display: "flex",
-          alignItems: "center", // Ensures all elements are vertically aligned
+          alignItems: "center", // Ensures vertical alignment
+          justifyContent: "space-between", // Spreads the items across the row
+          textAlign: "left",
+          lineHeight: "1.5", // Consistent spacing
         }}
       >
+        {/* Toggle Switch */}
         <ThemedToggle isChecked={isChecked} handleToggle={handleToggle} />
+
+        {/* Content Column */}
         <Col
-          xs={8}
+          xs={7}
           style={{
-            textDecoration: listItem?.toggle ? "line-through" : "none",
-            color: listItem?.toggle
-              ? theme[activeTheme].textUnavailable // Use textUnavailable for ticked items
-              : theme[activeTheme].color, // Use default color for unticked items
+            padding: "0",
+            margin: "0",
+            display: "flex",
+            flexDirection: "column", // Aligns content and date vertically
           }}
         >
-          <Col>
-            <p style={{ marginBottom: 0 }}>
-              <strong>{listItem?.content}</strong>{" "}
-            </p>
-          </Col>
-          <Col>
-            <p>
-              {" "}
-              {listItem?.date_created
-                ? `${new Date(listItem?.dateCreated).toLocaleTimeString([], {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}`
-                : null}
-            </p>
-          </Col>
-        </Col>
-        <Col xs={3} style={{ textAlign: "right" }}>
-          <ThemedButton
-            onClick={handleDelete}
+          {/* Main Content */}
+          <p
             style={{
-              backgroundColor: "transparent",
-              border: "none",
-              cursor: "pointer",
-              color: "red",
+              margin: "0",
+              textDecoration: listItem?.toggle ? "line-through" : "none",
+              color: listItem?.toggle
+                ? theme[activeTheme].textUnavailable
+                : theme[activeTheme].color,
             }}
           >
-            Delete
-          </ThemedButton>
+            <strong>{listItem?.content}</strong>
+          </p>
+
+          {/* Date Created */}
+          {listItem?.date_created && (
+            <p
+              style={{
+                margin: "0",
+                fontSize: "0.85em",
+                color: "#888", // Lighter color for date
+              }}
+            >
+              {new Date(listItem?.date_created).toLocaleTimeString([], {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </p>
+          )}
         </Col>
+
+        {/* Delete Button */}
+        <ThemedButton
+          onClick={handleDelete}
+          style={{
+            backgroundColor: "transparent",
+            border: "none",
+            cursor: "pointer",
+            color: "red",
+            padding: "0",
+            paddingRight: "10px",
+            margin: "0",
+            textAlign: "right",
+          }}
+        >
+          Delete
+        </ThemedButton>
       </Row>
     </Container>
   );

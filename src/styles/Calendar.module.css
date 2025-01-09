@@ -20,6 +20,24 @@
   padding: 10px; /* Adds a bit of spacing */
 }
 
+.entryContainer {
+  display: flex;
+  justify-content: space-between; /* Distribute entries across available space */
+  align-items: flex-end; /* Align entries at the bottom of the container */
+  gap: 4px; /* Add some space between the entries */
+  width: 100%; /* Make sure the container takes the full width */
+}
+
+.entryContainer .calendarDayBanner {
+  height: 5px; /* Example height for the entry banner */
+  background-color: #ff6347; /* Example background color */
+  margin: 0; /* Remove any margins */
+  padding: 0; /* Remove any padding */
+  flex-grow: 1; /* Allow items to grow to fill available space */
+  flex-basis: 100%; /* Default: Take up full width */
+  max-width: 100%; /* Ensure it doesn't exceed 100% of the container width */
+}
+
 /* Styling for calendar days */
 /* Styling for calendar days with the full button color */
 .calendarDay {
@@ -41,12 +59,10 @@
 }
 
 .calendarDayBanner {
-  /* background-color: red; */
-  position: absolute;
-  height: 5px;
-  top: 95%;
-  width: 100%;
-  padding: 0;
+  width: 20px;
+  height: 10px;
+  position: relative;
+  top: 34px; /* Default top for large screens */
 }
 
 .calendarDayNumber {
@@ -99,33 +115,12 @@
     font-size: 8px;
     min-height: 40px;
     max-height: 40px;
-    /* max-width: 49px; */
+    max-width: 49px;
     margin: 0px;
   }
+
+  .calendarDayBanner {
+    top: 17px; /* Adjust top for smaller screens */
+    height: 3px;
+  }
 }
-
-/* Tablet-specific styles */
-/* @media (min-width: 768px) and (max-width: 1024px) {
-  .calendarGrid {
-    grid-template-columns: repeat(7, 1fr);
-    font-size: 12px;
-  }
-
-  .calendarDay {
-    padding: 8px;
-    font-size: 12px;
-  }
-
-  .dayHeader {
-    font-size: 14px;
-    padding: 5px;
-  }
-} */
-
-/* .calendarDay {
-  font-size: 8px;
-  min-height: 40px;
-  max-height: 40px;
-  max-width: 49px;
-  margin: 0px;
-} */

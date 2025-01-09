@@ -197,7 +197,7 @@ const ListDetailPage = () => {
     }
   };
 
-  const handleShowDeletelistModal = () => {
+  const handleShowDeleteListModal = () => {
     console.log("Show delete list modal");
     setShowDeleteModal(true);
   };
@@ -225,15 +225,22 @@ const ListDetailPage = () => {
               </Link>
             </Col>
             <Col xs={7}>
-              <h5>{list.title}</h5>
+              <h5>
+                {console.log("list", list)}
+                {list.title}
+              </h5>
+              <p>
+                {" "}
+                {new Date(list.date_created).toLocaleDateString("en-GB", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
             </Col>
             <Col xs={4}>
-              <ThemedButton
-                onClick={() => handleShowDeletelistModal()}
-                // className={appStyle.ButtonLists}
-                // style={{ padding: "5px" }}
-              >
-                Delete List
+              <ThemedButton onClick={() => handleShowDeleteListModal()}>
+                Delete
               </ThemedButton>
             </Col>
           </Row>

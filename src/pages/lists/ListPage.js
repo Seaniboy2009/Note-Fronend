@@ -120,7 +120,6 @@ const ListPage = () => {
                         textAlign: "left",
                         display: "flex",
                       }}
-                      className={style.listObject}
                     >
                       <Col>
                         <p>{list.title}</p>

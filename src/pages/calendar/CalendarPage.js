@@ -25,6 +25,7 @@ import {
   months,
   daysOfWeekShort,
   getDaysInMonth,
+  getMonthName,
   years,
 } from "../../utils/CalendarData";
 import ThemedCreateButton from "../../components/ThemedCreateButton";
@@ -310,15 +311,45 @@ const CalendarPage = () => {
     console.log("Selected day: ", selectedDay);
   };
 
+  function renderEntryDivs(day) {
+    const entries = entryMap.get(`${day.getFullYear()}-${day.getDate()}`);
+    if (!entries || entries.length === 0) return null;
+
+    return (
+      <div
+        className={style.entryContainer}
+        style={{
+          display: "flex",
+          gap: "4px",
+          justifyContent: "space-evenly",
+          flexWrap: "nowrap",
+          alignItems: "center",
+        }}
+      >
+        {entries.map((entry, idx) => (
+          <div
+            key={idx}
+            className={`${style.calendarDayBanner}`}
+            style={{
+              backgroundColor: entry.color, // Color for the entry
+            }}
+            title={entry.note}
+          />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <Container fluid className={style.calendarContainer}>
       {hasLoaded ? (
         <>
           <Row>
-            <Col xs={6}>
+            <Col xs={5}>
               <h4>Calendar</h4>
             </Col>
-            <Col xs={6} style={{ textAlign: "right" }}>
+            <Col xs={5}>{getMonthName(selectedMonth)}</Col>
+            <Col xs={2} style={{ textAlign: "right" }}>
               <button
                 onClick={toggleDropdown}
                 style={{
@@ -326,6 +357,7 @@ const CalendarPage = () => {
                   border: "none",
                   cursor: "pointer",
                   fontSize: "24px",
+                  color: theme[activeTheme].color,
                 }}
                 aria-label="Toggle Dropdown"
               >
@@ -440,20 +472,7 @@ const CalendarPage = () => {
                       }}
                     >
                       <p className={style.calendarDayNumber}>{day.getDate()}</p>
-                      {doesDayHaveEntry(day) ? (
-                        <div className={style.entryContainer}>
-                          {entryMap
-                            .get(`${day.getFullYear()}-${day.getDate()}`)
-                            ?.map((entry, idx) => (
-                              <div
-                                key={idx}
-                                className={style.calendarDayBanner}
-                                style={{ backgroundColor: entry.color }}
-                                title={entry.note}
-                              ></div>
-                            ))}
-                        </div>
-                      ) : null}
+                      {doesDayHaveEntry(day) ? renderEntryDivs(day) : null}
                     </ThemedButton>
                   ) : (
                     <div key={index} className={style.emptyDay}></div>

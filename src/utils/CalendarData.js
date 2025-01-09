@@ -58,3 +58,9 @@ export const getDaysInMonth = (month, year) => {
 
   return days;
 };
+
+export const getMonthName = (monthNumber) => {
+  const date = new Date();
+  date.setMonth(monthNumber); // Set the month (0-indexed)
+  return date.toLocaleString("default", { month: "long" }); // Get month name
+};
