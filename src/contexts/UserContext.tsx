@@ -57,7 +57,6 @@ export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
             sharedCalendars: data.sharedCalendars || [],
             advancedUser: data.advancedUser || false,
           });
-          console.log("User details fetched successfully:", data);
         } else {
           console.warn("No user details found in Firestore.");
           setUserData({
