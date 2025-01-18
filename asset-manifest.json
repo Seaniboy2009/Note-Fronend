@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/Note-Fronend/static/css/main.2d5eee60.css",
-    "main.js": "/Note-Fronend/static/js/main.d3fb0e8b.js",
+    "main.css": "/Note-Fronend/static/css/main.54d4eb34.css",
+    "main.js": "/Note-Fronend/static/js/main.fccd1754.js",
     "index.html": "/Note-Fronend/index.html",
-    "main.2d5eee60.css.map": "/Note-Fronend/static/css/main.2d5eee60.css.map",
-    "main.d3fb0e8b.js.map": "/Note-Fronend/static/js/main.d3fb0e8b.js.map"
+    "main.54d4eb34.css.map": "/Note-Fronend/static/css/main.54d4eb34.css.map",
+    "main.fccd1754.js.map": "/Note-Fronend/static/js/main.fccd1754.js.map"
   },
   "entrypoints": [
-    "static/css/main.2d5eee60.css",
-    "static/js/main.d3fb0e8b.js"
+    "static/css/main.54d4eb34.css",
+    "static/js/main.fccd1754.js"
   ]
 }
