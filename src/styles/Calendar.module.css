@@ -1,20 +1,18 @@
 /* Ensures the grid doesn't overflow */
 .calendarGrid {
   display: grid;
-  grid-template-columns: repeat(
-    7,
-    1fr
-  ); /* 7 equal columns for each day of the week */
-  gap: 5px; /* Adjust as needed for spacing */
-  width: 100%; /* Ensure the grid is confined to the screen width */
-  box-sizing: border-box; /* Makes sure padding doesn't affect total width */
-  /* overflow: hidden; */
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: center; /* Ensure vertical centering in grid cells */
+  justify-items: center; /* Ensure horizontal centering in grid cells */
 }
 
 /* Restrict the maximum width for mobile */
 .calendarContainer {
   max-width: 50%; /* Ensures no horizontal overflow */
-  max-height: 85vh; /* Prevents full screen height; adjust as needed */
+  /* max-height: 85vh; */
   overflow-y: auto; /* Allows scrolling if content is too tall */
   overflow-x: hidden; /* Prevent horizontal scrolling */
   padding: 10px; /* Adds a bit of spacing */
@@ -34,7 +32,7 @@
   margin: 0; /* Remove any margins */
   padding: 0; /* Remove any padding */
   flex-grow: 1; /* Allow items to grow to fill available space */
-  flex-basis: 100%; /* Default: Take up full width */
+  /* flex-basis: 100%; Default: Take up full width */
   max-width: 100%; /* Ensure it doesn't exceed 100% of the container width */
 }
 
@@ -51,11 +49,10 @@
   user-select: none;
   width: 100%;
   box-sizing: border-box;
-  color: white;
   box-shadow: none;
   min-height: 80px;
   max-height: 80px;
-  /* max-width: 120px; testing this */
+  max-width: 80px;
 }
 
 .calendarDayBanner {
@@ -63,6 +60,15 @@
   height: 10px;
   position: relative;
   top: 34px; /* Default top for large screens */
+}
+
+.calendarDayBannerRounded {
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  position: relative;
+  top: 5px;
+  z-index: 1;
 }
 
 .calendarDayNumber {
@@ -73,6 +79,12 @@
   font-weight: bold; /* Ensure text is bold */
 }
 
+.calendarDayNumberRounded {
+  top: 1px;
+  left: 1px;
+  margin: 0;
+  font-weight: bold;
+}
 /* Apply color to the whole button if it has an entry */
 .calendarDay.entryActive {
   background-color: currentColor; /* Use the selected color */
@@ -115,7 +127,7 @@
     font-size: 8px;
     min-height: 40px;
     max-height: 40px;
-    max-width: 49px;
+    max-width: 40px;
     margin: 0px;
   }
 

@@ -41,8 +41,7 @@ const ListDetailPage = () => {
   const [error, setError] = useState(null);
 
   const getLists = async () => {
-    console.log("Get list detail called");
-    console.log("docId:", docId);
+    if (!userFirestore) return;
     try {
       const docRef = doc(db, "lists", docId);
       const docSnap = await getDoc(docRef);

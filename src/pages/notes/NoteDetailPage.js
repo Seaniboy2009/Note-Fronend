@@ -3,14 +3,10 @@ import { useParams } from "react-router-dom";
 import NoteItem from "../../components/NoteItem";
 import appStyle from "../../styles/App.module.css";
 import { Container } from "react-bootstrap";
-import { axiosInstance } from "../../api/axiosDefaults";
-
 import Loader from "../../components/Loader";
 import { useUser } from "../../contexts/UserContext";
 import { getDoc, doc } from "firebase/firestore";
-import { dbNotes, db } from "../../firebase";
-
-const useNewDb = true; // ***********TODO remove this once new db is fully implemented**********
+import { db } from "../../firebase";
 
 const NoteDetailPage = () => {
   const { docId } = useParams();
@@ -19,30 +15,21 @@ const NoteDetailPage = () => {
   const userFirestore = useUser();
 
   useEffect(() => {
-    console.log(docId);
-    const handleGetNote = async () => {
-      if (useNewDb) {
-        // const queryNotes = query(
-        //   dbNotes,
-        //   where("userId", "==", userFirestore.user.uid)
-        // );
-        //const querySnapshot = await getDocs(queryNotes);
-        const docRef = doc(db, "notes", docId);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const noteData = docSnap.data();
-          console.log("Document data:", noteData);
+    if (!userFirestore) return;
 
-          setNote(noteData);
-          setHasLoaded(true);
-        } else {
-          console.log("No such document!");
-        }
-      } else {
-        const { data } = await axiosInstance.get(`/api/notes/${docId}`);
-        setNote(data);
+    const handleGetNote = async () => {
+      const docRef = doc(db, "notes", docId);
+      const docSnap = await getDoc(docRef);
+      if (userFirestore?.user.uid !== docSnap.data().userId) {
+        return;
+      }
+      if (docSnap.exists()) {
+        const noteData = docSnap.data();
+        console.log("noteData", noteData);
+        setNote(noteData);
         setHasLoaded(true);
-        console.log(data);
+      } else {
+        console.error("No such document!");
       }
     };
 
@@ -53,7 +40,7 @@ const NoteDetailPage = () => {
     return () => {
       clearTimeout(timer);
     };
-  }, [docId]);
+  }, [docId, userFirestore]);
 
   return (
     <Container className={appStyle.Container}>

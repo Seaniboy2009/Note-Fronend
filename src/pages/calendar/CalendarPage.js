@@ -51,6 +51,7 @@ const CalendarPage = () => {
   const sharedCalendars = userFirestore?.sharedCalendars;
   const isEditable = selectedCalendar === currentUserId;
   const [entryUpdated, setEntryUpdated] = useState(false);
+  const [borderRounded, setBorderRounded] = useState(true);
 
   const advancedFeatures = userFirestore?.advancedUser || false;
 
@@ -143,7 +144,7 @@ const CalendarPage = () => {
       const entries = calendarEntries.filter(
         (entry) => entry.year === year && entry.day === dayOfMonth
       );
-      setSelectedDay(initialDay);
+      setSelectedDay(selectedDay || initialDay);
       setDayEntry(entries);
     };
 
@@ -243,7 +244,6 @@ const CalendarPage = () => {
     }
   };
 
-  // Modal confirmation action buttons
   const confirmAction = (entry) => {
     if (actionType === "edit") {
       handleUpdateEntry(entryData);
@@ -272,17 +272,9 @@ const CalendarPage = () => {
     try {
       const entryRef = doc(db, "calendarEntry", entryData.id);
       await deleteDoc(entryRef);
-      console.log("Calendar entry deleted: ", entryData.id);
-
-      // Remove the deleted entry from local state
       setCalendarEntries((prevEntries) =>
         prevEntries.filter((entry) => entry.id !== entryData.id)
       );
-
-      // Optionally set the selected day back to the previous day or today's date
-      setSelectedDay(previouslySelectedDay || new Date());
-
-      setEntryData(null); // Clear entry data after deletion
     } catch (error) {
       console.error("Error deleting calendar entry: ", error);
     }
@@ -324,14 +316,18 @@ const CalendarPage = () => {
           display: "flex",
           gap: "4px",
           justifyContent: "space-evenly",
-          flexWrap: "nowrap",
+          // flexWrap: "nowrap",
           alignItems: "center",
         }}
       >
         {entries.map((entry, idx) => (
           <div
             key={idx}
-            className={`${style.calendarDayBanner}`}
+            className={`${
+              borderRounded
+                ? style.calendarDayBannerRounded
+                : style.calendarDayBanner
+            }`}
             style={{
               backgroundColor: entry.color, // Color for the entry
             }}
@@ -347,10 +343,14 @@ const CalendarPage = () => {
       {hasLoaded ? (
         <>
           <Row>
-            <Col xs={5}>
-              <h4>Calendar</h4>
+            <Col xs={6}>
+              {getMonthName(selectedMonth)} {selectedYear}
             </Col>
-            <Col xs={5}>{getMonthName(selectedMonth)}</Col>
+            <Col xs={4} style={{ textAlign: "right" }}>
+              <ThemedButton onClick={() => setBorderRounded(!borderRounded)}>
+                {borderRounded ? "Square" : "rounded"}
+              </ThemedButton>
+            </Col>
             <Col xs={2} style={{ textAlign: "right" }}>
               <button
                 onClick={toggleDropdown}
@@ -451,12 +451,17 @@ const CalendarPage = () => {
               )}
             </Col>
           </Row>
-          <Row>
+          <Row
+            style={{
+              background: `linear-gradient(180deg, ${theme[activeTheme].backgroundColor} 10%, ${theme[activeTheme].backgroundColor2} 90%)`,
+              paddingBottom: "10px",
+            }}
+          >
             <Col>
               <div className={style.calendarGrid}>
                 {daysOfWeekShort.map((day) => (
                   <div key={day} className={style.dayHeader}>
-                    <p>{day}</p>
+                    <p style={{ color: theme[activeTheme].color }}>{day}</p>
                   </div>
                 ))}
                 {days.map((day, index) =>
@@ -471,9 +476,22 @@ const CalendarPage = () => {
                       onClick={() => handleDayClick(day)}
                       style={{
                         backgroundColor: theme[activeTheme].panelColor,
+                        borderRadius: borderRounded ? "50%" : "0",
+                        padding: "0",
+                        width: "50px !important",
+                        height: "50px !important",
+                        color: theme[activeTheme].color,
                       }}
                     >
-                      <p className={style.calendarDayNumber}>{day.getDate()}</p>
+                      <p
+                        className={`${
+                          borderRounded
+                            ? style.calendarDayNumberRounded
+                            : style.calendarDayNumber
+                        }`}
+                      >
+                        {day.getDate()}
+                      </p>
                       {doesDayHaveEntry(day) ? renderEntryDivs(day) : null}
                     </ThemedButton>
                   ) : (

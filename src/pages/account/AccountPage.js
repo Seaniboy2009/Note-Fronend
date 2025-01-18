@@ -520,7 +520,7 @@ const AccountPage = () => {
           </Container>
         )}
         {/* Admin for testing only*/}
-        {admin && (
+        {/* {admin && (
           <Container
             style={{
               backgroundColor: theme[activeTheme].panelColor,
@@ -554,7 +554,7 @@ const AccountPage = () => {
               </Row>
             ))}
           </Container>
-        )}
+        )} */}
         {/* Admin Page */}
         {admin && <AdminPage />}
       </Container>

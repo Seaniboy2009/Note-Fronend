@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import NoteItem from "../../components/NoteItem";
-import appStyle from "../../styles/App.module.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -11,40 +10,28 @@ import Loader from "../../components/Loader";
 import { useUser } from "../../contexts/UserContext";
 import { getDocs, query, where } from "firebase/firestore";
 import { dbNotes } from "../../firebase";
-import { useTheme } from "../../contexts/ThemeSelection";
 import ThemedCreateButton from "../../components/ThemedCreateButton";
-const useNewDb = true; // ***********TODO remove this once new db is fully implemented**********
 
 const NoteListPage = () => {
   const [myNotes, setMyNotes] = useState({ results: [] });
   const [hasLoaded, setHasLoaded] = useState(false);
   const userFirestore = useUser();
-  const { activeTheme, theme } = useTheme();
+
   useEffect(() => {
     const handleGetNotes = async () => {
       try {
-        if (useNewDb) {
-          const queryNotes = query(
-            dbNotes,
-            where("userId", "==", userFirestore.user.uid)
-          );
-          const querySnapshot = await getDocs(queryNotes);
-          const userUpdatedResponse = querySnapshot.docs.map((doc) => ({
-            docId: doc.id, // Firestore document ID
-            ...doc.data(), // Document data
-          }));
-          setMyNotes({ results: userUpdatedResponse });
-          console.log("Get my notes data:", userUpdatedResponse);
-        }
+        const queryNotes = query(
+          dbNotes,
+          where("userId", "==", userFirestore.user.uid)
+        );
+        const querySnapshot = await getDocs(queryNotes);
+        const userUpdatedResponse = querySnapshot.docs.map((doc) => ({
+          docId: doc.id, // Firestore document ID
+          ...doc.data(), // Document data
+        }));
+        setMyNotes({ results: userUpdatedResponse });
       } catch (error) {
-        const access = localStorage.getItem("access_token");
-        if (error.response?.status === 401 && access) {
-          window.location.reload();
-        } else if (!access) {
-          //navigate("/");
-        } else {
-          console.log("Other error");
-        }
+        console.error("Error getting documents: ", error);
       }
       setHasLoaded(true);
     };

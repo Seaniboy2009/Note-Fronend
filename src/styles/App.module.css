@@ -95,20 +95,6 @@
 
 /* BUTTONS */
 
-.ButtonCreate {
-  position: fixed;
-  height: 60px;
-  width: 60px;
-  border-radius: 50%;
-  bottom: 15%;
-  right: 3%;
-  font-size: 80%;
-  z-index: 2;
-  /* color: #ffffff; */
-  /* background-color: #13451f;
-  border: 0.5px solid #53b46b !important; */
-}
-
 .ButtonNavBar {
   height: 60px;
   width: 60px;
