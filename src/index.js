@@ -6,14 +6,17 @@ import { HashRouter } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import { ThemeProvider } from "./contexts/ThemeSelection";
 import { UserProvider } from "./contexts/UserContext";
+import { UserSettingsProvider } from "./contexts/UserSettingsContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <HashRouter>
     <UserProvider>
       <ThemeProvider>
-        <ScrollToTop />
-        <App />
+        <UserSettingsProvider>
+          <ScrollToTop />
+          <App />
+        </UserSettingsProvider>
       </ThemeProvider>
     </UserProvider>
   </HashRouter>

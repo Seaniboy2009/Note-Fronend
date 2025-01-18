@@ -33,63 +33,59 @@ const DayEntry = ({
   return (
     <Container
       key={entry.id}
-      style={{ marginBottom: "10px", border: "1px solid" }}
+      style={{
+        alignContent: "center",
+        marginBottom: "5px",
+        alignItems: "center",
+      }}
     >
-      <Row>
-        <Col xs={12} style={{ padding: "10px" }}>
+      <Row style={{ alignContent: "center", padding: "0" }}>
+        <Col xs={9} style={{ alignContent: "center", padding: "0" }}>
           <textarea
             disabled={!isEditable}
             value={entry.note}
             onChange={handleNoteChange}
             placeholder={entry.note ? "" : "No note added"}
             style={{
-              height: "auto",
+              height: "90%",
               backgroundColor: theme[activeTheme].panelColor,
               color: theme[activeTheme].color,
               border: "0",
               width: "100%",
-              marginTop: "5px",
             }}
           />
         </Col>
-      </Row>
-      <Row>
-        <Col xs={2} style={{ textAlign: "center", padding: "5px" }}>
-          <p style={{ margin: "0" }}>
-            {new Date(entry.createdAt).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </p>
-        </Col>
-
-        <Col xs={1} style={{ padding: "5px" }}>
-          <p>Color: </p>
-        </Col>
-        <Col xs={2} style={{ padding: "5px" }}>
+        <Col
+          xs={2}
+          style={{
+            padding: "5px",
+            alignContent: "center",
+            alignItems: "center",
+          }}
+        >
           <input
             type="color"
             value={entry.color || "#000000"}
             onChange={handleColorChange}
-            style={{ marginLeft: "5px" }}
+            style={{ height: "85%", width: "80%", padding: "0" }}
             disabled={!advancedFeatures}
           />
         </Col>
 
-        <Col xs={7} style={{ textAlign: "right", padding: "5px" }}>
+        <Col xs={1} style={{ alignContent: "center", padding: "0" }}>
           <ThemedButton
             fullWidth={false}
             size="small"
             onClick={() => handleUpdateClick(entry)}
           >
-            Update
+            <i className="fa-regular fa-pen-to-square"></i>
           </ThemedButton>{" "}
           <ThemedButton
             onClick={() => handleDeleteClick(entry)}
             fullWidth={false}
             size="small"
           >
-            Delete
+            <i className="fa-regular fa-trash-can"></i>
           </ThemedButton>
         </Col>
       </Row>

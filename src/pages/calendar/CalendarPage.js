@@ -46,11 +46,12 @@ const CalendarPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [entryData, setEntryData] = useState(null);
   const [actionType, setActionType] = useState(null);
-  const [selectedCalendar, setSelectedCalendar] = useState(currentUserId || "");
+  const [selectedCalendar, setSelectedCalendar] = useState(
+    currentUserId || null
+  );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const sharedCalendars = userFirestore?.sharedCalendars;
-  const isEditable = selectedCalendar === currentUserId;
-  const [entryUpdated, setEntryUpdated] = useState(false);
+  const [isEditable, setIsEditable] = useState(false);
   const [borderRounded, setBorderRounded] = useState(true);
 
   const advancedFeatures = userFirestore?.advancedUser || false;
@@ -69,89 +70,91 @@ const CalendarPage = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  useEffect(() => {
-    if (!userFirestore?.user?.uid) {
-      console.error("User is not authenticated");
+  const fetchCalendarEntries = async () => {
+    if (
+      userFirestore == null ||
+      selectedCalendar == null ||
+      selectedMonth == null
+    ) {
+      console.error(
+        "Invalid state: either userFirestore or selectedCalendar or selectedMonth is undefined."
+      );
       return;
     }
-    setSelectedCalendar(userFirestore.user.uid);
-  }, [userFirestore]);
 
-  useEffect(() => {
-    console.log("use effect called");
-    const fetchCalendarEntries = async () => {
-      console.log("Fetching calendar entries...");
-      if (
-        userFirestore == null ||
-        selectedCalendar == null ||
-        selectedMonth == null
-      ) {
-        console.error(
-          "Invalid state: either userFirestore or selectedCalendar or selectedMonth is undefined."
-        );
-        return;
-      }
-
-      const calendarToUse = selectedCalendar || currentUserId;
-      const calendarEntryRef = collection(db, "calendarEntry");
-      const q = query(
-        calendarEntryRef,
-        where("month", "==", selectedMonth),
-        where("year", "==", selectedYear),
-        where("userId", "==", calendarToUse)
-      );
-
-      try {
-        const snapshot = await getDocs(q);
-        const entries = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setCalendarEntries(entries);
-        setHasLoaded(true);
-      } catch (error) {
-        console.error("Error fetching calendar entries: ", error);
-      }
-      setEntryUpdated(false);
-    };
-
-    if (userFirestore?.user) {
-      setHasLoaded(true);
+    if (selectedCalendar === currentUserId) {
+      setIsEditable(() => true);
+    } else {
+      setIsEditable(() => false);
     }
-    fetchCalendarEntries();
-  }, [
-    selectedMonth,
-    selectedCalendar,
-    selectedYear,
-    entryUpdated,
-    userFirestore,
-    currentUserId,
-  ]);
+
+    const calendarToUse = selectedCalendar || currentUserId;
+    const calendarEntryRef = collection(db, "calendarEntry");
+    const q = query(
+      calendarEntryRef,
+      where("month", "==", selectedMonth),
+      where("year", "==", selectedYear),
+      where("userId", "==", calendarToUse)
+    );
+
+    try {
+      const snapshot = await getDocs(q);
+      const entries = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setCalendarEntries(entries);
+      setHasLoaded(true);
+      console.log("Calendar entries fetched: ", entries);
+    } catch (error) {
+      console.error("Error fetching calendar entries: ", error);
+    }
+  };
+
+  const setDay = () => {
+    const today = new Date();
+    const isCurrentMonth =
+      today.getMonth() === selectedMonth &&
+      today.getFullYear() === selectedYear;
+    const currentDay = isCurrentMonth
+      ? days.find((day) => day && day.getDate() === today.getDate())
+      : days.find((day) => day !== null);
+
+    const dayOfMonth = currentDay.getDate();
+    const year = currentDay.getFullYear();
+
+    const entries = calendarEntries.filter(
+      (entry) => entry.year === year && entry.day === dayOfMonth
+    );
+    setSelectedDay(selectedDay || currentDay);
+    setDayEntry(entries);
+    console.log(
+      "Day set ",
+      selectedDay ? `selectedDay: ${selectedDay}` : `currentDay: ${currentDay}`
+    );
+  };
 
   useEffect(() => {
-    const setDay = () => {
-      const today = new Date();
-      const isCurrentMonth =
-        today.getMonth() === selectedMonth &&
-        today.getFullYear() === selectedYear;
-      const initialDay = isCurrentMonth
-        ? days.find((day) => day && day.getDate() === today.getDate())
-        : days.find((day) => day !== null);
-
-      const dayOfMonth = initialDay.getDate();
-      const year = initialDay.getFullYear();
-
-      const entries = calendarEntries.filter(
-        (entry) => entry.year === year && entry.day === dayOfMonth
-      );
-      setSelectedDay(selectedDay || initialDay);
-      setDayEntry(entries);
-    };
+    const timer = setTimeout(() => {
+      if (!hasLoaded && currentUserId) {
+        console.log("Loading calendar entries...");
+        setSelectedCalendar(() => currentUserId);
+        fetchCalendarEntries();
+      }
+    }, 1000);
 
     if (hasLoaded) {
       setDay();
     }
-  }, [selectedMonth, selectedYear, calendarEntries, hasLoaded]);
+
+    if (hasLoaded && selectedDay) {
+      fetchCalendarEntries();
+    }
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [userFirestore, hasLoaded, selectedCalendar, selectedMonth, selectedYear]);
 
   const handleMonthChange = (event) => {
     const newMonth = parseInt(event.target.value);
@@ -162,12 +165,10 @@ const CalendarPage = () => {
     } else if (newMonth > selectedMonth && selectedMonth === 11) {
       newYear += 1;
     }
-
-    setSelectedMonth(newMonth);
+    setSelectedMonth(() => newMonth);
     setSelectedYear(newYear);
-    setSelectedDay(null);
-    setDayEntry(null);
     setIsDropdownOpen(false);
+    fetchCalendarEntries();
   };
 
   const doesDayHaveEntry = (day) => {
@@ -197,14 +198,16 @@ const CalendarPage = () => {
         collection(db, "calendarEntry"),
         newEntryData
       );
-      console.log("Created new calendar entry:", docRef.id);
-      console.log("entry updated:", entryUpdated);
 
       setCalendarEntries((prevEntries) => [
         ...prevEntries,
-        { ...newEntryData, id: docRef.id }, // Add the newly created entry
+        { ...newEntryData, id: docRef.id },
       ]);
-      setEntryUpdated(true);
+
+      setDayEntry((prevEntries) => [
+        ...prevEntries,
+        { ...newEntryData, id: docRef.id },
+      ]);
     } catch (error) {
       console.error("Error creating calendar entry:", error);
     }
@@ -254,7 +257,7 @@ const CalendarPage = () => {
   };
 
   const handleCalendarChange = (event) => {
-    setSelectedCalendar(event.target.value);
+    setSelectedCalendar(() => event.target.value);
     setIsDropdownOpen(false);
   };
 
@@ -275,6 +278,7 @@ const CalendarPage = () => {
       setCalendarEntries((prevEntries) =>
         prevEntries.filter((entry) => entry.id !== entryData.id)
       );
+      setDayEntry(dayEntry.filter((entry) => entry.id !== entryData.id));
     } catch (error) {
       console.error("Error deleting calendar entry: ", error);
     }
@@ -316,7 +320,6 @@ const CalendarPage = () => {
           display: "flex",
           gap: "4px",
           justifyContent: "space-evenly",
-          // flexWrap: "nowrap",
           alignItems: "center",
         }}
       >
@@ -342,16 +345,24 @@ const CalendarPage = () => {
     <Container fluid className={style.calendarContainer}>
       {hasLoaded ? (
         <>
-          <Row>
-            <Col xs={6}>
+          <Row style={{ alignContent: "center", padding: "0" }}>
+            <Col xs={6} style={{ alignContent: "center" }}>
               {getMonthName(selectedMonth)} {selectedYear}
             </Col>
-            <Col xs={4} style={{ textAlign: "right" }}>
-              <ThemedButton onClick={() => setBorderRounded(!borderRounded)}>
-                {borderRounded ? "Square" : "rounded"}
+            <Col xs={4} style={{ textAlign: "right", alignContent: "center" }}>
+              <ThemedButton
+                size="small"
+                fullWidth={false}
+                onClick={() => setBorderRounded(!borderRounded)}
+              >
+                {borderRounded ? (
+                  <i className="fa-regular fa-square"></i>
+                ) : (
+                  <i className="fa-regular fa-circle"></i>
+                )}
               </ThemedButton>
             </Col>
-            <Col xs={2} style={{ textAlign: "right" }}>
+            <Col xs={2} style={{ textAlign: "right", alignContent: "center" }}>
               <button
                 onClick={toggleDropdown}
                 style={{
@@ -460,8 +471,10 @@ const CalendarPage = () => {
             <Col>
               <div className={style.calendarGrid}>
                 {daysOfWeekShort.map((day) => (
-                  <div key={day} className={style.dayHeader}>
-                    <p style={{ color: theme[activeTheme].color }}>{day}</p>
+                  <div key={day}>
+                    <p style={{ color: theme[activeTheme].color, margin: 0 }}>
+                      {day}
+                    </p>
                   </div>
                 ))}
                 {days.map((day, index) =>
@@ -472,14 +485,11 @@ const CalendarPage = () => {
                         selectedDay?.getTime() === day.getTime()
                           ? style.selected
                           : ""
-                      } ${doesDayHaveEntry(day) ? "entryActive" : ""}`}
+                      }`}
                       onClick={() => handleDayClick(day)}
                       style={{
                         backgroundColor: theme[activeTheme].panelColor,
                         borderRadius: borderRounded ? "50%" : "0",
-                        padding: "0",
-                        width: "50px !important",
-                        height: "50px !important",
                         color: theme[activeTheme].color,
                       }}
                     >
@@ -501,30 +511,8 @@ const CalendarPage = () => {
               </div>
             </Col>
           </Row>
-          <br />
           {isEditable ? (
             <>
-              {dayEntry?.length > 0 ? (
-                dayEntry?.map((entry) => (
-                  <DayEntry
-                    key={entry.id}
-                    entry={entry}
-                    isEditable={isEditable}
-                    theme={theme}
-                    activeTheme={activeTheme}
-                    advancedFeatures={advancedFeatures}
-                    handleUpdateClick={handleUpdateClick}
-                    handleDeleteClick={handleDeleteClick}
-                    setDayEntry={setDayEntry}
-                  />
-                ))
-              ) : (
-                <Row>
-                  <Col>
-                    <p>No entries for this day.</p>
-                  </Col>
-                </Row>
-              )}
               <CreateEntryForm
                 isEditable={isEditable}
                 theme={theme}
@@ -532,6 +520,23 @@ const CalendarPage = () => {
                 advancedFeatures={advancedFeatures}
                 onCreate={handleCreateEntry}
               />
+              {dayEntry?.length > 0 && hasLoaded
+                ? dayEntry?.map((entry) => (
+                    <>
+                      <DayEntry
+                        key={entry.id}
+                        entry={entry}
+                        isEditable={isEditable}
+                        theme={theme}
+                        activeTheme={activeTheme}
+                        advancedFeatures={advancedFeatures}
+                        handleUpdateClick={handleUpdateClick}
+                        handleDeleteClick={handleDeleteClick}
+                        setDayEntry={setDayEntry}
+                      />
+                    </>
+                  ))
+                : null}
             </>
           ) : (
             <>
@@ -543,8 +548,8 @@ const CalendarPage = () => {
                       <div
                         style={{
                           display: "flex",
-                          alignItems: "center", // Aligns items vertically
-                          gap: "10px", // Adds space between the textarea and button
+                          alignItems: "center",
+                          gap: "10px",
                         }}
                       >
                         <p>

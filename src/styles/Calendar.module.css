@@ -1,43 +1,37 @@
-/* Ensures the grid doesn't overflow */
 .calendarGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 5px;
   width: 100%;
   box-sizing: border-box;
-  align-items: center; /* Ensure vertical centering in grid cells */
-  justify-items: center; /* Ensure horizontal centering in grid cells */
+  align-items: center;
+  justify-items: center;
 }
 
-/* Restrict the maximum width for mobile */
 .calendarContainer {
-  max-width: 50%; /* Ensures no horizontal overflow */
-  /* max-height: 85vh; */
-  overflow-y: auto; /* Allows scrolling if content is too tall */
-  overflow-x: hidden; /* Prevent horizontal scrolling */
-  padding: 10px; /* Adds a bit of spacing */
+  max-width: 50%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px;
 }
 
 .entryContainer {
   display: flex;
-  justify-content: space-between; /* Distribute entries across available space */
-  align-items: flex-end; /* Align entries at the bottom of the container */
-  gap: 4px; /* Add some space between the entries */
-  width: 100%; /* Make sure the container takes the full width */
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 4px;
+  width: 100%;
 }
 
 .entryContainer .calendarDayBanner {
-  height: 5px; /* Example height for the entry banner */
-  background-color: #ff6347; /* Example background color */
-  margin: 0; /* Remove any margins */
-  padding: 0; /* Remove any padding */
-  flex-grow: 1; /* Allow items to grow to fill available space */
-  /* flex-basis: 100%; Default: Take up full width */
-  max-width: 100%; /* Ensure it doesn't exceed 100% of the container width */
+  height: 5px;
+  background-color: #ff6347;
+  margin: 0;
+  padding: 0;
+  flex-grow: 1;
+  max-width: 100%;
 }
 
-/* Styling for calendar days */
-/* Styling for calendar days with the full button color */
 .calendarDay {
   position: relative;
   padding: 0px 0px;
@@ -76,6 +70,7 @@
   top: 1px; /* Keeps it at the top */
   left: 1px; /* Keeps it fixed to the left */
   margin: 0;
+  font-size: 100%;
   font-weight: bold; /* Ensure text is bold */
 }
 
@@ -83,39 +78,18 @@
   top: 1px;
   left: 1px;
   margin: 0;
+  font-size: 120%;
   font-weight: bold;
-}
-/* Apply color to the whole button if it has an entry */
-.calendarDay.entryActive {
-  background-color: currentColor; /* Use the selected color */
 }
 
 .calendarDay.selected {
-  background-color: #29b32d71 !important;
-  color: white;
+  border: 1px solid #0ad81c; /*TODO Green border REMOVE  */
 }
 
-/* Crossed out style for disabled or booked days */
-.crossedOut {
-  background-color: #550f0a !important; /* Red background */
-  border: 1px solid #0ad81c !important; /* Dark red border */
-  color: #007bff !important;
-  cursor: not-allowed; /* Change cursor to indicate disabled state */
-}
-
-/* Styling for the day headers (Mon, Tue, etc.) */
-.dayHeader {
-  font-weight: bold;
-  text-align: center;
-}
-
-/* Ensures empty days are hidden, keeping spacing in the grid */
 .emptyDay {
-  /* visibility: hidden; */
   background-color: rgba(255, 0, 0, 0.089);
 }
 
-/* Mobile-specific styles */
 @media (max-width: 1280px) {
   .calendarContainer {
     max-width: 100%;
@@ -132,7 +106,20 @@
   }
 
   .calendarDayBanner {
-    top: 17px; /* Adjust top for smaller screens */
+    top: 17px;
     height: 3px;
+  }
+
+  .calendarDayBannerRounded {
+    border-radius: 50%;
+    width: 5px;
+    height: 5px;
+    position: relative;
+    top: 5px;
+    z-index: 1;
+  }
+
+  .calendarDayNumberRounded {
+    font-size: 150%;
   }
 }

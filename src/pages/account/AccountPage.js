@@ -9,6 +9,7 @@ import ThemedButton from "../../components/ThemedButton";
 import AdminPage from "./AdminPage";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { useUserSettings } from "../../contexts/UserSettingsContext";
 
 const AccountPage = () => {
   const userFirestore = useUser();
@@ -23,6 +24,12 @@ const AccountPage = () => {
   const [requestingRemovingAccess, setRequestingRemovingAccess] =
     useState(false);
   const advancedFeatures = userFirestore?.advancedUser || false;
+
+  const { settings, updateSettings } = useUserSettings();
+
+  const handleUpdateIcons = (newValue) => {
+    updateSettings({ useIcons: newValue });
+  };
 
   let navigate = useNavigate();
 
@@ -306,8 +313,38 @@ const AccountPage = () => {
             </Col>
           </Row>
           <Row>
+            <Col>
+              <p>Email: {userFirestore?.user?.email}</p>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <p>
+                Advanced Features: {advancedFeatures ? "Enabled" : "Disabled"}
+              </p>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={6}>
+              <p>Enable Icons</p>
+            </Col>
+            <Col xs={6}>
+              <input
+                name="theme"
+                className={isDarkMode ? appStyle.TextTest : appStyle.TextRed}
+                checked={settings.useIcons}
+                type="checkbox"
+                onChange={() => handleUpdateIcons(!settings.useIcons)}
+              />
+            </Col>
+          </Row>
+          <Row>
             <Col xl={12}>
-              <p>Theme</p>
+              {settings.useIcons ? (
+                <i className="fa-solid fa-palette"></i>
+              ) : (
+                <p>Theme's</p>
+              )}
             </Col>
             {Object.entries(theme)
               .filter(
@@ -324,9 +361,6 @@ const AccountPage = () => {
                   <Col xs={6}>
                     <input
                       name="theme"
-                      className={
-                        isDarkMode ? appStyle.TextTest : appStyle.TextRed
-                      }
                       checked={activeTheme === themeName}
                       type="radio"
                       onChange={() => changeTheme(themeName)}
