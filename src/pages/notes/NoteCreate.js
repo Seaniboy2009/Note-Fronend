@@ -1,227 +1,198 @@
 import React, { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Form from "react-bootstrap/Form";
 import appStyle from "../../styles/App.module.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { axiosInstance } from "../../api/axiosDefaults";
 import SearchPage from "../SearchPage";
 import { useTheme } from "../../contexts/ThemeSelection";
+import { useUser } from "../../contexts/UserContext";
+import { addDoc } from "firebase/firestore";
+import { dbNotes } from "../../firebase";
+import ThemedButton from "../../components/ThemedButton";
+import ThemedInput from "../../components/ThemedInput";
+import ThemedToggle from "../../components/ThemedToggle";
 
 const NoteCreate = () => {
   const navigate = useNavigate();
   const imageInput = useRef(null);
-  const [formData, setFormData] = useState({
+  const userFirestore = useUser();
+
+  const [noteData, setNoteData] = useState({
     title: "",
     category: "Other",
-    image: "",
     image_url: "",
     is_private: false,
   });
 
-  const { title, category, is_private } = formData;
-  const [submit, setSubmit] = useState(false);
-  const [search, setQueryGlobal] = useState("");
+  const { theme, activeTheme } = useTheme();
+  const [submitting, setSubmitting] = useState(false);
   const [pickImage, setPickImage] = useState(true);
-  const { isDarkMode } = useTheme();
+  const [pickedImageFromList, setPickedImageFromList] = useState(false);
 
+  // Create a new note
   const createNote = async () => {
-    const formDataSend = new FormData();
+    if (!userFirestore?.user) return;
 
-    formDataSend.append("title", title);
-    formDataSend.append("category", category);
-    formDataSend.append("is_private", is_private);
-
-    console.log("Type of image:", typeof formData.image);
-    console.log("Type of image_url:", typeof formData.image_url);
-
-    if (formData.image) {
-      // Assuming formData.image is a local file
-      formDataSend.append("image", formData.image);
-    } else if (formData.image_url) {
-      // If formData.image is falsy, check formData.image_url
-      formDataSend.append("image_url", formData.image_url);
-    } else {
-      console.error("Either image or image_url must be provided");
-      console.log("Form Data:", formData);
-      // return;
-    }
-
-    console.log("Form Data:", formData); // Log the form data
-
+    setSubmitting(true);
     try {
-      setSubmit(true);
-      await axiosInstance.post("/api/notes/", formDataSend, {
-        headers: {
-          "Content-Type": "multipart/form-data", // Use 'multipart/form-data' for FormData
-        },
+      const noteCreatedResponse = await addDoc(dbNotes, {
+        ...noteData,
+        date_created: new Date(),
+        userId: userFirestore.user.uid,
       });
-      setSubmit(false);
+
+      console.log("Note created:", noteCreatedResponse);
       navigate("/notes/");
     } catch (error) {
-      console.log(error);
+      console.error("Error creating note:", error);
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const handleChange = (event) => {
-    setFormData({ ...formData, [event.target.name]: event.target.value });
-    if (event.target.name === title) {
-      setQueryGlobal(event.target.value);
-    }
-    console.log(formData);
+  // Handle changes for all inputs
+  const handleChange = (name, value) => {
+    setNoteData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const handleChecked = (event) => {
-    setFormData({ ...formData, is_private: event.target.checked });
-    console.log(formData);
+  // Handle toggling "is_private"
+  const handleToggle = () => {
+    setNoteData((prevData) => ({
+      ...prevData,
+      is_private: !prevData.is_private,
+    }));
   };
 
-  const handleChangeImage = (event) => {
-    const file = event.target.files[0];
-    setFormData({
-      ...formData,
-      image: file,
-      image_url: "", // Reset the image_url field
-    });
-    console.log("Form Data:", formData);
-  };
-
-  const pickedImage = (imageUrl) => {
-    console.log("Picked image URL:", imageUrl);
-    setFormData({
-      ...formData,
+  // Handle setting image from list
+  const handlePickedImageFromList = (imageUrl) => {
+    setPickedImageFromList(!!imageUrl);
+    setNoteData((prevData) => ({
+      ...prevData,
       image_url: imageUrl,
-      image: null, // Reset the image field
-    });
-    console.log("Form Data:", formData);
+    }));
   };
 
-  const handlePickImage = () => {
-    if (pickImage) {
-      setPickImage(false);
-    } else {
-      setPickImage(true);
-    }
+  // Toggle image selection
+  const togglePickImage = () => {
+    setPickImage((prev) => !prev);
   };
 
-  const submittingText = (
-    <Container>
-      <Row>
-        <Col>
-          <h4>Please wait..Submitting</h4>
-        </Col>
-      </Row>
-    </Container>
-  );
-
-  const defaultText = (
-    <Container>
+  return (
+    <Container fluid className={appStyle.Container}>
       <Row>
         <Col xs={10}>
           <Link to={"/notes/"}>
             <i className="fa-solid fa-arrow-left" />
-            &nbsp;
           </Link>
         </Col>
       </Row>
-      <Row
-        className={`${
-          isDarkMode
-            ? appStyle.BackgroundContainerTest
-            : appStyle.BackgroundContainerSmallRed
-        }`}
+      <Container
+        style={{
+          backgroundColor: theme[activeTheme].panelColor,
+          border: theme[activeTheme].border,
+          marginBottom: "10px",
+        }}
       >
-        <Col xs={6}>
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="title">
-              <h5>Title</h5>
-            </Form.Label>
-            <Form.Control
-              type="text"
+        <Row>
+          <Col>
+            <h4>Create a New Note</h4>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={4}>
+            <label htmlFor="title">Title</label>
+          </Col>
+          <Col xs={8}>
+            <ThemedInput
+              value={noteData.title}
               name="title"
-              id="title"
-              aria-describedby="title"
-              onChange={handleChange}
+              onChange={(e) => handleChange("title", e.target.value)}
             />
-            <br />
-            <Form.Label htmlFor="category">
-              <h5>Category</h5>
-            </Form.Label>
-            <Form.Control
-              as="select"
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={4}>
+            <label htmlFor="category">Category</label>
+          </Col>
+          <Col xs={8}>
+            <ThemedInput
+              type="select"
+              value={noteData.category}
               name="category"
-              id="category"
-              aria-describedby="category"
-              onChange={handleChange}
-            >
-              <option value="Other">Other</option>
-              <option value="Game">Game</option>
-              <option value="Movie">Movie</option>
-            </Form.Control>
-            <br />
-            <Form.Label htmlFor="image">
-              <h5>Image</h5>
-            </Form.Label>
-            <Form.Control
+              onChange={(e) => handleChange("category", e.target.value)}
+              options={[
+                { value: "Other", label: "Other" },
+                { value: "Game", label: "Game" },
+                { value: "Movie", label: "Movie" },
+              ]}
+            />
+          </Col>
+        </Row>
+        {pickedImageFromList && (
+          <Row style={{ padding: "10px 0", alignItems: "center" }}>
+            <Col>
+              <img
+                src={noteData.image_url}
+                style={{ width: "50%", height: "auto", marginLeft: "10%" }}
+              />
+            </Col>
+            <Col>
+              <ThemedButton onClick={() => handlePickedImageFromList(null)}>
+                Remove Selected Image
+              </ThemedButton>
+            </Col>
+          </Row>
+        )}
+        <Row>
+          <Col xs={4}>
+            <label htmlFor="image">Image</label>
+          </Col>
+          <Col xs={8}>
+            <input
               type="file"
               name="image"
               id="image"
-              onChange={handleChangeImage}
               ref={imageInput}
+              onChange={(e) =>
+                setNoteData((prevData) => ({
+                  ...prevData,
+                  image: e.target.files[0],
+                  image_url: "",
+                }))
+              }
             />
-            <br />
-            <Form.Check
-              type="checkbox"
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <ThemedToggle
+              isChecked={noteData.is_private}
               name="is_private"
-              id="is_private"
-              label="Set Private?"
-              onChange={handleChecked}
+              handleToggle={handleToggle}
+              text="Make Private"
             />
-          </Form.Group>
-        </Col>
-      </Row>
-      <Row
-        className={`${
-          isDarkMode
-            ? appStyle.BackgroundContainerTest
-            : appStyle.BackgroundContainerSmallRed
-        }`}
-      >
-        <Col>
-          <button
-            onClick={createNote}
-            className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}
-          >
-            Submit
-          </button>
-        </Col>
-        <Col>
-          <button
-            onClick={handlePickImage}
-            className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}
-          >
-            Recomendations
-          </button>
-        </Col>
-      </Row>
-      {/* Search page */}
-      <Row>
-        {pickImage ? (
-          <SearchPage
-            searchText={title}
-            searchPage
-            category={category}
-            pickedImage={pickedImage}
-          />
-        ) : null}
-      </Row>
-    </Container>
-  );
-
-  return (
-    <Container fluid className={appStyle.Container}>
-      {submit ? submittingText : defaultText}
+          </Col>
+        </Row>
+        <Row style={{ padding: "10px 0" }}>
+          <Col>
+            <ThemedButton onClick={createNote} disabled={submitting}>
+              {submitting ? "Submitting..." : "Submit"}
+            </ThemedButton>
+          </Col>
+        </Row>
+      </Container>
+      {pickImage && (
+        <SearchPage
+          searchText={noteData.title}
+          searchPage
+          category={noteData.category}
+          handlePickedImageFromList={handlePickedImageFromList}
+        />
+      )}
     </Container>
   );
 };

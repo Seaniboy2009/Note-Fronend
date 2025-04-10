@@ -1,135 +1,74 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import NoteItem from "../../components/NoteItem";
-import appStyle from "../../styles/App.module.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { axiosInstance } from "../../api/axiosDefaults";
-import { useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { fetchMoreData, fetchMoreDataURL } from "../../utils/utils";
-import AuthContext from "../../contexts/AuthContext";
+import { fetchMoreData } from "../../utils/utils";
 import Loader from "../../components/Loader";
-import { useTheme } from "../../contexts/ThemeSelection";
+import { useUser } from "../../contexts/UserContext";
+import { getDocs, query, where } from "firebase/firestore";
+import { dbNotes } from "../../firebase";
+import ThemedCreateButton from "../../components/ThemedCreateButton";
 
 const NoteListPage = () => {
   const [myNotes, setMyNotes] = useState({ results: [] });
-  const [notes, setNotes] = useState({ results: [] });
-  const [viewSelection, setViewSelection] = useState("Movie"); // set to movies to show all movies on page load
   const [hasLoaded, setHasLoaded] = useState(false);
-  const [errors, setErrors] = useState({});
-  let { user } = useContext(AuthContext);
-  const navigate = useNavigate();
-  const { isDarkMode } = useTheme();
-  const [gridLayout, setGridLayout] = useState(false);
+  const userFirestore = useUser();
 
   useEffect(() => {
-    const getMyNotes = async () => {
+    const handleGetNotes = async () => {
       try {
-        const { data } = await axiosInstance.get(
-          `/api/notes/?owner=${user.user_id}`
+        const queryNotes = query(
+          dbNotes,
+          where("userId", "==", userFirestore.user.uid)
         );
-        setMyNotes(data);
-        setHasLoaded(true);
-        console.log("Get my notes data:", data);
+        const querySnapshot = await getDocs(queryNotes);
+        const userUpdatedResponse = querySnapshot.docs.map((doc) => ({
+          docId: doc.id, // Firestore document ID
+          ...doc.data(), // Document data
+        }));
+        setMyNotes({ results: userUpdatedResponse });
       } catch (error) {
-        const access = localStorage.getItem("access_token");
-        if (error.response?.status === 401 && access) {
-          window.location.reload();
-        } else if (!access) {
-          navigate("/");
-        } else {
-          console.log("Other error");
-        }
-        setErrors(error);
+        console.error("Error getting documents: ", error);
       }
+      setHasLoaded(true);
     };
 
     const timer = setTimeout(() => {
-      getMyNotes();
-      // getNotes()
+      handleGetNotes();
     }, 1000);
 
     return () => {
       clearTimeout(timer);
     };
-  }, [user, navigate, viewSelection]);
-
-  const handleChangeLayout = () => {
-    setGridLayout(!gridLayout);
-    console.log(gridLayout);
-  };
-
-  const handleChangeSelection = (event) => {
-    if (event.target.name === "Other") {
-      console.log("Other");
-      setViewSelection("Other");
-    } else if (event.target.name === "Movie") {
-      console.log("Movie");
-      setViewSelection("Movie");
-    } else if (event.target.name === "Game") {
-      console.log("Game");
-      setViewSelection("Game");
-    } else if (event.target.name === "All") {
-      console.log("All");
-      setViewSelection("All");
-    }
-  };
+  }, [userFirestore]);
 
   return (
-    <Container fluid className={`${appStyle.Container}`}>
-      <Container className={`text-center`}>
-        {hasLoaded ? (
-          <Container>
-            {/* <Row>
-              <Col xs lg="10">
-                <h4>My notes</h4>
-              </Col>
-              <Col xs lg="2">
-                <button
-                  className={
-                    isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
-                  }
-                  onClick={handleChangeLayout}
-                >
-                  <i className="fa-solid fa-border-all"></i>
-                </button>
-              </Col>
-            </Row> */}
-            <Container className={`${appStyle.Container}`}>
-              {/* <Row>
-              <Col xs lg="2">
-                <bold>Filter</bold>
-              </Col>
-              <Col xs lg="2">
-                <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeSelection} name='Movie'>Movies</button>
-              </Col>
-              <Col xs lg="2">
-                <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeSelection} name='Game'>Games</button>
-              </Col>
-              <Col xs lg="2">
-                <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeSelection} name='Other'>Other</button>
-              </Col>
-              <Col xs lg="2">
-                <button className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed} onClick={handleChangeSelection} name='All'>All</button>
-              </Col>
-            </Row> */}
-            </Container>
+    <Container fluid className={`text-center`}>
+      {hasLoaded ? (
+        <>
+          <Row>
+            <Col xs={1}>
+              <Link to={"/"}>
+                <i className="fa-solid fa-arrow-left"></i>
+              </Link>
+            </Col>
+            <Col xs={10}>
+              <h4>Notes</h4>
+            </Col>
+          </Row>
+          <br />
+          {userFirestore?.user ? (
             <Row>
               <Col xs={5}>
-                <Link to={"note/create"}>
-                  <button
-                    className={
-                      isDarkMode ? appStyle.ButtonTest : appStyle.ButtonCreate
-                    }
-                  >
-                    <i className="fa-sharp fa-solid fa-plus" />
-                  </button>
-                </Link>
+                <ThemedCreateButton url={"note/create"} />
               </Col>
             </Row>
+          ) : null}
 
+          {myNotes?.results?.length !== 0 ? (
             <InfiniteScroll
               dataLength={myNotes.results.length}
               next={() => fetchMoreData(myNotes, setMyNotes)}
@@ -138,29 +77,17 @@ const NoteListPage = () => {
             >
               {myNotes?.results?.map((note, index) => (
                 <>
-                  {/* 
-                    this code is taking the view selection and if its all it will show all the notes
-                    or if the view selection is the same as the current note category then show the note
-                  */}
-                  {/* {viewSelection === 'All' || viewSelection === note.category ? (<NoteItem key={index} {...note} grid={gridLayout}/>) : null} */}
-                  <NoteItem key={index} {...note} grid={gridLayout} />
+                  <NoteItem key={note.id} {...note} />
                 </>
               ))}
             </InfiniteScroll>
-
-            <Row>
-              <h5>All notes</h5>
-            </Row>
-            {notes?.results?.map((note, index) => (
-              <Row key={index}>
-                {note.is_private ? null : <NoteItem key={index} {...note} />}
-              </Row>
-            ))}
-          </Container>
-        ) : (
-          <Loader spinner text="Loading notes, please wait" />
-        )}
-      </Container>
+          ) : (
+            <p>No notes yet</p>
+          )}
+        </>
+      ) : (
+        <Loader spinner text="Loading notes, please wait" />
+      )}
     </Container>
   );
 };

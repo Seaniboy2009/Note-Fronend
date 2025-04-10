@@ -3,36 +3,49 @@ import { useParams } from "react-router-dom";
 import NoteItem from "../../components/NoteItem";
 import appStyle from "../../styles/App.module.css";
 import { Container } from "react-bootstrap";
-import { axiosInstance } from "../../api/axiosDefaults";
-
 import Loader from "../../components/Loader";
+import { useUser } from "../../contexts/UserContext";
+import { getDoc, doc } from "firebase/firestore";
+import { db } from "../../firebase";
 
 const NoteDetailPage = () => {
-  const { id } = useParams();
+  const { docId } = useParams();
   const [note, setNote] = useState({});
   const [hasLoaded, setHasLoaded] = useState(false);
+  const userFirestore = useUser();
 
   useEffect(() => {
-    const getNote = async () => {
-      const { data } = await axiosInstance.get(`/api/notes/${id}`);
-      setNote(data);
-      setHasLoaded(true);
-      console.log(data);
+    if (!userFirestore) return;
+
+    const handleGetNote = async () => {
+      const docRef = doc(db, "notes", docId);
+      const docSnap = await getDoc(docRef);
+      if (userFirestore?.user.uid !== docSnap.data().userId) {
+        return;
+      }
+      if (docSnap.exists()) {
+        const noteData = docSnap.data();
+        console.log("noteData", noteData);
+        setNote(noteData);
+        setHasLoaded(true);
+      } else {
+        console.error("No such document!");
+      }
     };
 
     const timer = setTimeout(() => {
-      getNote();
+      handleGetNote();
     }, 500);
 
     return () => {
       clearTimeout(timer);
     };
-  }, [id]);
+  }, [docId, userFirestore]);
 
   return (
     <Container className={appStyle.Container}>
       {hasLoaded ? (
-        <NoteItem key={id} {...note} detailPage />
+        <NoteItem key={docId} {...note} detailPage />
       ) : (
         <>
           <Loader spinner text="loading note" />

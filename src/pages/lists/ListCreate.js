@@ -1,49 +1,58 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Form from "react-bootstrap/Form";
 import appStyle from "../../styles/App.module.css";
-import { axiosInstance } from "../../api/axiosDefaults";
-
+import { useUser } from "../../contexts/UserContext";
+import { addDoc } from "firebase/firestore";
+import { dbLists } from "../../firebase";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import ThemedButton from "../../components/ThemedButton";
+import ThemedToggle from "../../components/ThemedToggle";
+import { useTheme } from "../../contexts/ThemeSelection";
+import ThemedInput from "../../components/ThemedInput";
 
 const ListCreate = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    title: "",
-    is_private: false,
-  });
-
-  const { title, is_private } = formData;
+  const userFirestore = useUser();
+  const [error, setError] = useState(null);
+  const [title, setTitle] = useState("");
+  const [isPrivate, setIsPrivate] = useState(false);
+  const { theme, activeTheme } = useTheme();
   const [submit, setSubmit] = useState(false);
 
-  // Send the tile and private to the API and create the new list
+  // Send the title and private status to the API and create the new list
   const createList = async () => {
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("is_private", is_private);
+    if (!userFirestore || !userFirestore.user) return;
+    if (!title) {
+      setError("Title is required");
+      return;
+    }
 
     try {
       setSubmit(true);
-      await axiosInstance.post("/api/lists/", formData);
+      await addDoc(dbLists, {
+        title: title,
+        is_private: isPrivate,
+        date_created: new Date().toISOString(),
+        userId: userFirestore.user.uid,
+      });
       setSubmit(false);
       navigate("/lists/");
     } catch (error) {
-      console.log(error);
+      console.log("Error creating list:", error);
     }
   };
 
-  // Handle is private checkbox change
-  const handleChecked = (event) => {
-    setFormData({ ...formData, is_private: event.target.checked });
-    console.log(formData);
+  // Handle toggle change
+  const handleToggle = (event) => {
+    setIsPrivate(event.target.checked);
   };
 
   // Handle title change
   const handleChange = (event) => {
-    setFormData({ ...formData, [event.target.name]: event.target.value });
-    console.log(formData);
+    console.log("event.target.value:", event.target.value);
+    setTitle(event.target.value);
   };
 
   // Text for when the form is submitted
@@ -57,51 +66,57 @@ const ListCreate = () => {
     </Container>
   );
 
-  // Text for the user to input there list details
+  // Text for the user to input their list details
   const defaultText = (
-    <Container>
+    <Container
+      style={{
+        backgroundColor: theme[activeTheme].panelColor,
+        border: theme[activeTheme].border,
+        marginBottom: "10px",
+      }}
+    >
+      <Row style={{ paddingTop: "10px" }}>
+        <Col>
+          <h5>Name your list</h5>
+        </Col>
+      </Row>
       <Row>
         <Col>
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="title">
-              <h4>Title</h4>
-            </Form.Label>
-            <Form.Control
-              type="text"
-              id="title"
-              name="title"
-              aria-describedby="title"
-              onChange={handleChange}
-            />
-            <br />
-            <Form.Check
-              type="checkbox"
-              name="is_private"
-              id="is_private"
-              label="Set Private?"
-              onChange={handleChecked}
-            />
-          </Form.Group>
+          <ThemedInput
+            value={title}
+            name="title"
+            onChange={handleChange}
+            border={true}
+          />
+          {error ? <span style={{ color: "red" }}>{error}</span> : null}
         </Col>
       </Row>
+      <br />
+
+      <ThemedToggle
+        isChecked={isPrivate}
+        handleToggle={handleToggle}
+        text="Make Private"
+      />
+
       <Row>
-        <Col md={1}>
-          <button onClick={createList} className={appStyle.Button}>
-            Create
-          </button>
+        <Col>
+          <ThemedButton onClick={createList}>Create</ThemedButton>
         </Col>
       </Row>
+      <br />
+    </Container>
+  );
+
+  return (
+    <Container fluid className={appStyle.Container}>
       <Row>
         <Col md={1}>
           <Link to={"/lists/"} className={appStyle.ButtonLink}>
-            Back
+            <i className="fa-solid fa-arrow-left" />
           </Link>
         </Col>
       </Row>
-    </Container>
-  );
-  return (
-    <Container fluid className={appStyle.Container}>
       {submit ? submittingText : defaultText}
     </Container>
   );

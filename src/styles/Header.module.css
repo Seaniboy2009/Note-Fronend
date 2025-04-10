@@ -1,18 +1,15 @@
 .Header {
   text-align: center;
   font-size: 65%;
-  /* background-color: #100000; */
-  /* border-bottom: 1px solid #9d0913; */
-  /* color: #9d0913; */
-  /* padding: 10px 10px; */
 }
 
-.FixedTop {
+.FixedNavbar {
   position: fixed;
   top: 0;
   right: 0;
   left: 0;
   z-index: 1030;
+  text-align: center !important;
 }
 
 .Active {
@@ -49,13 +46,17 @@
 
 /* Small screen */
 @media screen and (max-width: 1024px) {
-  .FixedTop {
+  .FixedNavbar {
     position: fixed;
     top: auto;
     bottom: 0;
     right: 0;
     left: 0;
     z-index: 1030;
+    margin-bottom: "25px";
+    padding-bottom: "25px";
+    text-align: center !important;
+    padding: 5%;
   }
 
   .TextSmall {

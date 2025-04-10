@@ -1,194 +1,126 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React from "react";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
-import AuthContext from "../contexts/AuthContext";
 import Nav from "react-bootstrap/Nav";
 import appStyle from "../styles/App.module.css";
+import { NavLink } from "react-router-dom";
 import style from "../styles/Header.module.css";
-import { useLocation } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeSelection";
+import { useUser } from "../contexts/UserContext";
+import { useUserSettings } from "../contexts/UserSettingsContext";
 
 const NavBarComponent = () => {
-  const location = useLocation();
-  const [loc, setLoc] = useState();
-  const navbarRef = useRef(null);
-
-  let { user } = useContext(AuthContext);
-  const { isDarkMode, toggleDarkMode } = useTheme();
-  const [navbarOpen, setNavbarOpen] = useState(false);
-
-  const toggleNavbar = () => {
-    setNavbarOpen(!navbarOpen);
-    console.log(navbarOpen);
-  };
-
-  const closeNavbar = () => {
-    setNavbarOpen(false);
-  };
-
-  useEffect(() => {
-    setLoc(location.pathname);
-    console.log("NavbarOpen state:", navbarOpen);
-    const handleDocumentClick = (event) => {
-      if (
-        navbarRef.current &&
-        navbarOpen &&
-        !navbarRef.current.contains(event.target)
-      ) {
-        closeNavbar();
-      }
-    };
-
-    const delayedDocumentClickSetup = setTimeout(() => {
-      document.addEventListener("click", handleDocumentClick);
-    }, 0);
-
-    return () => {
-      clearTimeout(delayedDocumentClickSetup);
-      document.removeEventListener("click", handleDocumentClick);
-    };
-  }, [location, navbarOpen]);
-
-  const sideBar = (
-    <>
-      <Container
-        ref={navbarRef}
-        className={`${style.NavbarPopout} ${navbarOpen ? style.open : ""} ${
-          isDarkMode ? appStyle.HeaderThemeTest : appStyle.HeaderThemeRed
-        }`}
-      >
-        <Row>
-          <Col>
-            <Nav.Link
-              className={`${isDarkMode ? appStyle.TextTest : appStyle.TextRed}`}
-              href="/"
-            >
-              Menu
-            </Nav.Link>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Nav.Link
-              className={`${
-                isDarkMode ? appStyle.TextTest : appStyle.TextRed
-              } ${loc == "/" ? style.Active : null}`}
-              href="/"
-            >
-              <i className="fa-solid fa-house"></i> Home
-            </Nav.Link>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Nav.Link
-              className={`${
-                isDarkMode ? appStyle.TextTest : appStyle.TextRed
-              } ${loc == "/account/" ? style.Active : null}`}
-              href="/account/"
-            >
-              <i className="fa-solid fa-user"></i> Account
-            </Nav.Link>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Nav.Link
-              className={`${
-                isDarkMode ? appStyle.TextTest : appStyle.TextRed
-              } ${loc == "/notes/" ? style.Active : null}`}
-              href="/notes/"
-            >
-              <i className="fa-solid fa-gear"></i> Notes
-            </Nav.Link>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Nav.Link
-              className={`${
-                isDarkMode ? appStyle.TextTest : appStyle.TextRed
-              } ${loc == "/settings/" ? style.Active : null}`}
-              href="/"
-            >
-              <i className="fa-solid fa-gear"></i> Settings
-            </Nav.Link>
-          </Col>
-        </Row>
-      </Container>
-      <Row
-        className={`${style.NavbarPopout} ${navbarOpen ? style.back : ""} ${
-          appStyle.HeaderThemeTest
-        }`}
-      ></Row>
-    </>
-  );
-
-  return (
-    <Container>
-      <Row>
-        {user ? <p>DEVMODE: Logged in</p> : <p>DEVMODE: Not logged in</p>}
-      </Row>
-
-      <Row
-        className={`
-          ${style.Header}
-          ${style.FixedTop}
-          ${isDarkMode ? appStyle.HeaderThemeTest : appStyle.HeaderThemeRed}
-          `}
-      >
-        <Col>
-          <button
-            className={`${appStyle.ButtonNavBar} ${
-              isDarkMode ? appStyle.ButtonTest : appStyle.ButtonNavBar
-            }`}
-            onClick={toggleNavbar}
+  const userFirestore = useUser();
+  const { activeTheme, theme } = useTheme();
+  const linkStyle = { color: theme[activeTheme]?.color };
+  const { settings } = useUserSettings();
+  const useIcons = settings.useIcons;
+  console.log(settings);
+  const navigationBar = (
+    <Container
+      fluid
+      className={`${style.FixedNavbar}`}
+      style={{
+        backgroundColor: theme[activeTheme].panelColor,
+        color: theme[activeTheme].color,
+      }}
+    >
+      <Row className="justify-content-center">
+        <Col xs="auto" style={{ paddingRight: useIcons ? "5px" : "1px" }}>
+          <Nav.Link
+            to="/"
+            style={linkStyle}
+            as={NavLink}
+            className={appStyle.NavButtons}
           >
-            <i class="fa-solid fa-ellipsis-vertical"></i>
-          </button>
+            {useIcons ? <i className="fa-solid fa-house"></i> : "Home"}
+          </Nav.Link>
         </Col>
-        {user ? (
+        {userFirestore?.user ? (
           <>
-            <Col>
+            <Col xs="auto" style={{ paddingRight: useIcons ? "5px" : "1px" }}>
               <Nav.Link
-                className={`
-              ${isDarkMode ? appStyle.TextTest : appStyle.TextRed} 
-              ${loc == "/notes/" ? style.Active : null}`}
-                href="/notes/"
+                to={"/notes/"}
+                style={linkStyle}
+                as={NavLink}
+                className={appStyle.NavButtons}
               >
-                <i className="fa-solid fa-clipboard" />
-                <p>Notes</p>
+                {useIcons ? (
+                  <i className="fa-solid fa-note-sticky"></i>
+                ) : (
+                  "Notes"
+                )}
               </Nav.Link>
             </Col>
-            <Col>
+            <Col xs="auto" style={{ paddingRight: useIcons ? "5px" : "1px" }}>
               <Nav.Link
-                className={`${
-                  isDarkMode ? appStyle.TextTest : appStyle.TextRed
-                } ${loc == "/lists/" ? style.Active : null}`}
-                href="/lists/"
+                to={"/lists/"}
+                style={linkStyle}
+                as={NavLink}
+                className={appStyle.NavButtons}
               >
-                <i className="fa-regular fa-rectangle-list"></i>
-                <p>List</p>
+                {useIcons ? (
+                  <i className="fa-solid fa-list-check"></i>
+                ) : (
+                  "Lists"
+                )}
               </Nav.Link>
             </Col>
-            <Col>
+            <Col xs="auto" style={{ paddingRight: useIcons ? "5px" : "1px" }}>
               <Nav.Link
-                className={`${
-                  isDarkMode ? appStyle.TextTest : appStyle.TextRed
-                } ${loc == "/test/" ? style.Active : null}`}
-                href="/test/"
+                to={"/calendar/"}
+                style={linkStyle}
+                as={NavLink}
+                className={appStyle.NavButtons}
               >
-                <i className="fa-regular fa-rectangle-list"></i>
-                <p>DEV</p>
+                {useIcons ? (
+                  <i className="fa-solid fa-calendar-days"></i>
+                ) : (
+                  "Calendar"
+                )}
+              </Nav.Link>
+            </Col>
+            <Col xs="auto">
+              <Nav.Link
+                to="/account"
+                style={linkStyle}
+                as={NavLink}
+                className={appStyle.NavButtons}
+              >
+                {useIcons ? <i className="fa-solid fa-user"></i> : "Account"}
               </Nav.Link>
             </Col>
           </>
-        ) : null}
+        ) : (
+          <>
+            <Col xs="auto" style={{ paddingRight: useIcons ? "5px" : "1px" }}>
+              <Nav.Link
+                to="/sign-up"
+                style={linkStyle}
+                as={NavLink}
+                className={appStyle.NavButtons}
+              >
+                Sign up
+              </Nav.Link>
+            </Col>
+            <Col xs="auto" style={{ paddingRight: useIcons ? "5px" : "1px" }}>
+              <Nav.Link
+                to={"/sign-in"}
+                style={linkStyle}
+                as={NavLink}
+                className={appStyle.NavButtons}
+              >
+                Sign in
+              </Nav.Link>
+            </Col>
+          </>
+        )}
       </Row>
-      {sideBar}
     </Container>
   );
+
+  return <>{navigationBar}</>;
 };
 
 export default NavBarComponent;

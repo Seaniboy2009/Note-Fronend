@@ -1,135 +1,157 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import style from "../../styles/ListPage.module.css";
 import appStyle from "../../styles/App.module.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { axiosInstance } from "../../api/axiosDefaults";
-
-import AuthContext from "../../contexts/AuthContext";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { useUser } from "../../contexts/UserContext";
+import { getDocs, query, where } from "firebase/firestore";
+import { dbLists } from "../../firebase";
 import Loader from "../../components/Loader";
 import { useTheme } from "../../contexts/ThemeSelection";
+import { fetchMoreData } from "../../utils/utils";
+import ThemedCreateButton from "../../components/ThemedCreateButton";
 
 const ListPage = () => {
   const [myLists, setMyLists] = useState({ results: [] });
-  const [lists, setLists] = useState({ results: [] });
   const [hasLoaded, setHasLoaded] = useState(false);
-  let { user } = useContext(AuthContext);
-  const { isDarkMode } = useTheme();
+  const userFirestore = useUser();
+  const { activeTheme, theme } = useTheme();
 
   useEffect(() => {
-    const getMyLists = async () => {
-      const { data } = await axiosInstance.get(
-        `/api/lists/?owner=${user.user_id}`
-      );
-      console.log(data);
-      setMyLists(data);
-      setHasLoaded(true);
-    };
+    const handleGetLists = async () => {
+      try {
+        const queryLists = query(
+          dbLists,
+          where("userId", "==", userFirestore.user.uid)
+        );
+        const querySnapshot = await getDocs(queryLists);
 
-    const getAllLists = async () => {
-      const { data } = await axiosInstance.get(`/api/lists/`);
-      const filteredData = data.results.filter(
-        (item) => item.owner !== user.name
-      );
-      setLists({ results: filteredData });
+        const userUpdatedResponse = querySnapshot.docs.map((doc) => {
+          const data = doc.data();
+
+          let dateCreated = null;
+          if (data.date_created) {
+            if (
+              typeof data.date_created === "object" &&
+              "seconds" in data.date_created
+            ) {
+              dateCreated = new Date(
+                data.date_created.seconds * 1000
+              ).toISOString();
+            } else {
+              dateCreated = data.date_created;
+            }
+          }
+
+          return {
+            docId: doc.id, // Firestore document ID
+            ...data, // Spread the document data
+            dateCreated: dateCreated, // Overwrite `date_created` with normalized value
+          };
+        });
+
+        const sortedResponse = userUpdatedResponse.sort((a, b) => {
+          const dateA = new Date(a.dateCreated);
+          const dateB = new Date(b.dateCreated);
+          return dateB - dateA; // Descending order
+        });
+
+        setMyLists({ results: sortedResponse });
+      } catch (error) {
+        console.log("error", error);
+      }
       setHasLoaded(true);
     };
 
     const timer = setTimeout(() => {
-      getMyLists();
-      getAllLists();
+      handleGetLists();
     }, 1000);
-
-    setHasLoaded(false);
 
     return () => {
       clearTimeout(timer);
     };
-  }, []);
+  }, [userFirestore]);
 
   return (
-    <Container className={`${appStyle.Container}`}>
-      <Container className={`${appStyle.Container}`}>
-        <Row>
-          <Col xs={3}>
-            <h4>Lists</h4>
-          </Col>
-          {hasLoaded ? (
-            <Col xs={9}>
-              <Link to={"list/create"}>
-                <button
-                  className={
-                    isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed
-                  }
-                >
-                  Create
-                  <i className="fa-sharp fa-solid fa-plus" />
-                </button>
+    <Container className={`text-center`}>
+      {hasLoaded ? (
+        <>
+          <Row>
+            <Col xs={1}>
+              <Link to={"/"}>
+                <i className="fa-solid fa-arrow-left"></i>
               </Link>
             </Col>
-          ) : (
-            <></>
-          )}
-        </Row>
-      </Container>
-      <Container>
-        {hasLoaded ? (
-          <>
+            <Col xs={10}>
+              <h4>Lists</h4>
+            </Col>
+          </Row>
+          <br />
+          {userFirestore?.user ? (
             <Row>
-              <Col>
-                <h5>My lists</h5>
+              <Col xs={5}>
+                <ThemedCreateButton url={"list/create"} />
               </Col>
             </Row>
-            {myLists?.results?.map((list, index) => (
-              <Link key={index} to={`list/${list.id}`}>
-                <Row className={style.List}>
-                  <Col xs={10}>
-                    <h5 className={style.ListDetails}>{list.title}</h5>
-                  </Col>
-                  <Col>
-                    {list.is_private ? (
-                      <i className={`fa-solid fa-lock ${style.Private}`}></i>
-                    ) : null}
-                  </Col>
-                </Row>
-              </Link>
-            ))}
-            <Row>
-              <Col>
-                <h5>Shared lists</h5>
-              </Col>
-            </Row>
-            {lists?.results?.map((list, index) => (
-              <div key={index}>
-                {list.is_private ? null : (
-                  <Link key={index} to={`list/${list.id}`}>
-                    <Row className={style.List}>
-                      <Col xs={3}>
-                        <h5 className={style.ListDetails}>#{list.id}</h5>
-                      </Col>
-                      <Col xs={4}>
-                        <h5 className={style.ListDetails}>{list.title}</h5>
-                      </Col>
-                      <Col xs={3}>
-                        <h5 className={style.ListDetails}>
-                          {list.is_private ? "private" : "not private"}
-                        </h5>
+          ) : null}
+          {myLists?.results?.length !== 0 ? (
+            <InfiniteScroll
+              dataLength={myLists.results.length}
+              next={() => fetchMoreData(myLists, setMyLists)}
+              hasMore={!!myLists.next}
+              loader={<Loader spinner text="Loading, please wait" />}
+            >
+              {myLists?.results?.map((list, index) => (
+                <Link key={list.id} to={`list/${list.docId}`}>
+                  <Container
+                    style={{
+                      backgroundColor: theme[activeTheme].panelColor,
+                      color: theme[activeTheme].color,
+                      border: theme[activeTheme].border,
+                      marginBottom: "10px",
+                    }}
+                  >
+                    {" "}
+                    <Row
+                      style={{
+                        textAlign: "left",
+                        display: "flex",
+                      }}
+                    >
+                      <Col>
+                        <p>{list.title}</p>
                       </Col>
                       <Col>
-                        <i className="fa-solid fa-bars" />
+                        <p>
+                          {list.date_created
+                            ? new Date(list.dateCreated).toLocaleTimeString(
+                                [],
+                                {
+                                  year: "numeric",
+                                  month: "2-digit",
+                                  day: "2-digit",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
+                              )
+                            : null}
+                        </p>
                       </Col>
                     </Row>
-                  </Link>
-                )}
-              </div>
-            ))}
-          </>
-        ) : (
-          <Loader spinner text="Loading lists, please wait" />
-        )}
-      </Container>
+                  </Container>
+                </Link>
+              ))}
+            </InfiniteScroll>
+          ) : (
+            <p>No lists yet</p>
+          )}
+        </>
+      ) : (
+        <Loader spinner text="Loading lists, please wait" />
+      )}
     </Container>
   );
 };

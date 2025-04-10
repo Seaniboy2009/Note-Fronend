@@ -1,47 +1,114 @@
-import React, { useEffect, useState, useContext } from "react";
-import style from "../styles/ListDetailPage.module.css";
-import { useParams, useNavigate } from "react-router-dom";
-import appStyle from "../styles/App.module.css";
-import Container from "react-bootstrap/Container";
+import React, { useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { Link } from "react-router-dom";
-import { axiosInstance } from "../api/axiosDefaults";
-import Modal from "react-bootstrap/Modal";
-import Loader from "../components/Loader";
-import AuthContext from "../contexts/AuthContext";
 import { useTheme } from "../contexts/ThemeSelection";
+import { Container } from "react-bootstrap";
+import ThemedButton from "./ThemedButton";
+import ThemedToggle from "./ThemedToggle";
 
-const ListItem = ({ id, owner, content, edit, getLists }) => {
-  let { user } = useContext(AuthContext);
-  const { isDarkMode } = useTheme();
+const ListItem = ({ listItem, onToggle, onDelete }) => {
+  const { activeTheme, theme } = useTheme();
+  const [isChecked, setIsChecked] = useState(listItem.toggle);
 
-  // Handle the deletion of the list item
-  const handleDeleteItem = async () => {
+  const handleToggle = () => {
+    setIsChecked((prev) => !prev);
+
+    if (onToggle) {
+      onToggle(listItem);
+    }
+  };
+
+  const handleDelete = async () => {
     try {
-      await axiosInstance.delete(`/api/listitems/${id}`);
-      if (getLists) {
-        getLists();
+      if (onDelete) {
+        await onDelete(listItem);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error deleting list item:", error);
+    }
   };
 
   return (
-    <Row className={style.ListContainer}>
-      <Col>
-        <p>{content}</p>
-      </Col>
-      {owner === user.name && edit === true ? (
-        <Col xs={3}>
-          <button
-            onClick={() => handleDeleteItem()}
-            className={isDarkMode ? appStyle.ButtonTest : appStyle.ButtonRed}
+    <Container
+      style={{
+        backgroundColor: theme[activeTheme].panelColor,
+        border: theme[activeTheme].border,
+        marginBottom: "10px",
+      }}
+    >
+      <Row
+        style={{
+          display: "flex",
+          alignItems: "center", // Ensures vertical alignment
+          justifyContent: "space-between", // Spreads the items across the row
+          textAlign: "left",
+          lineHeight: "1.5", // Consistent spacing
+        }}
+      >
+        {/* Toggle Switch */}
+        <ThemedToggle isChecked={isChecked} handleToggle={handleToggle} />
+
+        {/* Content Column */}
+        <Col
+          xs={7}
+          style={{
+            padding: "0",
+            margin: "0",
+            display: "flex",
+            flexDirection: "column", // Aligns content and date vertically
+          }}
+        >
+          {/* Main Content */}
+          <p
+            style={{
+              margin: "0",
+              textDecoration: listItem?.toggle ? "line-through" : "none",
+              color: listItem?.toggle
+                ? theme[activeTheme].textUnavailable
+                : theme[activeTheme].color,
+            }}
           >
-            Remove
-          </button>
+            <strong>{listItem?.content}</strong>
+          </p>
+
+          {/* Date Created */}
+          {listItem?.date_created && (
+            <p
+              style={{
+                margin: "0",
+                fontSize: "0.85em",
+                color: "#888", // Lighter color for date
+              }}
+            >
+              {new Date(listItem?.date_created).toLocaleTimeString([], {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </p>
+          )}
         </Col>
-      ) : null}
-    </Row>
+
+        {/* Delete Button */}
+        <ThemedButton
+          onClick={handleDelete}
+          style={{
+            backgroundColor: "transparent",
+            border: "none",
+            cursor: "pointer",
+            color: "red",
+            padding: "0",
+            paddingRight: "10px",
+            margin: "0",
+            textAlign: "right",
+          }}
+        >
+          Delete
+        </ThemedButton>
+      </Row>
+    </Container>
   );
 };
 

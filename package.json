@@ -1,4 +1,5 @@
 {
+  "homepage": "http://Seaniboy2009.github.io/Note-Fronend",
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
@@ -8,6 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.5.1",
     "bootstrap": "^5.3.2",
+    "firebase": "^10.14.0",
     "jwt-decode": "^3.1.2",
     "react": "^18.2.0",
     "react-bootstrap": "^2.9.0",
@@ -15,10 +17,13 @@
     "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^6.16.0",
     "react-scripts": "5.0.1",
+    "typescript": "^5.6.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -41,5 +46,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^6.1.1"
   }
 }
