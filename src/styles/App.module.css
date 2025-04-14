@@ -37,7 +37,7 @@
   color: #000000 !important;
 } */
 
-.BorderTest {
+/* .BorderTest {
   border: 1px solid #000000 !important;
 }
 
@@ -49,12 +49,12 @@
   color: #000000 !important;
   background-color: #ffffff !important;
   border: 1px solid #000000 !important;
-}
+} */
 
-.BackgroundTest,
+/* .BackgroundTest,
 .BodyTest {
   background-color: #ffffff !important;
-}
+} */
 
 /* For the header and border */
 .HeaderThemeTest {

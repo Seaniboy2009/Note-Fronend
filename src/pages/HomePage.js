@@ -6,22 +6,29 @@ import { Link } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeSelection";
 import { useUser } from "../contexts/UserContext";
 import ThemedButton from "../components/ThemedButton";
-import { Spinner } from "react-bootstrap";
+import { Modal, Spinner } from "react-bootstrap";
 
 const HomePage = () => {
-  const userFirestore = useUser();
+  const { userData, setNewUser } = useUser();
+  const newUser = userData?.isNewUser === true;
   const { activeTheme, theme } = useTheme();
   const [hasLoaded, setHasLoaded] = useState(false);
-
+  const [showModal, setShowModal] = useState(true);
   useEffect(() => {
-    if (userFirestore) {
+    if (userData) {
       setHasLoaded(true);
     }
 
     setTimeout(() => {
       setHasLoaded(true);
     }, 1000);
-  }, [userFirestore]);
+  }, [userData]);
+
+  const handleCloseModal = () => {
+    setNewUser("false"); // Update the newUser state
+    localStorage.setItem("newUserState", "false"); // Persist the change
+    setShowModal(false); // Close the modal
+  };
 
   return (
     <Container
@@ -33,7 +40,7 @@ const HomePage = () => {
     >
       {hasLoaded ? (
         <Container>
-          {userFirestore?.user ? (
+          {userData?.user ? (
             <>
               <Row style={{ paddingBottom: "20px" }}>
                 <Col>
@@ -62,6 +69,38 @@ const HomePage = () => {
                 </Col>
               </Row>
               <br />
+              {newUser && (
+                <Modal
+                  show={showModal}
+                  onHide={handleCloseModal}
+                  dialogClassName="custom-modal" // Add a custom class for the modal
+                >
+                  <Modal.Header
+                    closeButton
+                    style={{ backgroundColor: theme[activeTheme].panelColor }}
+                  >
+                    <Modal.Title style={{ color: theme[activeTheme].color }}>
+                      Welcome to the app!
+                    </Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body
+                    style={{
+                      backgroundColor: theme[activeTheme].panelColor,
+                      color: theme[activeTheme].color,
+                    }}
+                  >
+                    This is a simple note-taking app. You can create notes and
+                    lists, and manage your tasks.
+                  </Modal.Body>
+                  <Modal.Footer
+                    style={{ backgroundColor: theme[activeTheme].panelColor }}
+                  >
+                    <ThemedButton onClick={handleCloseModal}>
+                      Close
+                    </ThemedButton>
+                  </Modal.Footer>
+                </Modal>
+              )}
             </>
           ) : (
             <>

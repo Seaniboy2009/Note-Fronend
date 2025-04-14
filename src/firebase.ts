@@ -23,11 +23,13 @@ const db = getFirestore(app);
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
+    console.log("User is signed in:", user);
     // User is signed in, see docs for a list of available properties
     // https://firebase.google.com/docs/reference/js/auth.user
     const uid = user.uid;
     // ...
   } else {
+    console.log("User is signed out or user is null");
     // User is signed out
     // ...
   }
@@ -39,59 +41,4 @@ const dbNotes = collection(db, "notes");
 const dbLists = collection(db, "lists");
 const dbListItems = collection(db, "listItems");
 
-// getDocs(dbUsers)
-//   .then((snapshot) => {
-//     let users: UserType[] = [];
-
-//     snapshot.docs.forEach((doc) => {
-//       console.log("Get docs", doc.data());
-//       const email = doc.data().email;
-//       const userId = doc.data().userId;
-//       const paid = doc.data().paid;
-//       const admin = doc.data().admin;
-
-//       users.push({
-//         ...doc.data(),
-//         id: doc.id,
-//         email,
-//         userId,
-//         paid,
-//         admin,
-//       });
-//     });
-
-//     console.log("users:", users);
-//   })
-//   .catch((error) => {
-//     console.log("Error getting documents:", error);
-//   });
-
-// getDocs(dbNotes)
-//   .then((snapshot) => {
-//     let notes: Note[] = [];
-
-//     snapshot.docs.forEach((doc) => {
-//       console.log("Get docs", doc.data());
-//       const userId = doc.data().userId;
-//       const title = doc.data().email;
-//       const category = doc.data().userId;
-//       const image = doc.data().paid;
-
-//       notes.push({
-//         ...doc.data(),
-//         id: doc.id,
-//         userId,
-//         title,
-//         category,
-//         image,
-//       });
-//     });
-
-//     console.log("notes:", notes);
-//   })
-//   .catch((error) => {
-//     console.log("Error getting documents:", error);
-//   });
-
-// Export Firebase services and functions
 export { auth, db, onAuthStateChanged, dbUsers, dbNotes, dbLists, dbListItems };

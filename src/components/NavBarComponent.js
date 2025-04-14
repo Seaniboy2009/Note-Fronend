@@ -10,13 +10,14 @@ import { useTheme } from "../contexts/ThemeSelection";
 import { useUser } from "../contexts/UserContext";
 import { useUserSettings } from "../contexts/UserSettingsContext";
 
+const isLargeScreen = window.innerWidth >= 768; // Check screen width
+const iconSize = isLargeScreen ? "30px" : "25px";
 const NavBarComponent = () => {
-  const userFirestore = useUser();
+  const { userData } = useUser();
   const { activeTheme, theme } = useTheme();
   const linkStyle = { color: theme[activeTheme]?.color };
   const { settings } = useUserSettings();
   const useIcons = settings.useIcons;
-  console.log(settings);
   const navigationBar = (
     <Container
       fluid
@@ -34,10 +35,17 @@ const NavBarComponent = () => {
             as={NavLink}
             className={appStyle.NavButtons}
           >
-            {useIcons ? <i className="fa-solid fa-house"></i> : "Home"}
+            {useIcons ? (
+              <i
+                className="fa-solid fa-house"
+                style={{ fontSize: iconSize }}
+              ></i>
+            ) : (
+              "Home"
+            )}
           </Nav.Link>
         </Col>
-        {userFirestore?.user ? (
+        {userData?.user ? (
           <>
             <Col xs="auto" style={{ paddingRight: useIcons ? "5px" : "1px" }}>
               <Nav.Link
@@ -47,7 +55,10 @@ const NavBarComponent = () => {
                 className={appStyle.NavButtons}
               >
                 {useIcons ? (
-                  <i className="fa-solid fa-note-sticky"></i>
+                  <i
+                    className="fa-solid fa-note-sticky"
+                    style={{ fontSize: iconSize }}
+                  ></i>
                 ) : (
                   "Notes"
                 )}
@@ -61,7 +72,10 @@ const NavBarComponent = () => {
                 className={appStyle.NavButtons}
               >
                 {useIcons ? (
-                  <i className="fa-solid fa-list-check"></i>
+                  <i
+                    className="fa-solid fa-list-check"
+                    style={{ fontSize: iconSize }}
+                  ></i>
                 ) : (
                   "Lists"
                 )}
@@ -75,7 +89,10 @@ const NavBarComponent = () => {
                 className={appStyle.NavButtons}
               >
                 {useIcons ? (
-                  <i className="fa-solid fa-calendar-days"></i>
+                  <i
+                    className="fa-solid fa-calendar-days"
+                    style={{ fontSize: iconSize }}
+                  ></i>
                 ) : (
                   "Calendar"
                 )}
@@ -88,7 +105,14 @@ const NavBarComponent = () => {
                 as={NavLink}
                 className={appStyle.NavButtons}
               >
-                {useIcons ? <i className="fa-solid fa-user"></i> : "Account"}
+                {useIcons ? (
+                  <i
+                    className="fa-solid fa-user"
+                    style={{ fontSize: iconSize }}
+                  ></i>
+                ) : (
+                  "Account"
+                )}
               </Nav.Link>
             </Col>
           </>

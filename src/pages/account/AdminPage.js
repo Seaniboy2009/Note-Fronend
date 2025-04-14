@@ -8,9 +8,9 @@ import { getDocs, updateDoc } from "firebase/firestore";
 import ThemedButton from "../../components/ThemedButton";
 
 const AdminPage = ({ props }) => {
-  const userFirestore = useUser();
+  const { userData } = useUser();
   const { activeTheme, theme } = useTheme();
-  const admin = userFirestore?.admin || false;
+  const admin = userData?.admin || false;
   const [users, setUsers] = useState([]);
 
   const handleAdmin = (user) => {

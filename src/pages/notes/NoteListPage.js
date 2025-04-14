@@ -11,25 +11,30 @@ import { useUser } from "../../contexts/UserContext";
 import { getDocs, query, where } from "firebase/firestore";
 import { dbNotes } from "../../firebase";
 import ThemedCreateButton from "../../components/ThemedCreateButton";
+import { useTheme } from "../../contexts/ThemeSelection";
 
 const NoteListPage = () => {
   const [myNotes, setMyNotes] = useState({ results: [] });
   const [hasLoaded, setHasLoaded] = useState(false);
-  const userFirestore = useUser();
+  const { userData } = useUser();
+  const { activeTheme, theme } = useTheme();
 
   useEffect(() => {
     const handleGetNotes = async () => {
       try {
         const queryNotes = query(
           dbNotes,
-          where("userId", "==", userFirestore.user.uid)
+          where("userId", "==", userData.user.uid)
         );
         const querySnapshot = await getDocs(queryNotes);
         const userUpdatedResponse = querySnapshot.docs.map((doc) => ({
           docId: doc.id, // Firestore document ID
           ...doc.data(), // Document data
         }));
-        setMyNotes({ results: userUpdatedResponse });
+        const sortedNotes = userUpdatedResponse.sort(
+          (a, b) => b.date_created.seconds - a.date_created.seconds
+        );
+        setMyNotes({ results: sortedNotes });
       } catch (error) {
         console.error("Error getting documents: ", error);
       }
@@ -43,24 +48,28 @@ const NoteListPage = () => {
     return () => {
       clearTimeout(timer);
     };
-  }, [userFirestore]);
+  }, [userData]);
 
   return (
-    <Container fluid className={`text-center`}>
+    <Container
+      fluid
+      className={`text-center`}
+      style={{ color: theme[activeTheme].color }}
+    >
       {hasLoaded ? (
         <>
           <Row>
             <Col xs={1}>
-              <Link to={"/"}>
+              {/* <Link to={"/"}>
                 <i className="fa-solid fa-arrow-left"></i>
-              </Link>
+              </Link> */}
             </Col>
             <Col xs={10}>
-              <h4>Notes</h4>
+              <h5>Notes</h5>
             </Col>
           </Row>
           <br />
-          {userFirestore?.user ? (
+          {userData?.user ? (
             <Row>
               <Col xs={5}>
                 <ThemedCreateButton url={"note/create"} />
@@ -74,6 +83,11 @@ const NoteListPage = () => {
               next={() => fetchMoreData(myNotes, setMyNotes)}
               hasMore={!!myNotes.next}
               loader={<Loader spinner text="Loading, please wait" />}
+              style={{
+                overflowY: "hidden",
+                overflowX: "hidden",
+                paddingBottom: "50px",
+              }}
             >
               {myNotes?.results?.map((note, index) => (
                 <>

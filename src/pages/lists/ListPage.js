@@ -17,7 +17,7 @@ import ThemedCreateButton from "../../components/ThemedCreateButton";
 const ListPage = () => {
   const [myLists, setMyLists] = useState({ results: [] });
   const [hasLoaded, setHasLoaded] = useState(false);
-  const userFirestore = useUser();
+  const { userData } = useUser();
   const { activeTheme, theme } = useTheme();
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const ListPage = () => {
       try {
         const queryLists = query(
           dbLists,
-          where("userId", "==", userFirestore.user.uid)
+          where("userId", "==", userData.user.uid)
         );
         const querySnapshot = await getDocs(queryLists);
 
@@ -73,24 +73,27 @@ const ListPage = () => {
     return () => {
       clearTimeout(timer);
     };
-  }, [userFirestore]);
+  }, [userData]);
 
   return (
-    <Container className={`text-center`}>
+    <Container
+      className={`text-center`}
+      style={{ color: theme[activeTheme].color }}
+    >
       {hasLoaded ? (
         <>
           <Row>
             <Col xs={1}>
-              <Link to={"/"}>
+              {/* <Link to={"/"}>
                 <i className="fa-solid fa-arrow-left"></i>
-              </Link>
+              </Link> */}
             </Col>
             <Col xs={10}>
-              <h4>Lists</h4>
+              <h5>Lists</h5>
             </Col>
           </Row>
           <br />
-          {userFirestore?.user ? (
+          {userData?.user ? (
             <Row>
               <Col xs={5}>
                 <ThemedCreateButton url={"list/create"} />

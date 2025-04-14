@@ -12,15 +12,15 @@ const NoteDetailPage = () => {
   const { docId } = useParams();
   const [note, setNote] = useState({});
   const [hasLoaded, setHasLoaded] = useState(false);
-  const userFirestore = useUser();
+  const { userData } = useUser();
 
   useEffect(() => {
-    if (!userFirestore) return;
+    if (!userData) return;
 
     const handleGetNote = async () => {
       const docRef = doc(db, "notes", docId);
       const docSnap = await getDoc(docRef);
-      if (userFirestore?.user.uid !== docSnap.data().userId) {
+      if (userData?.user.uid !== docSnap.data().userId) {
         return;
       }
       if (docSnap.exists()) {
@@ -40,7 +40,7 @@ const NoteDetailPage = () => {
     return () => {
       clearTimeout(timer);
     };
-  }, [docId, userFirestore]);
+  }, [docId, userData]);
 
   return (
     <Container className={appStyle.Container}>
