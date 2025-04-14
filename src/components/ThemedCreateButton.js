@@ -38,7 +38,16 @@ const ThemedCreateButton = ({ url = "/", link = true, onClick }) => {
           ...buttonStyle,
         }}
       >
-        <p style={{ margin: "0", alignItems: "center" }}>+</p>
+        <p
+          style={{
+            margin: "0",
+            alignItems: "center",
+            fontSize: "150%",
+            paddingBottom: "5px",
+          }}
+        >
+          +
+        </p>
       </button>
     </Link>
   ) : (
@@ -48,7 +57,7 @@ const ThemedCreateButton = ({ url = "/", link = true, onClick }) => {
       }}
       onClick={handleClick}
     >
-      <p style={{ margin: "0", alignItems: "center" }}>+</p>
+      <p style={{ margin: "0", alignItems: "center", fontSize: "100%" }}>+</p>
     </button>
   );
 };

@@ -12,18 +12,18 @@ import { useNavigate } from "react-router-dom";
 import { useUserSettings } from "../../contexts/UserSettingsContext";
 
 const AccountPage = () => {
-  const userFirestore = useUser();
+  const { userData } = useUser();
   const { isDarkMode, changeTheme, activeTheme, theme } = useTheme();
-  const admin = userFirestore?.admin || false;
+  const admin = userData?.admin || false;
   const [userEmailToGrantAccess, setUserEmailToGrantAccess] = useState("");
-  const calendarsSharedWithUser = userFirestore?.sharedCalendars || [];
+  const calendarsSharedWithUser = userData?.sharedCalendars || [];
   const [calendarsWithAccess, setCalendarsWithAccess] = useState([]);
   const [error, setError] = useState("");
   const [loadingData, setLoadingData] = useState(false);
   const [removingAccess, setRemovingAccess] = useState(false);
   const [requestingRemovingAccess, setRequestingRemovingAccess] =
     useState(false);
-  const advancedFeatures = userFirestore?.advancedUser || false;
+  const advancedFeatures = userData?.advancedUser || false;
 
   const { settings, updateSettings } = useUserSettings();
 
@@ -45,7 +45,7 @@ const AccountPage = () => {
 
           // Check if your user ID is in their sharedCalendars
           const isSharedWithYou = sharedCalendars.some(
-            (sharedCalendar) => sharedCalendar.userId === userFirestore.user.uid
+            (sharedCalendar) => sharedCalendar.userId === userData.user.uid
           );
 
           if (isSharedWithYou) {
@@ -54,7 +54,7 @@ const AccountPage = () => {
               email: userData.email, // Email of the calendar owner
               removalRequested: sharedCalendars.some(
                 (sharedCalendar) =>
-                  sharedCalendar.userId === userFirestore.user.uid &&
+                  sharedCalendar.userId === userData.user.uid &&
                   sharedCalendar.removalRequested
               ),
             });
@@ -68,7 +68,7 @@ const AccountPage = () => {
     };
 
     fetchCalendarsYouHaveAccessTo();
-  }, [userFirestore]);
+  }, [userData]);
 
   const handleGrantAccess = () => {
     console.log("Grant access to calendar");
@@ -81,7 +81,7 @@ const AccountPage = () => {
       return;
     }
 
-    if (userEmailToGrantAccess === userFirestore.user.email) {
+    if (userEmailToGrantAccess === userData.user.email) {
       console.error("You cannot grant access to yourself");
       setError("You cannot grant access to yourself");
       setLoadingData(false);
@@ -101,8 +101,7 @@ const AccountPage = () => {
 
             const currentSharedCalendars = userData.sharedCalendars || [];
             alreadyHasAccess = currentSharedCalendars.some(
-              (sharedCalendar) =>
-                sharedCalendar.userId === userFirestore.user.uid
+              (sharedCalendar) => sharedCalendar.userId === userData.user.uid
             );
 
             if (alreadyHasAccess) {
@@ -112,8 +111,8 @@ const AccountPage = () => {
             }
 
             const newCalendar = {
-              userId: userFirestore.user.uid,
-              name: userFirestore.user.email || "Your Calendar",
+              userId: userData.user.uid,
+              name: userData.user.email || "Your Calendar",
             };
 
             const updatedSharedCalendars = [
@@ -161,7 +160,7 @@ const AccountPage = () => {
     try {
       getDocs(dbUsers).then((snapshot) => {
         snapshot.docs.forEach((doc) => {
-          if (doc.data().userId === userFirestore.user.uid) {
+          if (doc.data().userId === userData.user.uid) {
             const currentSharedCalendars = doc.data().sharedCalendars || [];
 
             // Find the calendar to mark for removal request
@@ -238,8 +237,7 @@ const AccountPage = () => {
           if (userData.email === calendar.email) {
             const currentSharedCalendars = userData.sharedCalendars || [];
             const updatedSharedCalendars = currentSharedCalendars.filter(
-              (sharedCalendar) =>
-                sharedCalendar.userId !== userFirestore.user.uid
+              (sharedCalendar) => sharedCalendar.userId !== userData.user.uid
             );
 
             updateDoc(doc.ref, { sharedCalendars: updatedSharedCalendars })
@@ -280,14 +278,14 @@ const AccountPage = () => {
     }
   };
 
-  if (userFirestore) {
+  if (userData) {
     return (
       <Container style={{ marginBottom: admin ? "10vh" : undefined }}>
         <Row>
           <Col>
             <p>Welcome back,</p>
             <p>
-              <bold>{userFirestore?.user?.email}</bold>
+              <bold>{userData?.user?.email}</bold>
             </p>
           </Col>
           <Col>
@@ -309,12 +307,12 @@ const AccountPage = () => {
           </Row>
           <Row>
             <Col>
-              <p>Created: {userFirestore?.dateCreated}</p>
+              <p>Created: {userData?.dateCreated}</p>
             </Col>
           </Row>
           <Row>
             <Col>
-              <p>Email: {userFirestore?.user?.email}</p>
+              <p>Email: {userData?.user?.email}</p>
             </Col>
           </Row>
           <Row>

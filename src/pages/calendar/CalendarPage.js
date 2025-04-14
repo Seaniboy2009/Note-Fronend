@@ -30,8 +30,8 @@ import DayEntry from "../../components/DayEntry";
 import CreateEntryForm from "../../components/CreateEntryForm";
 
 const CalendarPage = () => {
-  const userFirestore = useUser();
-  const currentUserId = userFirestore?.user?.uid;
+  const { userData } = useUser();
+  const currentUserId = userData?.user?.uid;
 
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
@@ -50,11 +50,11 @@ const CalendarPage = () => {
     currentUserId || null
   );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const sharedCalendars = userFirestore?.sharedCalendars;
+  const sharedCalendars = userData?.sharedCalendars;
   const [isEditable, setIsEditable] = useState(false);
   const [borderRounded, setBorderRounded] = useState(true);
 
-  const advancedFeatures = userFirestore?.advancedUser || false;
+  const advancedFeatures = userData?.advancedUser || false;
 
   const entryMap = new Map();
 
@@ -71,11 +71,7 @@ const CalendarPage = () => {
   };
 
   const fetchCalendarEntries = async () => {
-    if (
-      userFirestore == null ||
-      selectedCalendar == null ||
-      selectedMonth == null
-    ) {
+    if (userData == null || selectedCalendar == null || selectedMonth == null) {
       console.error(
         "Invalid state: either userFirestore or selectedCalendar or selectedMonth is undefined."
       );
@@ -154,7 +150,7 @@ const CalendarPage = () => {
     return () => {
       clearTimeout(timer);
     };
-  }, [userFirestore, hasLoaded, selectedCalendar, selectedMonth, selectedYear]);
+  }, [userData, hasLoaded, selectedCalendar, selectedMonth, selectedYear]);
 
   const handleMonthChange = (event) => {
     const newMonth = parseInt(event.target.value);
@@ -183,7 +179,7 @@ const CalendarPage = () => {
     }
 
     try {
-      const userId = userFirestore?.user?.uid;
+      const userId = userData?.user?.uid;
       const newEntryData = {
         userId: userId,
         year: selectedDay.getFullYear(),
@@ -223,7 +219,7 @@ const CalendarPage = () => {
       return;
     }
 
-    if (entry.userId !== userFirestore?.user?.uid) {
+    if (entry.userId !== userData?.user?.uid) {
       console.error("User does not have permission to update this entry");
       return;
     }
@@ -267,7 +263,7 @@ const CalendarPage = () => {
       return;
     }
 
-    if (entryData.userId !== userFirestore?.user?.uid) {
+    if (entryData.userId !== userData?.user?.uid) {
       console.error("User does not have permission to delete this entry");
       return;
     }
@@ -464,7 +460,7 @@ const CalendarPage = () => {
           </Row>
           <Row
             style={{
-              background: `linear-gradient(180deg, ${theme[activeTheme].backgroundColor} 10%, ${theme[activeTheme].backgroundColor2} 90%)`,
+              background: `linear-gradient(180deg, ${theme[activeTheme].backgroundColor} 10%, ${theme[activeTheme].backgroundColorGradient} 90%)`,
               paddingBottom: "10px",
             }}
           >

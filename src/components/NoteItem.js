@@ -21,8 +21,10 @@ const NoteItem = (props) => {
     category,
   } = props;
   const { activeTheme, theme } = useTheme();
-  const created = Date(date_created).toLocaleString();
-
+  console.log("date_created:", date_created);
+  const created = new Date(date_created.seconds * 1000).toLocaleDateString();
+  const formattedCreated = new Date(Date.parse(date_created)).toLocaleString();
+  console.log("formattedCreated:", formattedCreated);
   // const imageContainer = (
   //   <Container
   //     style={{
@@ -130,22 +132,10 @@ const NoteItem = (props) => {
           color: theme[activeTheme].color,
           border: theme[activeTheme].border,
         }}
-        className={style.NoteTest}
+        className={style.NoteListItem}
       >
-        <Col xs={5}>
-          {image_url ? (
-            // eslint-disable-next-line jsx-a11y/img-redundant-alt
-            <img src={image_url} className={style.ImageList} alt="note image" />
-          ) : (
-            <p>Image will go here!!</p>
-          )}
-        </Col>
-        <Col fluid>Title: {title}</Col>
-        <Col xs={2}>
-          {toggle ? (
-            <i className={`fa-solid fa-eye ${style.Watched}`}></i>
-          ) : null}
-        </Col>
+        <Col xs={12}>{title}</Col>
+        <Col style={{ fontSize: "70%" }}>{created}</Col>
       </Row>
     </Link>
   );
