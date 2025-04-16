@@ -5,7 +5,7 @@ import appStyle from "../../styles/App.module.css";
 import { Container } from "react-bootstrap";
 import Loader from "../../components/Loader";
 import { useUser } from "../../contexts/UserContext";
-import { getDoc, doc } from "firebase/firestore";
+import { getDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 
 const NoteDetailPage = () => {
@@ -13,6 +13,7 @@ const NoteDetailPage = () => {
   const [note, setNote] = useState({});
   const [hasLoaded, setHasLoaded] = useState(false);
   const { userData } = useUser();
+  const [hasEdited, setHasEdited] = useState(false);
 
   useEffect(() => {
     if (!userData) return;
@@ -42,10 +43,37 @@ const NoteDetailPage = () => {
     };
   }, [docId, userData]);
 
+  const handleNoteUpdate = (updatedNote) => {
+    setHasEdited(true);
+    setNote((prevNote) => ({
+      ...prevNote,
+      ...updatedNote,
+    }));
+  };
+
+  const handleSave = async () => {
+    try {
+      const docRef = doc(db, "notes", docId);
+      await updateDoc(docRef, note);
+      setHasEdited(false);
+      console.log("Note updated successfully");
+    } catch (error) {
+      console.error("Error updating note:", error);
+    }
+  };
+
   return (
-    <Container className={appStyle.Container}>
+    <Container>
       {hasLoaded ? (
-        <NoteItem key={docId} {...note} detailPage />
+        <NoteItem
+          key={docId}
+          {...note}
+          detailPage
+          handleNoteUpdate={handleNoteUpdate}
+          setHasEdited={setHasEdited}
+          hasEdited={hasEdited}
+          handleSave={handleSave}
+        />
       ) : (
         <>
           <Loader spinner text="loading note" />

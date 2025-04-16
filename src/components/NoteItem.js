@@ -6,123 +6,29 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useTheme } from "../contexts/ThemeSelection";
+import ThemedInput from "./ThemedInput";
+import ThemedButton from "./ThemedButton";
+import ThemedTextarea from "./ThemedTextArea";
 
 const NoteItem = (props) => {
   const {
     docId,
     title,
-    // image,
-    image_url,
-    details,
     detailPage,
-    is_private,
-    toggle,
     date_created,
-    category,
+    handleNoteUpdate,
+    hasEdited,
+    handleSave,
   } = props;
+
   const { activeTheme, theme } = useTheme();
-  console.log("date_created:", date_created);
+  const [noteUpdate, setNoteUpdate] = React.useState({});
   const created = new Date(date_created.seconds * 1000).toLocaleDateString();
-  const formattedCreated = new Date(Date.parse(date_created)).toLocaleString();
-  console.log("formattedCreated:", formattedCreated);
-  // const imageContainer = (
-  //   <Container
-  //     style={{
-  //       backgroundColor: theme[activeTheme].panelColor,
-  //       border: theme[activeTheme].border,
-  //     }}
-  //     className={` text-left  ${appStyle.BackgroundContainer}`}
-  //   >
-  //     <Row style={{ fontWeight: 700, fontfamily: "Gill Sans", fontSize: 25 }}>
-  //       <Col>Note Image</Col>
-  //     </Row>
-  //     <Row>
-  //       <Col>
-  //         {image_url ? (
-  //           <img
-  //             src={image_url}
-  //             className={style.ImageDetail}
-  //             alt="Note image Missing"
-  //           />
-  //         ) : (
-  //           <img
-  //             src={image}
-  //             className={style.ImageDetail}
-  //             alt="Note image Missing"
-  //           />
-  //         )}
-  //       </Col>
-  //     </Row>
-  //   </Container>
-  // );
-  const editModeDisabled = (
-    <>
-      <Container
-        style={{
-          backgroundColor: theme[activeTheme].panelColor,
-          border: theme[activeTheme].border,
-        }}
-        className={` text-left  ${appStyle.BackgroundContainer}`}
-      >
-        <Row style={{ fontWeight: 700, fontfamily: "Gill Sans", fontSize: 25 }}>
-          <Col>Note</Col>
-        </Row>
-        <Row style={{ fontWeight: 600, fontfamily: "Gill Sans" }}>
-          <Col>
-            <p>Title</p>
-          </Col>
-          <Col>
-            <p>Category</p>
-          </Col>
-          <Col>
-            <p>Private</p>
-          </Col>
-        </Row>
-        <Row style={{ fontWeight: 400, fontfamily: "Gill Sans" }}>
-          <Col>
-            <p>{title}</p>
-          </Col>
-          <Col>
-            <p>{category}</p>
-          </Col>
-          <Col>
-            <p>{is_private ? "Yes" : "No"}</p>
-          </Col>
-        </Row>
-        <Row style={{ fontWeight: 600, fontfamily: "Gill Sans" }}>
-          <Col>
-            <p>Created</p>
-          </Col>
-        </Row>
-        <Row style={{ fontWeight: 400, fontfamily: "Gill Sans" }}>
-          <Col>
-            <p>{created}</p>
-          </Col>
-        </Row>
-      </Container>
-      <Container
-        style={{
-          backgroundColor: theme[activeTheme].panelColor,
-          border: theme[activeTheme].border,
-        }}
-        className={` text-left  ${appStyle.BackgroundContainer}`}
-      >
-        <Row style={{ fontWeight: 700, fontfamily: "Gill Sans", fontSize: 25 }}>
-          <Col>Details</Col>
-        </Row>
-        <Row style={{ fontWeight: 600, fontfamily: "Gill Sans" }}>
-          <Col>
-            <p>details</p>
-          </Col>
-        </Row>
-        <Row style={{ fontWeight: 400, fontfamily: "Gill Sans" }}>
-          <Col>
-            <p>{details}</p>
-          </Col>
-        </Row>
-      </Container>
-    </>
-  );
+
+  const handleChange = (updatedNote) => {
+    setNoteUpdate(updatedNote); // Update the local state
+    handleNoteUpdate(updatedNote); // Call the parent handler
+  };
 
   const noteListPage = (
     <Link to={`note/${docId}`}>
@@ -145,15 +51,43 @@ const NoteItem = (props) => {
       <Container>
         {" "}
         <Row>
-          <Col xs={8}>
+          <Col xs={2}>
             <Link to={"/notes/"}>
               <i className="fa-solid fa-arrow-left" />
               &nbsp;
             </Link>
           </Col>
+          <Col xs={6}>
+            <p>{created}</p>
+          </Col>
+          {hasEdited && (
+            <Col xs={4}>
+              <ThemedButton onClick={handleSave} className="btn btn-primary">
+                Save
+              </ThemedButton>
+            </Col>
+          )}
         </Row>
-        {editModeDisabled}
-        {/* {imageContainer} */}
+        <Container
+          style={{
+            backgroundColor: theme[activeTheme].panelColor,
+            border: theme[activeTheme].border,
+          }}
+          className={` text-left  ${appStyle.BackgroundContainer}`}
+        >
+          <Row style={{ fontWeight: 400, fontFamily: "Gill Sans" }}>
+            <Col>
+              <ThemedTextarea
+                value={title}
+                type={"text Box"}
+                onChange={(e) => {
+                  const updatedNote = { ...noteUpdate, title: e.target.value };
+                  handleChange(updatedNote); // Update state and notify parent
+                }}
+              ></ThemedTextarea>
+            </Col>
+          </Row>
+        </Container>
       </Container>
     </>
   ) : (

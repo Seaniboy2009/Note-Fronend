@@ -28,6 +28,7 @@ import {
 } from "../../utils/CalendarData";
 import DayEntry from "../../components/DayEntry";
 import CreateEntryForm from "../../components/CreateEntryForm";
+import { Button } from "react-bootstrap";
 
 const CalendarPage = () => {
   const { userData } = useUser();
@@ -164,6 +165,34 @@ const CalendarPage = () => {
     setSelectedMonth(() => newMonth);
     setSelectedYear(newYear);
     setIsDropdownOpen(false);
+    fetchCalendarEntries();
+  };
+
+  const handleMonthChangeButtons = (direction) => {
+    const newMonth =
+      direction === "next" ? selectedMonth + 1 : selectedMonth - 1;
+
+    if (newMonth === 12) {
+      setSelectedMonth(0);
+      setSelectedYear(selectedYear + 1);
+      return;
+    } else if (newMonth === -1) {
+      setSelectedMonth(11);
+      setSelectedYear(selectedYear - 1);
+      return;
+    }
+    let newYear = selectedYear;
+
+    if (newMonth > 11) {
+      newMonth = 0;
+      newYear += 1;
+    } else if (newMonth < 0) {
+      newMonth = 11;
+      newYear -= 1;
+    }
+
+    setSelectedMonth(newMonth);
+    setSelectedYear(newYear);
     fetchCalendarEntries();
   };
 
@@ -342,10 +371,28 @@ const CalendarPage = () => {
       {hasLoaded ? (
         <>
           <Row style={{ alignContent: "center", padding: "0" }}>
-            <Col xs={6} style={{ alignContent: "center" }}>
+            <Col xs={2} style={{ alignContent: "center" }}>
+              <ThemedButton
+                size="small"
+                fullWidth={false}
+                onClick={() => handleMonthChangeButtons("back")}
+              >
+                {"<"}
+              </ThemedButton>
+            </Col>
+            <Col xs={4} style={{ alignContent: "center" }}>
               {getMonthName(selectedMonth)} {selectedYear}
             </Col>
-            <Col xs={4} style={{ textAlign: "right", alignContent: "center" }}>
+            <Col xs={1} style={{ alignContent: "center" }}>
+              <ThemedButton
+                size="small"
+                fullWidth={false}
+                onClick={() => handleMonthChangeButtons("next")}
+              >
+                {">"}
+              </ThemedButton>
+            </Col>
+            <Col xs={3} style={{ textAlign: "right", alignContent: "center" }}>
               <ThemedButton
                 size="small"
                 fullWidth={false}
@@ -477,16 +524,16 @@ const CalendarPage = () => {
                   day ? (
                     <ThemedButton
                       key={index}
-                      className={`${style.calendarDay} ${
-                        selectedDay?.getTime() === day.getTime()
-                          ? style.selected
-                          : ""
-                      }`}
+                      className={`${style.calendarDay}`}
                       onClick={() => handleDayClick(day)}
                       style={{
                         backgroundColor: theme[activeTheme].panelColor,
                         borderRadius: borderRounded ? "50%" : "0",
                         color: theme[activeTheme].color,
+                        border:
+                          selectedDay?.getTime() === day.getTime()
+                            ? theme[activeTheme].border
+                            : "",
                       }}
                     >
                       <p
