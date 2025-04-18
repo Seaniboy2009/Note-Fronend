@@ -91,7 +91,6 @@ const NoteDetailPage = () => {
     <Container>
       {hasLoaded ? (
         <Container>
-          {console.log("note", note)}{" "}
           <Row>
             <Col xs={1}>
               <Link to={"/notes/"}>

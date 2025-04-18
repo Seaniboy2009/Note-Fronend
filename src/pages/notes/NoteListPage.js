@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import NoteItem from "../../components/NoteItem";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -59,12 +58,7 @@ const NoteListPage = () => {
       {hasLoaded ? (
         <>
           <Row>
-            <Col xs={1}>
-              {/* <Link to={"/"}>
-                <i className="fa-solid fa-arrow-left"></i>
-              </Link> */}
-            </Col>
-            <Col xs={10}>
+            <Col xs={12}>
               <h5>Notes</h5>
             </Col>
           </Row>
