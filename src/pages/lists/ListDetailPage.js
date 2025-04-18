@@ -34,14 +34,14 @@ const ListDetailPage = () => {
   const [items, setItems] = useState([]);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [acendingOrder, setAcendingOrder] = useState(true);
-  const userFirestore = useUser();
+  const { userData } = useUser();
   const { activeTheme, theme } = useTheme();
   const [content, setContent] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [error, setError] = useState(null);
 
   const getLists = async () => {
-    if (!userFirestore) return;
+    if (!userData) return;
     try {
       const docRef = doc(db, "lists", docId);
       const docSnap = await getDoc(docRef);
@@ -82,7 +82,6 @@ const ListDetailPage = () => {
         return acendingOrder ? dateA - dateB : dateB - dateA;
       });
 
-      console.log("sortedItems", sortedItems);
       setItems(sortedItems);
 
       setHasLoaded(true);
@@ -92,8 +91,8 @@ const ListDetailPage = () => {
   };
 
   const handleCreateItem = async () => {
-    if (!userFirestore) return;
-    if (!userFirestore.user) return;
+    if (!userData) return;
+    if (!userData.user) return;
 
     if (!content) {
       console.log("Content is empty");
@@ -224,10 +223,7 @@ const ListDetailPage = () => {
               </Link>
             </Col>
             <Col xs={7}>
-              <h5>
-                {console.log("list", list)}
-                {list.title}
-              </h5>
+              <h5>{list.title}</h5>
               <p>
                 {" "}
                 {new Date(list.date_created).toLocaleDateString("en-GB", {

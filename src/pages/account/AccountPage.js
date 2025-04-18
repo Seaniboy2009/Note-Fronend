@@ -564,7 +564,7 @@ const AccountPage = () => {
               <Col>{admin && <p>Admin</p>}</Col>
             </Row>
 
-            {Object.entries(userFirestore).map(([key, value]) => (
+            {Object.entries(userData).map(([key, value]) => (
               <Row
                 key={`${value} ${key}`}
                 style={{ padding: "5px", textAlign: "left" }}

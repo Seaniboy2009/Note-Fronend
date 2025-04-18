@@ -16,7 +16,7 @@ import ThemedToggle from "../../components/ThemedToggle";
 const NoteCreate = () => {
   const navigate = useNavigate();
   const imageInput = useRef(null);
-  const userFirestore = useUser();
+  const { userData } = useUser();
 
   const [noteData, setNoteData] = useState({
     title: "",
@@ -32,18 +32,18 @@ const NoteCreate = () => {
 
   // Create a new note
   const createNote = async () => {
-    if (!userFirestore?.user) return;
+    if (!userData?.user) return;
 
     setSubmitting(true);
     try {
       const noteCreatedResponse = await addDoc(dbNotes, {
         ...noteData,
         date_created: new Date(),
-        userId: userFirestore.user.uid,
+        userId: userData.user.uid,
       });
 
-      console.log("Note created:", noteCreatedResponse);
-      navigate("/notes/");
+      console.log("Note created: ", noteCreatedResponse);
+      navigate(`/notes/`);
     } catch (error) {
       console.error("Error creating note:", error);
     } finally {
@@ -69,6 +69,7 @@ const NoteCreate = () => {
 
   // Handle setting image from list
   const handlePickedImageFromList = (imageUrl) => {
+    console.log("Image URL:", imageUrl);
     setPickedImageFromList(!!imageUrl);
     setNoteData((prevData) => ({
       ...prevData,
@@ -95,18 +96,22 @@ const NoteCreate = () => {
           backgroundColor: theme[activeTheme].panelColor,
           border: theme[activeTheme].border,
           marginBottom: "10px",
+          textAlign: "left",
         }}
+        className={appStyle.BackgroundContainer}
       >
-        <Row>
+        <Row style={{ alignItems: "center", textAlign: "center" }}>
           <Col>
-            <h4>Create a New Note</h4>
+            <h5>Create a New Note</h5>
           </Col>
         </Row>
         <Row>
-          <Col xs={4}>
-            <label htmlFor="title">Title</label>
+          <Col xs={6}>
+            <label style={{ padding: "10px" }} htmlFor="title">
+              Title
+            </label>
           </Col>
-          <Col xs={8}>
+          <Col xs={6}>
             <ThemedInput
               value={noteData.title}
               name="title"
@@ -114,11 +119,13 @@ const NoteCreate = () => {
             />
           </Col>
         </Row>
-        <Row>
-          <Col xs={4}>
-            <label htmlFor="category">Category</label>
+        <Row style={{ alignItems: "center" }}>
+          <Col xs={6}>
+            <label style={{ padding: "10px" }} htmlFor="category">
+              Category
+            </label>
           </Col>
-          <Col xs={8}>
+          <Col xs={6}>
             <ThemedInput
               type="select"
               value={noteData.category}
@@ -132,26 +139,21 @@ const NoteCreate = () => {
             />
           </Col>
         </Row>
-        {pickedImageFromList && (
-          <Row style={{ padding: "10px 0", alignItems: "center" }}>
-            <Col>
-              <img
-                src={noteData.image_url}
-                style={{ width: "50%", height: "auto", marginLeft: "10%" }}
-              />
-            </Col>
-            <Col>
-              <ThemedButton onClick={() => handlePickedImageFromList(null)}>
-                Remove Selected Image
-              </ThemedButton>
-            </Col>
-          </Row>
-        )}
-        <Row>
-          <Col xs={4}>
+        {/* <Row style={{ alignItems: "center" }}>
+          <Col xs={8}>
+            <ThemedToggle
+              isChecked={noteData.is_private}
+              name="is_private"
+              handleToggle={handleToggle}
+              text="Make Private"
+            />
+          </Col>
+        </Row> */}
+        {/* <Row style={{ alignItems: "center" }}>
+          <Col>
             <label htmlFor="image">Image</label>
           </Col>
-          <Col xs={8}>
+          <Col>
             <input
               type="file"
               name="image"
@@ -166,17 +168,28 @@ const NoteCreate = () => {
               }
             />
           </Col>
-        </Row>
-        <Row>
-          <Col>
-            <ThemedToggle
-              isChecked={noteData.is_private}
-              name="is_private"
-              handleToggle={handleToggle}
-              text="Make Private"
-            />
-          </Col>
-        </Row>
+        </Row> */}
+        {pickedImageFromList && (
+          <>
+            {" "}
+            <Row style={{ padding: "10px 0", alignItems: "center" }}>
+              <Col>
+                <img
+                  src={noteData.image_url}
+                  style={{ width: "50%", height: "50%", marginLeft: "25%" }}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <ThemedButton onClick={() => handlePickedImageFromList(null)}>
+                  Remove Selected Image
+                </ThemedButton>
+              </Col>
+            </Row>
+          </>
+        )}
+
         <Row style={{ padding: "10px 0" }}>
           <Col>
             <ThemedButton onClick={createNote} disabled={submitting}>
