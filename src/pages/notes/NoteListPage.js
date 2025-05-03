@@ -12,6 +12,16 @@ import { dbNotes } from "../../firebase";
 import ThemedCreateButton from "../../components/ThemedCreateButton";
 import { useTheme } from "../../contexts/ThemeSelection";
 
+const formatDate = (date) => {
+  if (date?.seconds) {
+    const formattedDate = new Date(date.seconds * 1000).toLocaleDateString();
+    return formattedDate;
+  } else {
+    const formattedDate = new Date(date).toLocaleDateString();
+    return formattedDate;
+  }
+};
+
 const NoteListPage = () => {
   const [myNotes, setMyNotes] = useState({ results: [] });
   const [hasLoaded, setHasLoaded] = useState(false);
@@ -26,13 +36,28 @@ const NoteListPage = () => {
           where("userId", "==", userData.user.uid)
         );
         const querySnapshot = await getDocs(queryNotes);
-        const userUpdatedResponse = querySnapshot.docs.map((doc) => ({
-          docId: doc.id, // Firestore document ID
-          ...doc.data(), // Document data
-        }));
-        const sortedNotes = userUpdatedResponse.sort(
-          (a, b) => b.date_created.seconds - a.date_created.seconds
-        );
+        const userUpdatedResponse = querySnapshot.docs.map((doc) => {
+          const noteData = {
+            docId: doc.id, // Firestore document ID
+            ...doc.data(), // Document data
+          };
+
+          noteData.date_created = formatDate(noteData.date_created);
+
+          return noteData;
+        });
+
+        const parseDate = (dateString) => {
+          const [day, month, year] = dateString.split("/").map(Number); // Split and convert to numbers
+          return new Date(year, month - 1, day); // Create a Date object (month is 0-indexed)
+        };
+
+        const sortedNotes = userUpdatedResponse.sort((a, b) => {
+          const dateA = parseDate(a.date_created);
+          const dateB = parseDate(b.date_created);
+          return dateB - dateA; // Sort in descending order
+        });
+
         setMyNotes({ results: sortedNotes });
       } catch (error) {
         console.error("Error getting documents: ", error);

@@ -100,6 +100,7 @@ const SearchPage = ({
     return () => {
       clearTimeout(timer);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchText, searchPage, gameSearch, category, searchList, hasSearched]);
 
   return (

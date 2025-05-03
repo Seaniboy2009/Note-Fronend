@@ -8,7 +8,7 @@ const ThemedToggle = ({ id, handleToggle, isChecked, text }) => {
 
   const handleChecked = (event) => {
     if (handleToggle) {
-      handleToggle(event); // Pass the event to the parent handler
+      handleToggle(event);
     }
   };
 
@@ -34,10 +34,9 @@ const ThemedToggle = ({ id, handleToggle, isChecked, text }) => {
             cursor: "pointer",
             width: "20px",
             height: "20px",
-            display: "inline-block",
             backgroundColor: isChecked
-              ? theme[activeTheme].toggleColor // Use toggleColor when toggled
-              : theme[activeTheme].backgroundColor, // Use default background color
+              ? theme[activeTheme].toggleColor
+              : theme[activeTheme].backgroundColor,
             border: `2px solid ${theme[activeTheme].color}`,
             borderRadius: "4px",
             display: "flex",
@@ -69,7 +68,6 @@ const ThemedToggle = ({ id, handleToggle, isChecked, text }) => {
           cursor: "pointer",
           width: "20px",
           height: "20px",
-          display: "inline-block",
           backgroundColor: isChecked
             ? theme[activeTheme].toggleColor // Use toggleColor when toggled
             : theme[activeTheme].backgroundColor, // Use default background color

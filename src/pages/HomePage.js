@@ -26,7 +26,7 @@ const HomePage = () => {
 
   const handleCloseModal = () => {
     setNewUser("false"); // Update the newUser state
-    localStorage.setItem("newUserState", "false"); // Persist the change
+    localStorage.setItem(`newUserState_${userData.user?.uid}`, "false"); // Persist the change
     setShowModal(false); // Close the modal
   };
 
@@ -44,7 +44,9 @@ const HomePage = () => {
             <>
               <Row style={{ paddingBottom: "20px" }}>
                 <Col>
-                  <h4>Welcome</h4>
+                  <h4>
+                    Welcome back {userData.user.name || userData.user.email}
+                  </h4>
                 </Col>
               </Row>
               <Row style={{ paddingBottom: "10px" }}>
@@ -73,13 +75,20 @@ const HomePage = () => {
                 <Modal
                   show={showModal}
                   onHide={handleCloseModal}
-                  dialogClassName="custom-modal" // Add a custom class for the modal
+                  dialogClassName="custom-modal"
                 >
                   <Modal.Header
-                    closeButton
-                    style={{ backgroundColor: theme[activeTheme].panelColor }}
+                    style={{
+                      backgroundColor: theme[activeTheme].panelColor,
+                      border: "none",
+                    }}
                   >
-                    <Modal.Title style={{ color: theme[activeTheme].color }}>
+                    <Modal.Title
+                      style={{
+                        color: theme[activeTheme].color,
+                        border: "none",
+                      }}
+                    >
                       Welcome to the app!
                     </Modal.Title>
                   </Modal.Header>
@@ -89,11 +98,18 @@ const HomePage = () => {
                       color: theme[activeTheme].color,
                     }}
                   >
-                    This is a simple note-taking app. You can create notes and
-                    lists, and manage your tasks.
+                    You can organize your thoughts with notes and lists.
+                    <br />
+                    Easily schedule your notes on your calendar.
+                    <br />
+                    You can mange your account settings in the account page.
+                    change theme and enable / disable icons
                   </Modal.Body>
                   <Modal.Footer
-                    style={{ backgroundColor: theme[activeTheme].panelColor }}
+                    style={{
+                      backgroundColor: theme[activeTheme].panelColor,
+                      border: "none",
+                    }}
                   >
                     <ThemedButton onClick={handleCloseModal}>
                       Close
