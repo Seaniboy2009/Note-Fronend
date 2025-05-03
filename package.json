@@ -1,6 +1,6 @@
 {
-  "homepage": "https://seaniboy2009.github.io/Note-Frontend/",
-  "name": "frontend",
+  "homepage": "",
+  "name": "notes",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
