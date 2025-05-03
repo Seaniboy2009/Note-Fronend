@@ -1,8 +1,6 @@
 import React from "react";
 import { useTheme } from "../contexts/ThemeSelection";
 import { Link } from "react-router-dom";
-import appStyle from "../styles/App.module.css";
-// Define sizes for buttons
 
 const ThemedCreateButton = ({ url = "/", link = true, onClick }) => {
   const { theme, activeTheme } = useTheme();
@@ -13,7 +11,6 @@ const ThemedCreateButton = ({ url = "/", link = true, onClick }) => {
     }
   };
 
-  // Button styles based on the active theme
   const buttonStyle = {
     position: "fixed",
     height: "70px",

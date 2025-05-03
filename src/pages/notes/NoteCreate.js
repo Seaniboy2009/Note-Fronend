@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import appStyle from "../../styles/App.module.css";
 import Container from "react-bootstrap/Container";
@@ -11,11 +11,10 @@ import { addDoc } from "firebase/firestore";
 import { dbNotes } from "../../firebase";
 import ThemedButton from "../../components/ThemedButton";
 import ThemedInput from "../../components/ThemedInput";
-import ThemedToggle from "../../components/ThemedToggle";
 
 const NoteCreate = () => {
   const navigate = useNavigate();
-  const imageInput = useRef(null);
+  // const imageInput = useRef(null);
   const { userData } = useUser();
 
   const [noteData, setNoteData] = useState({
@@ -27,7 +26,7 @@ const NoteCreate = () => {
 
   const { theme, activeTheme } = useTheme();
   const [submitting, setSubmitting] = useState(false);
-  const [pickImage, setPickImage] = useState(true);
+  const pickImage = true;
   const [pickedImageFromList, setPickedImageFromList] = useState(false);
 
   // Create a new note
@@ -60,12 +59,12 @@ const NoteCreate = () => {
   };
 
   // Handle toggling "is_private"
-  const handleToggle = () => {
-    setNoteData((prevData) => ({
-      ...prevData,
-      is_private: !prevData.is_private,
-    }));
-  };
+  // const handleToggle = () => {
+  //   setNoteData((prevData) => ({
+  //     ...prevData,
+  //     is_private: !prevData.is_private,
+  //   }));
+  // };
 
   // Handle setting image from list
   const handlePickedImageFromList = (imageUrl) => {
@@ -78,9 +77,9 @@ const NoteCreate = () => {
   };
 
   // Toggle image selection
-  const togglePickImage = () => {
-    setPickImage((prev) => !prev);
-  };
+  // const togglePickImage = () => {
+  //   setPickImage((prev) => !prev);
+  // };
 
   return (
     <Container fluid className={appStyle.Container}>
@@ -177,6 +176,7 @@ const NoteCreate = () => {
                 <img
                   src={noteData.image_url}
                   style={{ width: "50%", height: "50%", marginLeft: "25%" }}
+                  alt="Selected"
                 />
               </Col>
             </Row>

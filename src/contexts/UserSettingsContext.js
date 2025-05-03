@@ -1,9 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 
-// Create the context
 const UserSettingsContext = createContext();
 
-// Create a provider component
 export const UserSettingsProvider = ({ children }) => {
   const defaultSettings = {
     theme: "light",
@@ -11,7 +9,6 @@ export const UserSettingsProvider = ({ children }) => {
     notifications: false,
   };
 
-  // Load settings from localStorage or fallback to defaults
   const [settings, setSettings] = useState(() => {
     const storedSettings = localStorage.getItem("userSettings");
     return storedSettings ? JSON.parse(storedSettings) : defaultSettings;

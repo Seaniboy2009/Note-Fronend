@@ -21,19 +21,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    console.log("User is signed in:", user);
-    // User is signed in, see docs for a list of available properties
-    // https://firebase.google.com/docs/reference/js/auth.user
-    const uid = user.uid;
-    // ...
-  } else {
-    console.log("User is signed out or user is null");
-    // User is signed out
-    // ...
-  }
-});
+onAuthStateChanged(auth, (user) => {});
 
 // collections on the DB, how to get from the db
 const dbUsers = collection(db, "users");

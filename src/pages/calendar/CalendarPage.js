@@ -28,7 +28,6 @@ import {
 } from "../../utils/CalendarData";
 import DayEntry from "../../components/DayEntry";
 import CreateEntryForm from "../../components/CreateEntryForm";
-import { Button } from "react-bootstrap";
 
 const CalendarPage = () => {
   const { userData } = useUser();
@@ -72,9 +71,14 @@ const CalendarPage = () => {
   };
 
   const fetchCalendarEntries = async () => {
-    if (userData == null || selectedCalendar == null || selectedMonth == null) {
+    if (
+      !userData ||
+      !selectedCalendar ||
+      selectedMonth === null ||
+      selectedYear === null
+    ) {
       console.error(
-        "Invalid state: either userFirestore or selectedCalendar or selectedMonth is undefined."
+        "Invalid state: userData, selectedCalendar, selectedMonth, or selectedYear is undefined."
       );
       return;
     }
@@ -102,7 +106,6 @@ const CalendarPage = () => {
       }));
       setCalendarEntries(entries);
       setHasLoaded(true);
-      console.log("Calendar entries fetched: ", entries);
     } catch (error) {
       console.error("Error fetching calendar entries: ", error);
     }
@@ -134,7 +137,6 @@ const CalendarPage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!hasLoaded && currentUserId) {
-        console.log("Loading calendar entries...");
         setSelectedCalendar(() => currentUserId);
         fetchCalendarEntries();
       }
@@ -151,6 +153,7 @@ const CalendarPage = () => {
     return () => {
       clearTimeout(timer);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData, hasLoaded, selectedCalendar, selectedMonth, selectedYear]);
 
   const handleMonthChange = (event) => {
@@ -169,8 +172,7 @@ const CalendarPage = () => {
   };
 
   const handleMonthChangeButtons = (direction) => {
-    const newMonth =
-      direction === "next" ? selectedMonth + 1 : selectedMonth - 1;
+    let newMonth = direction === "next" ? selectedMonth + 1 : selectedMonth - 1;
 
     if (newMonth === 12) {
       setSelectedMonth(0);

@@ -55,7 +55,7 @@ const ListItem = ({ listItem, onToggle, onDelete }) => {
             padding: "0",
             margin: "0",
             display: "flex",
-            flexDirection: "column", // Aligns content and date vertically
+            flexDirection: "column",
           }}
         >
           {/* Main Content */}
@@ -77,7 +77,7 @@ const ListItem = ({ listItem, onToggle, onDelete }) => {
               style={{
                 margin: "0",
                 fontSize: "0.85em",
-                color: "#888", // Lighter color for date
+                color: "#888",
               }}
             >
               {new Date(listItem?.date_created).toLocaleTimeString([], {

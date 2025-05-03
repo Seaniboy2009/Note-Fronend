@@ -33,7 +33,6 @@ const ListDetailPage = () => {
   const [list, setList] = useState({});
   const [items, setItems] = useState([]);
   const [hasLoaded, setHasLoaded] = useState(false);
-  const [acendingOrder, setAcendingOrder] = useState(true);
   const { userData } = useUser();
   const { activeTheme, theme } = useTheme();
   const [content, setContent] = useState("");
@@ -79,7 +78,7 @@ const ListDetailPage = () => {
       const sortedItems = listItems.sort((a, b) => {
         const dateA = new Date(a.dateCreated);
         const dateB = new Date(b.dateCreated);
-        return acendingOrder ? dateA - dateB : dateB - dateA;
+        return dateA - dateB;
       });
 
       setItems(sortedItems);
@@ -210,6 +209,7 @@ const ListDetailPage = () => {
     return () => {
       clearTimeout(timer);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -7,12 +7,10 @@ import HomePage from "./pages/HomePage";
 import ListDetailPage from "./pages/lists/ListDetailPage";
 import appStyle from "./styles/App.module.css";
 import ListCreate from "./pages/lists/ListCreate";
-import NoteEditPage from "./pages/notes/NoteEditPage";
 import AccountPage from "./pages/account/AccountPage";
 import NavBarComponent from "./components/NavBarComponent";
 import SignUp from "./pages/auth/SignUp";
 import SignIn from "./pages/auth/SignIn";
-import SignOut from "./pages/auth/SignOut";
 import CalendarPage from "./pages/calendar/CalendarPage";
 
 function App() {
@@ -25,13 +23,11 @@ function App() {
         <Route exact path="/notes" element={<NoteListPage />} />
         <Route exact path="/notes/note/:docId" element={<NoteDetailPage />} />
         <Route exact path="/notes/note/create" element={<NoteCreate />} />
-        <Route exact path="/notes/note/edit:docId" element={<NoteEditPage />} />
         <Route path="/lists/" element={<ListPage />} />
         <Route path="/lists/list/:docId" element={<ListDetailPage />} />
         <Route path="/lists/list/create" element={<ListCreate />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/sign-out" element={<SignOut />} />
         <Route path="/calendar" element={<CalendarPage />} />
       </Routes>
     </div>

@@ -1,7 +1,6 @@
 import React from "react";
 import { useTheme } from "../contexts/ThemeSelection";
 
-// Define sizes for buttons
 const sizeStyles = {
   small: {
     padding: "4px 8px",
@@ -25,7 +24,6 @@ const ThemedButton = ({
 }) => {
   const { theme, activeTheme } = useTheme();
 
-  // Button styles based on the active theme
   const buttonStyle = {
     backgroundColor: theme[activeTheme].panelColor,
     color: theme[activeTheme].color,

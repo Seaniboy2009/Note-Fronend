@@ -1,4 +1,3 @@
-// src/components/SignUp.js
 import React, { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
@@ -15,7 +14,7 @@ const SignIn = () => {
 
   let navigate = useNavigate();
 
-  const handleSignUp = async (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
     try {
       signInWithEmailAndPassword(auth, email, password)
@@ -34,46 +33,52 @@ const SignIn = () => {
   };
 
   return (
-    <Container style={{ minHeight: "50vh" }}>
-      <Row style={{ paddingTop: "2rem" }}>
-        <Col>
-          <h5>Welcome Back</h5>
-          <p>Enter your credentials for login</p>
-        </Col>
-      </Row>
-      <Row style={{ textAlign: "center" }}>
-        <Col xs={12}>
-          <form onSubmit={handleSignUp}>
-            <Row style={{ textAlign: "center", marginBottom: "1rem" }}>
-              <Col>
-                <ThemedInput
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Email Address"
-                />
-              </Col>
-            </Row>
-            <Row style={{ textAlign: "center", marginBottom: "1rem" }}>
-              <Col>
-                <ThemedInput
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password"
-                />
-              </Col>
-            </Row>
-            <Row style={{ textAlign: "center", marginBottom: "1rem" }}>
-              <Col>
-                <ThemedButton type="submit">Log in</ThemedButton>
-
-                {error && <p style={{ color: "red" }}>{error}</p>}
-              </Col>
-            </Row>
-          </form>
-        </Col>
-      </Row>
+    <Container
+      fluid
+      className="d-flex justify-content-center align-items-center"
+      style={{ minHeight: "10vh" }}
+    >
+      <Container className="p-4" style={{ maxWidth: "800px" }}>
+        <Row
+          style={{
+            textAlign: "center",
+            alignItems: "center",
+          }}
+        >
+          <Col>
+            <h5>Welcome Back</h5>
+            <p>Enter your credentials for login</p>
+          </Col>
+        </Row>
+        <form onSubmit={handleSignIn}>
+          <Row className="justify-content-center mb-3">
+            <Col xs={12} sm={10} md={8} lg={6}>
+              <ThemedInput
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email Address"
+              />
+            </Col>
+          </Row>
+          <Row className="justify-content-center mb-3">
+            <Col xs={12} sm={10} md={8} lg={6}>
+              <ThemedInput
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+              />
+            </Col>
+          </Row>
+          <Row className="justify-content-center mb-3">
+            <Col xs={12} sm={10} md={8} lg={6} className="text-center">
+              <ThemedButton type="submit">Log in</ThemedButton>
+              {error && <p style={{ color: "red" }}>{error}</p>}
+            </Col>
+          </Row>
+        </form>
+      </Container>
     </Container>
   );
 };

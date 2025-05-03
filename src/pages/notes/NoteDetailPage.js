@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import NoteItem from "../../components/NoteItem";
 import appStyle from "../../styles/App.module.css";
 import { Container } from "react-bootstrap";
 import Loader from "../../components/Loader";
@@ -12,7 +11,6 @@ import { Link, useNavigate } from "react-router-dom";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useTheme } from "../../contexts/ThemeSelection";
-import ThemedInput from "../../components/ThemedInput";
 import ThemedButton from "../../components/ThemedButton";
 import ThemedTextarea from "../../components/ThemedTextArea";
 
@@ -24,7 +22,7 @@ const NoteDetailPage = () => {
   const [hasEdited, setHasEdited] = useState(false);
   const [showImage, setShowImage] = useState(false);
   const { activeTheme, theme } = useTheme();
-  const [noteUpdate, setNoteUpdate] = React.useState({});
+  // const [noteUpdate, setNoteUpdate] = React.useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,10 +37,21 @@ const NoteDetailPage = () => {
       if (docSnap.exists()) {
         const noteData = docSnap.data();
         console.log("noteData", noteData);
-        noteData.date_created = new Date(
-          noteData.date_created.seconds * 1000
-        ).toLocaleDateString();
+        if (noteData.date_created.seconds) {
+          // If it's a Firestore Timestamp
+          noteData.date_created = new Date(
+            noteData.date_created.seconds * 1000
+          ).toLocaleDateString();
+        } else if (typeof noteData.date_created === "string") {
+          // If it's already a string date
+          noteData.date_created = new Date(
+            noteData.date_created
+          ).toLocaleDateString();
+        } else {
+          console.error("Invalid date format for noteData.date_created");
+        }
         setNote(noteData);
+        console.log("note", noteData);
         setHasLoaded(true);
       } else {
         console.error("No such document!");
@@ -146,7 +155,7 @@ const NoteDetailPage = () => {
                   type={"text Box"}
                   onChange={(e) => {
                     const updatedNote = {
-                      ...noteUpdate,
+                      // ...noteUpdate,
                       title: e.target.value,
                     };
                     handleNoteUpdate(updatedNote); // Update state and notify parent
@@ -168,6 +177,7 @@ const NoteDetailPage = () => {
                   <img
                     src={note?.image_url}
                     style={{ width: "50%", height: "50%", marginLeft: "25%" }}
+                    alt="Selected"
                   />
                 </Col>
               </Row>

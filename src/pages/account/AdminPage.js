@@ -29,7 +29,6 @@ const AdminPage = ({ props }) => {
   };
 
   const handleAdvancedUser = (user) => {
-    console.log("handleAdvancedUser", user);
     getDocs(dbUsers).then((snapshot) => {
       snapshot.docs.forEach((doc) => {
         if (doc.data().userId === user.userId) {
@@ -44,14 +43,15 @@ const AdminPage = ({ props }) => {
   };
 
   useEffect(() => {
+    if (!admin) {
+      return;
+    }
     if (admin) {
-      // Fetch all users from Firestore
       getDocs(dbUsers)
         .then((snapshot) => {
           let users = [];
 
           snapshot.docs.forEach((doc) => {
-            console.log("User", doc.data());
             const email = doc.data()?.email;
             const userId = doc.data()?.userId;
             const admin = doc.data()?.admin;
@@ -64,12 +64,10 @@ const AdminPage = ({ props }) => {
             });
           });
           setUsers(users);
-          console.log("users:", users);
         })
         .catch((error) => {
           console.log("Error getting documents:", error);
         });
-      console.log("users:", users);
     }
   }, [admin]);
 
@@ -82,7 +80,7 @@ const AdminPage = ({ props }) => {
       className={appStyle.BackgroundContainer}
     >
       <Row>
-        <Col>{admin && <p>Users</p>}</Col>
+        <Col>{admin && <p>Users Admin View</p>}</Col>
       </Row>
 
       {users.map((user) => (

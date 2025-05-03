@@ -6,7 +6,6 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useTheme } from "../contexts/ThemeSelection";
-import ThemedInput from "./ThemedInput";
 import ThemedButton from "./ThemedButton";
 import ThemedTextarea from "./ThemedTextArea";
 
@@ -23,11 +22,9 @@ const NoteItem = (props) => {
 
   const { activeTheme, theme } = useTheme();
   const [noteUpdate, setNoteUpdate] = React.useState({});
-  const created = new Date(date_created.seconds * 1000).toLocaleDateString();
-
   const handleChange = (updatedNote) => {
-    setNoteUpdate(updatedNote); // Update the local state
-    handleNoteUpdate(updatedNote); // Call the parent handler
+    setNoteUpdate(updatedNote);
+    handleNoteUpdate(updatedNote);
   };
 
   const noteListPage = (
@@ -41,7 +38,7 @@ const NoteItem = (props) => {
         className={style.NoteListItem}
       >
         <Col xs={12}>{title}</Col>
-        <Col style={{ fontSize: "70%" }}>{created}</Col>
+        <Col style={{ fontSize: "70%" }}>{date_created}</Col>
       </Row>
     </Link>
   );
@@ -58,7 +55,7 @@ const NoteItem = (props) => {
             </Link>
           </Col>
           <Col xs={6}>
-            <p>{created}</p>
+            <p>{<Col style={{ fontSize: "70%" }}>{date_created}</Col>}</p>
           </Col>
           {hasEdited && (
             <Col xs={4}>
@@ -82,7 +79,7 @@ const NoteItem = (props) => {
                 type={"text Box"}
                 onChange={(e) => {
                   const updatedNote = { ...noteUpdate, title: e.target.value };
-                  handleChange(updatedNote); // Update state and notify parent
+                  handleChange(updatedNote);
                 }}
               ></ThemedTextarea>
             </Col>
