@@ -1,6 +1,6 @@
 import React from "react";
-import { Row, Col, Container } from "react-bootstrap"; // Ensure you're using React-Bootstrap if that's what this is based on
-import ThemedButton from "./ThemedButton"; // Adjust the import path for your button component
+import { Row, Col, Container } from "react-bootstrap";
+import ThemedButton from "./ThemedButton";
 
 const DayEntry = ({
   entry,

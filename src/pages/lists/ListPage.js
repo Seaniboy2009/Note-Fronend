@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import style from "../../styles/ListPage.module.css";
-import appStyle from "../../styles/App.module.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -83,12 +82,7 @@ const ListPage = () => {
       {hasLoaded ? (
         <>
           <Row>
-            <Col xs={1}>
-              {/* <Link to={"/"}>
-                <i className="fa-solid fa-arrow-left"></i>
-              </Link> */}
-            </Col>
-            <Col xs={10}>
+            <Col xs={12}>
               <h5>Lists</h5>
             </Col>
           </Row>
@@ -109,42 +103,31 @@ const ListPage = () => {
             >
               {myLists?.results?.map((list, index) => (
                 <Link key={list.id} to={`list/${list.docId}`}>
-                  <Container
+                  <Row
                     style={{
                       backgroundColor: theme[activeTheme].panelColor,
                       color: theme[activeTheme].color,
                       border: theme[activeTheme].border,
-                      marginBottom: "10px",
                     }}
+                    className={style.NoteListItem}
                   >
-                    {" "}
-                    <Row
-                      style={{
-                        textAlign: "left",
-                        display: "flex",
-                      }}
-                    >
-                      <Col>
-                        <p>{list.title}</p>
-                      </Col>
-                      <Col>
-                        <p>
-                          {list.date_created
-                            ? new Date(list.dateCreated).toLocaleTimeString(
-                                [],
-                                {
-                                  year: "numeric",
-                                  month: "2-digit",
-                                  day: "2-digit",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                }
-                              )
-                            : null}
-                        </p>
-                      </Col>
-                    </Row>
-                  </Container>
+                    <Col xs={12}>
+                      <p>{list.title}</p>
+                    </Col>
+                    <Col style={{ fontSize: "70%" }}>
+                      <p>
+                        {list.date_created
+                          ? new Date(list.dateCreated).toLocaleTimeString([], {
+                              year: "numeric",
+                              month: "2-digit",
+                              day: "2-digit",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })
+                          : null}
+                      </p>
+                    </Col>
+                  </Row>
                 </Link>
               ))}
             </InfiniteScroll>

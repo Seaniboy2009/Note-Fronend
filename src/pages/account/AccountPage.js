@@ -45,7 +45,7 @@ const AccountPage = () => {
 
           // Check if your user ID is in their sharedCalendars
           const isSharedWithYou = sharedCalendars.some(
-            (sharedCalendar) => sharedCalendar.userId === userData.user.uid
+            (sharedCalendar) => sharedCalendar.userId === userData.user?.uid
           );
 
           if (isSharedWithYou) {
@@ -54,7 +54,7 @@ const AccountPage = () => {
               email: userData.email, // Email of the calendar owner
               removalRequested: sharedCalendars.some(
                 (sharedCalendar) =>
-                  sharedCalendar.userId === userData.user.uid &&
+                  sharedCalendar.userId === userData.user?.uid &&
                   sharedCalendar.removalRequested
               ),
             });
@@ -285,7 +285,7 @@ const AccountPage = () => {
           <Col>
             <p>Welcome back,</p>
             <p>
-              <bold>{userData?.user?.email}</bold>
+              <bold>{userData?.user?.name || userData?.user.email}</bold>
             </p>
           </Col>
           <Col>
@@ -336,37 +336,39 @@ const AccountPage = () => {
               />
             </Col>
           </Row>
-          <Row>
-            <Col xl={12}>
-              {settings.useIcons ? (
-                <i className="fa-solid fa-palette"></i>
-              ) : (
-                <p>Theme's</p>
-              )}
-            </Col>
-            {Object.entries(theme)
-              .filter(
-                ([themeName]) =>
-                  advancedFeatures ||
-                  themeName === "Basic" ||
-                  themeName === "BasicLessContrast"
-              )
-              .map(([themeName], index) => (
-                <>
-                  <Col xs={6} key={index}>
-                    <p>{themeName}</p>
-                  </Col>
-                  <Col xs={6}>
-                    <input
-                      name="theme"
-                      checked={activeTheme === themeName}
-                      type="radio"
-                      onChange={() => changeTheme(themeName)}
-                    />
-                  </Col>
-                </>
-              ))}
-          </Row>
+          {advancedFeatures ? (
+            <Row>
+              <Col xl={12}>
+                {settings.useIcons ? (
+                  <i className="fa-solid fa-palette"></i>
+                ) : (
+                  <p>Theme's</p>
+                )}
+              </Col>
+              {Object.entries(theme)
+                .filter(
+                  ([themeName]) =>
+                    advancedFeatures ||
+                    themeName === "Basic" ||
+                    themeName === "BasicLessContrast"
+                )
+                .map(([themeName], index) => (
+                  <>
+                    <Col xs={6} key={index}>
+                      <p>{themeName}</p>
+                    </Col>
+                    <Col xs={6}>
+                      <input
+                        name="theme"
+                        checked={activeTheme === themeName}
+                        type="radio"
+                        onChange={() => changeTheme(themeName)}
+                      />
+                    </Col>
+                  </>
+                ))}
+            </Row>
+          ) : null}
         </Container>
         {/* Shared Access */}
         {advancedFeatures ? (
@@ -551,43 +553,6 @@ const AccountPage = () => {
             </Row>
           </Container>
         )}
-        {/* Admin for testing only*/}
-        {/* {admin && (
-          <Container
-            style={{
-              backgroundColor: theme[activeTheme].panelColor,
-              border: theme[activeTheme].border,
-            }}
-            className={appStyle.BackgroundContainer}
-          >
-            <Row>
-              <Col>{admin && <p>Admin</p>}</Col>
-            </Row>
-
-            {Object.entries(userFirestore).map(([key, value]) => (
-              <Row
-                key={`${value} ${key}`}
-                style={{ padding: "5px", textAlign: "left" }}
-              >
-                {" "}
-                <Col>
-                  <strong>{key}:</strong>{" "}
-                  {typeof value === "object" && !Array.isArray(value) ? (
-                    // If it's an object, format its properties
-                    <pre>{JSON.stringify(value, null, 2)}</pre>
-                  ) : Array.isArray(value) ? (
-                    // If it's an array, handle accordingly
-                    <pre>{JSON.stringify(value, null, 2)}</pre>
-                  ) : (
-                    // For primitive values
-                    value.toString()
-                  )}
-                </Col>
-              </Row>
-            ))}
-          </Container>
-        )} */}
-        {/* Admin Page */}
         {admin && <AdminPage />}
       </Container>
     );
