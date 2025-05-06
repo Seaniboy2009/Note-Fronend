@@ -9,7 +9,7 @@ import ThemedButton from "../components/ThemedButton";
 import { Modal, Spinner } from "react-bootstrap";
 
 const HomePage = () => {
-  const { userData, setNewUser } = useUser();
+  const { userData } = useUser();
   const newUser = userData?.isNewUser === true;
   const { activeTheme, theme } = useTheme();
   const [hasLoaded, setHasLoaded] = useState(false);
@@ -25,7 +25,6 @@ const HomePage = () => {
   }, [userData]);
 
   const handleCloseModal = () => {
-    setNewUser("false"); // Update the newUser state
     localStorage.setItem(`newUserState_${userData.user?.uid}`, "false"); // Persist the change
     setShowModal(false); // Close the modal
   };

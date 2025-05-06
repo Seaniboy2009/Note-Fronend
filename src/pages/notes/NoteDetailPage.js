@@ -13,6 +13,10 @@ import Col from "react-bootstrap/Col";
 import { useTheme } from "../../contexts/ThemeSelection";
 import ThemedButton from "../../components/ThemedButton";
 import ThemedTextarea from "../../components/ThemedTextArea";
+import axios from "axios";
+import ThemedInput from "../../components/ThemedInput";
+
+const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
 
 const NoteDetailPage = () => {
   const { docId } = useParams();
@@ -22,6 +26,8 @@ const NoteDetailPage = () => {
   const [hasEdited, setHasEdited] = useState(false);
   const [showImage, setShowImage] = useState(false);
   const { activeTheme, theme } = useTheme();
+  const [imageUrl, setImageUrl] = useState(null);
+  const [uploading, setUploading] = useState(false);
   // const [noteUpdate, setNoteUpdate] = React.useState({});
   const navigate = useNavigate();
 
@@ -96,6 +102,37 @@ const NoteDetailPage = () => {
     }
   };
 
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!allowedTypes.includes(file.type)) {
+      alert("Only JPG, PNG, or WEBP images are allowed.");
+      return;
+    }
+
+    setShowImage(false);
+    setUploading(true);
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "notes_unsigned"); // 🔁 Replace with your preset
+
+    try {
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, // 🔁 Replace cloud name
+        formData
+      );
+      setImageUrl(response.data.secure_url);
+      handleNoteUpdate({ image_url: response.data.secure_url });
+      console.log("Image uploaded successfully:", response.data.secure_url);
+    } catch (error) {
+      console.error("Upload failed:", error);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <Container>
       {hasLoaded ? (
@@ -164,6 +201,50 @@ const NoteDetailPage = () => {
               </Col>
             </Row>
           </Container>
+          <Container>
+            <Row style={{ padding: "10px 0" }}>
+              <Col xs={12}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center", // horizontal center
+                    alignItems: "center", // vertical center (if you give it height)
+                  }}
+                >
+                  <ThemedInput
+                    type="file"
+                    border={true}
+                    onChange={handleFileChange}
+                  />
+                </div>
+              </Col>
+            </Row>
+          </Container>
+          {uploading && <p>Uploading...</p>}
+          {imageUrl && (
+            <Container
+              style={{
+                backgroundColor: theme[activeTheme].panelColor,
+                border: theme[activeTheme].border,
+              }}
+              className={` text-left  ${appStyle.BackgroundContainer}`}
+            >
+              <Row style={{ padding: "10px 0", alignItems: "center" }}>
+                <Col>
+                  <img
+                    src={note?.image_url}
+                    style={{
+                      width: "50%",
+                      height: "50%",
+                      marginLeft: "25%",
+                    }}
+                    alt="Selected"
+                  />
+                </Col>
+              </Row>
+            </Container>
+          )}
+
           {showImage && (
             <Container
               style={{

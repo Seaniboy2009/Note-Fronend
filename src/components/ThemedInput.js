@@ -35,6 +35,19 @@ const ThemedInput = ({
     boxShadow: "none",
   };
 
+  const fileStyle = {
+    display: "inline-block",
+    padding: "10px 16px",
+    backgroundColor: theme[activeTheme].panelColor,
+    color: theme[activeTheme].color,
+    borderRadius: "4px",
+    border: border ? `1px solid ${theme[activeTheme].color}` : "none",
+    cursor: "pointer",
+    fontSize: "16px",
+    textAlign: "center",
+    transition: "background 0.3s",
+  };
+
   const renderInput = () => {
     if (type === "select") {
       return (
@@ -50,6 +63,24 @@ const ThemedInput = ({
             </option>
           ))}
         </select>
+      );
+    }
+
+    if (type === "file") {
+      return (
+        <>
+          <input
+            id={inputId}
+            type="file"
+            onChange={handleChange}
+            style={{
+              display: "none", // hide default input
+            }}
+          />
+          <label htmlFor={inputId} style={fileStyle}>
+            Upload File
+          </label>
+        </>
       );
     }
 
