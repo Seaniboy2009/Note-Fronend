@@ -37,12 +37,11 @@ const NoteCreate = () => {
     try {
       const noteCreatedResponse = await addDoc(dbNotes, {
         ...noteData,
-        date_created: new Date(),
+        date_created: new Date().toLocaleDateString(),
         userId: userData.user.uid,
       });
 
-      console.log("Note created: ", noteCreatedResponse);
-      navigate(`/notes/`);
+      navigate(`/notes/note/${noteCreatedResponse.id}`);
     } catch (error) {
       console.error("Error creating note:", error);
     } finally {
