@@ -7,7 +7,6 @@ import { useUser } from "../../contexts/UserContext";
 import { getDoc, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { Link, useNavigate } from "react-router-dom";
-// import style from "../styles/NoteItem.module.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useTheme } from "../../contexts/ThemeSelection";
@@ -28,7 +27,6 @@ const NoteDetailPage = () => {
   const { activeTheme, theme } = useTheme();
   const [imageUrl, setImageUrl] = useState(null);
   const [uploading, setUploading] = useState(false);
-  // const [noteUpdate, setNoteUpdate] = React.useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -213,6 +211,7 @@ const NoteDetailPage = () => {
                 >
                   <ThemedInput
                     type="file"
+                    value={note.image_url ? "Change image" : "Upload image"}
                     border={true}
                     onChange={handleFileChange}
                   />
@@ -229,7 +228,7 @@ const NoteDetailPage = () => {
               }}
               className={` text-left  ${appStyle.BackgroundContainer}`}
             >
-              <Row style={{ padding: "10px 0", alignItems: "center" }}>
+              <Row style={{ alignItems: "center" }}>
                 <Col>
                   <img
                     src={note?.image_url}

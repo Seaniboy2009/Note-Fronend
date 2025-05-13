@@ -14,16 +14,18 @@ import { useTheme } from "../../contexts/ThemeSelection";
 
 const formatDate = (date) => {
   if (date?.seconds) {
-    const formattedDate = new Date(date.seconds * 1000).toLocaleDateString();
+    const formattedDate = new Date(date.seconds * 1000).toLocaleDateString(
+      "en-GB"
+    );
     return formattedDate;
   } else {
-    const formattedDate = new Date(date).toLocaleDateString();
+    const formattedDate = new Date(date).toLocaleDateString("en-GB");
     return formattedDate;
   }
 };
 
 const NoteListPage = () => {
-  const [myNotes, setMyNotes] = useState({ results: [] });
+  const [myNotes, setMyNotes] = useState([]);
   const [hasLoaded, setHasLoaded] = useState(false);
   const { userData } = useUser();
   const { activeTheme, theme } = useTheme();
@@ -41,7 +43,6 @@ const NoteListPage = () => {
             docId: doc.id, // Firestore document ID
             ...doc.data(), // Document data
           };
-
           noteData.date_created = formatDate(noteData.date_created);
 
           return noteData;
@@ -58,7 +59,7 @@ const NoteListPage = () => {
           return dateB - dateA; // Sort in descending order
         });
 
-        setMyNotes({ results: sortedNotes });
+        setMyNotes(sortedNotes);
       } catch (error) {
         console.error("Error getting documents: ", error);
       }
@@ -96,19 +97,19 @@ const NoteListPage = () => {
             </Row>
           ) : null}
 
-          {myNotes?.results?.length !== 0 ? (
+          {myNotes?.length !== 0 ? (
             <InfiniteScroll
-              dataLength={myNotes.results.length}
+              dataLength={myNotes.length}
               next={() => fetchMoreData(myNotes, setMyNotes)}
               hasMore={!!myNotes.next}
               loader={<Loader spinner text="Loading, please wait" />}
               style={{
                 overflowY: "hidden",
                 overflowX: "hidden",
-                paddingBottom: "50px",
+                paddingBottom: "150px",
               }}
             >
-              {myNotes?.results?.map((note, index) => (
+              {myNotes?.map((note, index) => (
                 <>
                   <NoteItem key={note.id} {...note} />
                 </>

@@ -37,7 +37,7 @@ const NoteCreate = () => {
     try {
       const noteCreatedResponse = await addDoc(dbNotes, {
         ...noteData,
-        date_created: new Date().toLocaleDateString(),
+        date_created: new Date(),
         userId: userData.user.uid,
       });
 

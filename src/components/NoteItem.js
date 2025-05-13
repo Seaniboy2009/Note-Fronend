@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import style from "../styles/NoteItem.module.css";
 import appStyle from "../styles/App.module.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -18,6 +17,7 @@ const NoteItem = (props) => {
     handleNoteUpdate,
     hasEdited,
     handleSave,
+    image_url,
   } = props;
 
   const { activeTheme, theme } = useTheme();
@@ -29,17 +29,36 @@ const NoteItem = (props) => {
 
   const noteListPage = (
     <Link to={`note/${docId}`}>
-      <Row
+      <Container
         style={{
           backgroundColor: theme[activeTheme].panelColor,
           color: theme[activeTheme].color,
           border: theme[activeTheme].border,
+          marginBottom: "10px",
         }}
-        className={style.NoteListItem}
       >
-        <Col xs={12}>{title}</Col>
-        <Col style={{ fontSize: "70%" }}>{date_created}</Col>
-      </Row>
+        <Row>
+          {" "}
+          <Col xs={12}>{title}</Col>
+        </Row>
+        <Row style={{ padding: "0px", fontSize: "70%" }}>
+          {" "}
+          <Col xs={10}></Col>
+          <Col xs={2}>
+            {image_url ? (
+              <i className="fa-solid fa-image"></i>
+            ) : (
+              <span style={{ paddingBottom: "20px" }}></span>
+            )}
+          </Col>
+        </Row>
+        <Row>
+          {" "}
+          <Col xs={12} style={{ fontSize: "70%" }}>
+            {date_created}
+          </Col>
+        </Row>
+      </Container>
     </Link>
   );
 

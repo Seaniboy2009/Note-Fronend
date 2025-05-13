@@ -78,7 +78,7 @@ const ThemedInput = ({
             }}
           />
           <label htmlFor={inputId} style={fileStyle}>
-            Upload File
+            {value}
           </label>
         </>
       );
