@@ -311,7 +311,9 @@ const AccountPage = () => {
     const isTesting = process.env.REACT_APP_TESTING === "true";
     console.log("isTesting", isTesting);
 
-    const urlToUse = isTesting ? "http://localhost:3001" : "NOSERVERSETUPYET";
+    const urlToUse = isTesting
+      ? "http://localhost:3001"
+      : process.env.REACT_APP_API_URL;
 
     if (!userId || !planId) {
       console.error("Missing user ID or plan ID");
