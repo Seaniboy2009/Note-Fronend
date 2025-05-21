@@ -7,30 +7,47 @@ import React, {
 } from "react";
 import { auth, db, onAuthStateChanged } from "../firebase";
 import { User } from "firebase/auth";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  updateDoc,
+} from "firebase/firestore";
 
 interface UserContextProps {
   children: ReactNode;
 }
 
-type UserContextValue = {
-  userData: userData | null;
+type Subscription = {
+  plan: string;
+  active: boolean;
+  startDate: Date;
+  endDate: Date;
 };
 
-type userData = {
+type UserDetails = {
   user: User | null;
   dateCreated: string;
   admin: boolean;
   sharedCalendars: string[];
   advancedUser: boolean;
-  isNewUser: boolean;
+  subscription: Subscription | null;
+  existingSubscription: boolean;
+  subscriptionEndingSoon?: boolean;
+};
+
+type UserContextValue = {
+  userDetails: UserDetails | null;
+  setUserDetails: React.Dispatch<React.SetStateAction<UserDetails | null>>;
+  refreshUserDetails: () => Promise<void>;
 };
 
 const UserContext = createContext<UserContextValue | null>(null);
 
 export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [userData, setUserData] = useState<userData | null>(null);
+  const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -40,67 +57,120 @@ export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    const getUserDetails = async () => {
-      if (!user) {
-        setUserData(null);
-        localStorage.setItem("newUserState", "false");
-        return;
-      }
+  const refreshUserDetails = async () => {
+    if (!user) {
+      setUserDetails(null);
+      localStorage.removeItem("newUserState");
+      return;
+    }
 
-      try {
-        const dbCol = collection(db, "users");
-        const q = query(dbCol, where("userId", "==", user.uid));
-        const querySnapshot = await getDocs(q);
+    try {
+      const dbCol = collection(db, "users");
+      const q = query(dbCol, where("userId", "==", user.uid));
+      const querySnapshot = await getDocs(q);
 
-        if (!querySnapshot.empty) {
-          const doc = querySnapshot.docs[0];
-          const data = doc.data();
+      if (!querySnapshot.empty) {
+        const doc = querySnapshot.docs[0];
+        const data = doc.data();
+        const docRef = doc.ref;
 
-          // Extend the user object with the name field
-          const extendedUser = { ...user, name: data.name || "Unknown" };
+        const extendedUser = { ...user, name: data.name || data.email };
 
-          // Check if the logged-in user's state is already stored
-          const storedNewUserState = localStorage.getItem(
-            `newUserState_${user.uid}`
-          );
-          const isNewUser = storedNewUserState === "true";
+        const storedNewUserState = localStorage.getItem(
+          `newUserState_${user.uid}`
+        );
 
-          setUserData({
-            user: extendedUser,
-            dateCreated: data.dateCreated || "",
-            admin: data.admin || false,
-            sharedCalendars: data.sharedCalendars || [],
-            advancedUser: data.advancedUser || false,
-            isNewUser,
-          });
+        let subscription = null;
+        let subscriptionEndingSoon = false;
+        let existingSubscription = data.existingSubscription || false;
 
-          // Persist the newUser state for the current user
-          if (!storedNewUserState) {
-            localStorage.setItem(`newUserState_${user.uid}`, "true");
-          }
-        } else {
-          setUserData({
-            user,
-            dateCreated: "",
-            admin: false,
-            sharedCalendars: [],
-            advancedUser: false,
-            isNewUser: false,
-          });
-          localStorage.setItem(`newUserState_${user.uid}`, "false");
+        if (data.subscription && !existingSubscription) {
+          existingSubscription = true;
+          await updateDoc(docRef, { existingSubscription: true });
         }
-      } catch (error) {
-        console.error("Error fetching user details:", error);
-        setUserData(null);
-      }
-    };
 
-    getUserDetails();
+        if (data.subscription) {
+          const startDate = data.subscription.startDate.toDate();
+          const endDate = data.subscription.endDate.toDate();
+          const now = new Date();
+          const timeDiff = endDate.getTime() - now.getTime();
+          const daysRemaining = timeDiff / (1000 * 60 * 60 * 24);
+          const paddedNow = new Date(now.getTime() - 5 * 60 * 1000);
+
+          if (endDate < paddedNow && data.subscription.plan !== "free") {
+            await updateDoc(docRef, {
+              "subscription.active": false,
+              "subscription.plan": "free",
+            });
+
+            subscription = {
+              ...data.subscription,
+              active: false,
+              plan: "free",
+              startDate,
+              endDate,
+            };
+          } else {
+            if (daysRemaining <= 1) {
+              subscriptionEndingSoon = true;
+            }
+
+            subscription = {
+              ...data.subscription,
+              startDate,
+              endDate,
+            };
+          }
+        }
+
+        setUserDetails({
+          user: extendedUser,
+          dateCreated: data.dateCreated || "",
+          admin: data.admin || false,
+          sharedCalendars: data.sharedCalendars || [],
+          advancedUser: data.advancedUser || false,
+          subscription,
+          subscriptionEndingSoon,
+          existingSubscription,
+        });
+
+        if (!storedNewUserState) {
+          localStorage.setItem(`newUserState_${user.uid}`, "true");
+          localStorage.removeItem("newUserState");
+        }
+      } else {
+        setUserDetails({
+          user,
+          dateCreated: "",
+          admin: false,
+          sharedCalendars: [],
+          advancedUser: false,
+          subscription: null,
+          existingSubscription: false,
+        });
+        localStorage.setItem(`newUserState_${user.uid}`, "false");
+      }
+    } catch (error) {
+      console.log("Error fetching user details:", error);
+      setUserDetails(null);
+    }
+  };
+
+  useEffect(() => {
+    refreshUserDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   return (
-    <UserContext.Provider value={{ userData }}>{children}</UserContext.Provider>
+    <UserContext.Provider
+      value={{
+        userDetails,
+        setUserDetails,
+        refreshUserDetails,
+      }}
+    >
+      {children}
+    </UserContext.Provider>
   );
 };
 

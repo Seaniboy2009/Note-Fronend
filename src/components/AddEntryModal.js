@@ -3,11 +3,11 @@ import ThemedButton from "../components/ThemedButton";
 import { useTheme } from "../contexts/ThemeSelection";
 import { useUser } from "../contexts/UserContext";
 const AddEntryModal = ({ isOpen, onClose, onCreate }) => {
-  const { userData } = useUser();
+  const { userDetails } = useUser();
   const { theme, activeTheme } = useTheme();
   const [note, setNote] = useState("");
   const [color, setColor] = useState("#ffffff"); // Default color
-  const advancedFeatures = userData?.advancedUser || false;
+  const advancedFeatures = userDetails?.advancedUser || false;
   if (!isOpen) return null; // Don't render the modal if it's not open
 
   const handleCreate = () => {

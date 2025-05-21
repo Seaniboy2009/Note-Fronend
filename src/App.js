@@ -12,6 +12,7 @@ import NavBarComponent from "./components/NavBarComponent";
 import SignUp from "./pages/auth/SignUp";
 import SignIn from "./pages/auth/SignIn";
 import CalendarPage from "./pages/calendar/CalendarPage";
+import SubscriptionSuccess from "./pages/account/SubscriptionSuccess";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/calendar" element={<CalendarPage />} />
+        <Route path="/subscriptionSuccess" element={<SubscriptionSuccess />} />
       </Routes>
     </div>
   );

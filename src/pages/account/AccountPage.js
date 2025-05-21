@@ -10,20 +10,25 @@ import AdminPage from "./AdminPage";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { useUserSettings } from "../../contexts/UserSettingsContext";
+import SubscribeModal from "../../components/SubscribeModal";
+import ThemedBanner from "../../components/ThemedBanner";
+import axios from "axios";
 
 const AccountPage = () => {
-  const { userData } = useUser();
-  const { isDarkMode, changeTheme, activeTheme, theme } = useTheme();
-  const admin = userData?.admin || false;
+  const { userDetails } = useUser();
+  const { changeTheme, activeTheme, theme } = useTheme();
+  const admin = userDetails?.admin || false;
   const [userEmailToGrantAccess, setUserEmailToGrantAccess] = useState("");
-  const calendarsSharedWithUser = userData?.sharedCalendars || [];
+  const calendarsSharedWithUser = userDetails?.sharedCalendars || [];
   const [calendarsWithAccess, setCalendarsWithAccess] = useState([]);
   const [error, setError] = useState("");
   const [loadingData, setLoadingData] = useState(false);
   const [removingAccess, setRemovingAccess] = useState(false);
   const [requestingRemovingAccess, setRequestingRemovingAccess] =
     useState(false);
-  const advancedFeatures = userData?.advancedUser || false;
+  const isSubscriber = userDetails?.subscription.active === true;
+  const advancedFeatures = isSubscriber;
+  const [showSubscriberModal, setShowSubscriberModal] = useState(false);
 
   const { settings, updateSettings } = useUserSettings();
 
@@ -34,27 +39,50 @@ const AccountPage = () => {
   let navigate = useNavigate();
 
   useEffect(() => {
+    const hash = window.location.hash;
+    const queryStart = hash.indexOf("?");
+    const queryString = queryStart !== -1 ? hash.substring(queryStart) : "";
+    const fromSubscriptionSuccess = new URLSearchParams(queryString).get(
+      "fromSubscriptionSuccess"
+    );
+
+    if (fromSubscriptionSuccess) {
+      // Remove the query param from the URL
+      const baseHash = queryStart !== -1 ? hash.substring(0, queryStart) : hash;
+
+      // Update the URL without query params (without adding new history entry)
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + window.location.search + baseHash
+      );
+
+      window.location.reload();
+    }
+  }, []);
+
+  useEffect(() => {
     const fetchCalendarsYouHaveAccessTo = async () => {
       try {
         const snapshot = await getDocs(dbUsers);
         const calendars = [];
 
         snapshot.docs.forEach((doc) => {
-          const userData = doc.data();
-          const sharedCalendars = userData.sharedCalendars || [];
+          const userDetails = doc.data();
+          const sharedCalendars = userDetails.sharedCalendars || [];
 
           // Check if your user ID is in their sharedCalendars
           const isSharedWithYou = sharedCalendars.some(
-            (sharedCalendar) => sharedCalendar.userId === userData.user?.uid
+            (sharedCalendar) => sharedCalendar.userId === userDetails.user?.uid
           );
 
           if (isSharedWithYou) {
             calendars.push({
               userId: doc.id, // Owner of the calendar
-              email: userData.email, // Email of the calendar owner
+              email: userDetails.email, // Email of the calendar owner
               removalRequested: sharedCalendars.some(
                 (sharedCalendar) =>
-                  sharedCalendar.userId === userData.user?.uid &&
+                  sharedCalendar.userId === userDetails.user?.uid &&
                   sharedCalendar.removalRequested
               ),
             });
@@ -68,7 +96,7 @@ const AccountPage = () => {
     };
 
     fetchCalendarsYouHaveAccessTo();
-  }, [userData]);
+  }, [userDetails]);
 
   const handleGrantAccess = () => {
     console.log("Grant access to calendar");
@@ -81,7 +109,7 @@ const AccountPage = () => {
       return;
     }
 
-    if (userEmailToGrantAccess === userData.user.email) {
+    if (userEmailToGrantAccess === userDetails.user.email) {
       console.error("You cannot grant access to yourself");
       setError("You cannot grant access to yourself");
       setLoadingData(false);
@@ -94,14 +122,14 @@ const AccountPage = () => {
         let alreadyHasAccess = false;
 
         snapshot.docs.forEach((doc) => {
-          const userData = doc.data();
+          const userDetails = doc.data();
 
-          if (userData.email === userEmailToGrantAccess) {
+          if (userDetails.email === userEmailToGrantAccess) {
             userFound = true;
 
-            const currentSharedCalendars = userData.sharedCalendars || [];
+            const currentSharedCalendars = userDetails.sharedCalendars || [];
             alreadyHasAccess = currentSharedCalendars.some(
-              (sharedCalendar) => sharedCalendar.userId === userData.user.uid
+              (sharedCalendar) => sharedCalendar.userId === userDetails.user.uid
             );
 
             if (alreadyHasAccess) {
@@ -111,8 +139,8 @@ const AccountPage = () => {
             }
 
             const newCalendar = {
-              userId: userData.user.uid,
-              name: userData.user.email || "Your Calendar",
+              userId: userDetails.user.uid,
+              name: userDetails.user.email || "Your Calendar",
             };
 
             const updatedSharedCalendars = [
@@ -160,7 +188,7 @@ const AccountPage = () => {
     try {
       getDocs(dbUsers).then((snapshot) => {
         snapshot.docs.forEach((doc) => {
-          if (doc.data().userId === userData.user.uid) {
+          if (doc.data().userId === userDetails.user.uid) {
             const currentSharedCalendars = doc.data().sharedCalendars || [];
 
             // Find the calendar to mark for removal request
@@ -232,12 +260,12 @@ const AccountPage = () => {
     try {
       getDocs(dbUsers).then((snapshot) => {
         snapshot.docs.forEach((doc) => {
-          const userData = doc.data();
+          const userDetails = doc.data();
 
-          if (userData.email === calendar.email) {
-            const currentSharedCalendars = userData.sharedCalendars || [];
+          if (userDetails.email === calendar.email) {
+            const currentSharedCalendars = userDetails.sharedCalendars || [];
             const updatedSharedCalendars = currentSharedCalendars.filter(
-              (sharedCalendar) => sharedCalendar.userId !== userData.user.uid
+              (sharedCalendar) => sharedCalendar.userId !== userDetails.user.uid
             );
 
             updateDoc(doc.ref, { sharedCalendars: updatedSharedCalendars })
@@ -278,14 +306,47 @@ const AccountPage = () => {
     }
   };
 
-  if (userData) {
+  const handleSubscription = async (planId) => {
+    const userId = userDetails?.user?.uid;
+    const isTesting = process.env.REACT_APP_TESTING === "true";
+    console.log("isTesting", isTesting);
+
+    const urlToUse = isTesting ? "http://localhost:3001" : "NOSERVERSETUPYET";
+
+    if (!userId || !planId) {
+      console.error("Missing user ID or plan ID");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${urlToUse}/create-subscription-session`,
+        {
+          userId,
+          planId,
+          isTesting,
+        }
+      );
+
+      const { url } = response.data;
+      if (url) {
+        window.location.href = url;
+      } else {
+        console.error("No URL returned from server");
+      }
+    } catch (error) {
+      console.error("Failed to start subscription session:", error);
+    }
+  };
+
+  if (userDetails) {
     return (
       <Container style={{ marginBottom: admin ? "10vh" : undefined }}>
         <Row>
           <Col>
             <p>Welcome back,</p>
             <p>
-              <bold>{userData?.user?.name || userData?.user.email}</bold>
+              <bold>{userDetails?.user?.name || userDetails?.user.email}</bold>
             </p>
           </Col>
           <Col>
@@ -302,26 +363,83 @@ const AccountPage = () => {
         >
           <Row>
             <Col>
-              <p>Account Details</p>
+              <h4>Account Details</h4>
             </Col>
           </Row>
           <Row>
             <Col>
-              <p>Created: {userData?.dateCreated}</p>
+              <p>Created: {userDetails?.dateCreated}</p>
             </Col>
           </Row>
           <Row>
             <Col>
-              <p>Email: {userData?.user?.email}</p>
+              <p>Email: {userDetails?.user?.email}</p>
             </Col>
           </Row>
           <Row>
             <Col>
-              <p>
-                Advanced Features: {advancedFeatures ? "Enabled" : "Disabled"}
-              </p>
+              <div
+                style={{
+                  padding: "16px",
+                  borderRadius: "8px",
+                  backgroundColor: activeTheme
+                    ? theme[activeTheme].backgroundColor
+                    : "#f5f5f5",
+                  color: activeTheme ? theme[activeTheme].color : "#333",
+                  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                  lineHeight: "1.6",
+                }}
+              >
+                <h5 style={{ marginBottom: "12px" }}>
+                  Subscription:{" "}
+                  <span style={{ color: isSubscriber ? "green" : "#888" }}>
+                    {isSubscriber ? "Active" : "Free Plan"}
+                  </span>
+                </h5>
+
+                {isSubscriber ? (
+                  <>
+                    <p>
+                      <strong>Plan:</strong>{" "}
+                      {userDetails?.subscription?.plan || "N/A"}
+                    </p>
+                    <p>
+                      <strong>Started:</strong>{" "}
+                      {userDetails?.subscription?.startDate
+                        ? new Date(
+                            userDetails.subscription.startDate
+                          ).toLocaleDateString()
+                        : "Unknown"}
+                    </p>
+                    <p>
+                      <strong>Expires:</strong>{" "}
+                      {userDetails?.subscription?.endDate
+                        ? new Date(
+                            userDetails.subscription.endDate
+                          ).toLocaleDateString()
+                        : "Never"}
+                    </p>
+                    {userDetails?.subscriptionEndingSoon && (
+                      <p style={{ color: "#d48806", fontWeight: "bold" }}>
+                        ⚠ Your subscription is ending soon!
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <ThemedButton
+                    fullWidth={false}
+                    onClick={() => setShowSubscriberModal(true)}
+                  >
+                    Upgrade Account
+                  </ThemedButton>
+                )}
+                {userDetails?.existingSubscription && !isSubscriber && (
+                  <p>Your subscription has ended.</p>
+                )}
+              </div>
             </Col>
           </Row>
+          {/* ** Icon selection */}
           <Row>
             <Col xs={6}>
               <p>Enable Icons</p>
@@ -329,20 +447,29 @@ const AccountPage = () => {
             <Col xs={6}>
               <input
                 name="theme"
-                className={isDarkMode ? appStyle.TextTest : appStyle.TextRed}
                 checked={settings.useIcons}
                 type="checkbox"
                 onChange={() => handleUpdateIcons(!settings.useIcons)}
               />
             </Col>
           </Row>
-          {advancedFeatures ? (
+        </Container>
+        {/* Theme selection */}
+        {advancedFeatures ? (
+          <Container
+            style={{
+              backgroundColor: theme[activeTheme].panelColor,
+              border: theme[activeTheme].border,
+              paddingBottom: 10,
+            }}
+            className={appStyle.BackgroundContainer}
+          >
             <Row>
               <Col xl={12}>
                 {settings.useIcons ? (
                   <i className="fa-solid fa-palette"></i>
                 ) : (
-                  <p>Theme's</p>
+                  <h4>Theme's</h4>
                 )}
               </Col>
               {Object.entries(theme)
@@ -368,9 +495,29 @@ const AccountPage = () => {
                   </>
                 ))}
             </Row>
-          ) : null}
-        </Container>
-        {/* Shared Access */}
+            <ThemedBanner message="More themes coming soon!" type="event" />
+          </Container>
+        ) : (
+          <Container
+            style={{
+              backgroundColor: theme[activeTheme].panelColor,
+              border: theme[activeTheme].border,
+            }}
+            className={appStyle.BackgroundContainer}
+          >
+            <Row>
+              <Col>
+                <p>App themes</p>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <p>Subscription required to access this page</p>
+              </Col>
+            </Row>
+          </Container>
+        )}
+        {/* Calendar access */}
         {advancedFeatures ? (
           <>
             <Container
@@ -383,7 +530,7 @@ const AccountPage = () => {
             >
               <Row>
                 <Col>
-                  <h5>Shared Access</h5>
+                  <h4>Shared Access</h4>
                 </Col>
               </Row>
               <Row>
@@ -548,12 +695,19 @@ const AccountPage = () => {
             </Row>
             <Row>
               <Col>
-                <p>Advanced features are required to access this page</p>
+                <p>Subscription required to access this page</p>
               </Col>
             </Row>
           </Container>
         )}
         {admin && <AdminPage />}
+        {showSubscriberModal ? (
+          <SubscribeModal
+            show={showSubscriberModal}
+            onClose={() => setShowSubscriberModal(false)}
+            onSubscribe={(planId) => handleSubscription(planId)}
+          />
+        ) : null}
       </Container>
     );
   }

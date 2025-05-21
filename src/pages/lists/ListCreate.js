@@ -14,7 +14,7 @@ import ThemedInput from "../../components/ThemedInput";
 
 const ListCreate = () => {
   const navigate = useNavigate();
-  const { userData } = useUser();
+  const { userDetails } = useUser();
   const [error, setError] = useState(null);
   const [title, setTitle] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
@@ -23,7 +23,7 @@ const ListCreate = () => {
 
   // Send the title and private status to the API and create the new list
   const createList = async () => {
-    if (!userData || !userData.user) return;
+    if (!userDetails || !userDetails.user) return;
     if (!title) {
       setError("Title is required");
       return;
@@ -35,7 +35,7 @@ const ListCreate = () => {
         title: title,
         is_private: isPrivate,
         date_created: new Date().toISOString(),
-        userId: userData.user.uid,
+        userId: userDetails.user.uid,
       });
       setSubmit(false);
       navigate("/lists/");

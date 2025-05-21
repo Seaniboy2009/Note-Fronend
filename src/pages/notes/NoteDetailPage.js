@@ -21,7 +21,7 @@ const NoteDetailPage = () => {
   const { docId } = useParams();
   const [note, setNote] = useState({});
   const [hasLoaded, setHasLoaded] = useState(false);
-  const { userData } = useUser();
+  const { userDetails } = useUser();
   const [hasEdited, setHasEdited] = useState(false);
   const [showImage, setShowImage] = useState(false);
   const { activeTheme, theme } = useTheme();
@@ -30,12 +30,12 @@ const NoteDetailPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!userData) return;
+    if (!userDetails) return;
 
     const handleGetNote = async () => {
       const docRef = doc(db, "notes", docId);
       const docSnap = await getDoc(docRef);
-      if (userData?.user.uid !== docSnap.data().userId) {
+      if (userDetails?.user.uid !== docSnap.data().userId) {
         return;
       }
       if (docSnap.exists()) {
@@ -69,7 +69,7 @@ const NoteDetailPage = () => {
     return () => {
       clearTimeout(timer);
     };
-  }, [docId, userData]);
+  }, [docId, userDetails]);
 
   const handleNoteUpdate = (updatedNote) => {
     setHasEdited(true);

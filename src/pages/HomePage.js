@@ -9,23 +9,26 @@ import ThemedButton from "../components/ThemedButton";
 import { Modal, Spinner } from "react-bootstrap";
 
 const HomePage = () => {
-  const { userData } = useUser();
-  const newUser = userData?.isNewUser === true;
+  const { userDetails } = useUser();
+  const newUser = localStorage.getItem(`newUserState_${userDetails?.user?.uid}`)
+    ? localStorage.getItem(`newUserState_${userDetails?.user?.uid}`) === "true"
+    : true; // Default to true if not set
+
   const { activeTheme, theme } = useTheme();
   const [hasLoaded, setHasLoaded] = useState(false);
   const [showModal, setShowModal] = useState(true);
   useEffect(() => {
-    if (userData) {
+    if (userDetails) {
       setHasLoaded(true);
     }
 
     setTimeout(() => {
       setHasLoaded(true);
     }, 1000);
-  }, [userData]);
+  }, [userDetails]);
 
   const handleCloseModal = () => {
-    localStorage.setItem(`newUserState_${userData.user?.uid}`, "false"); // Persist the change
+    localStorage.setItem(`newUserState_${userDetails.user?.uid}`, "false"); // Persist the change
     setShowModal(false); // Close the modal
   };
 
@@ -39,12 +42,13 @@ const HomePage = () => {
     >
       {hasLoaded ? (
         <Container>
-          {userData?.user ? (
+          {userDetails?.user ? (
             <>
               <Row style={{ paddingBottom: "20px" }}>
                 <Col>
                   <h4>
-                    Welcome back {userData.user.name || userData.user.email}
+                    Welcome back{" "}
+                    {userDetails.user.name || userDetails.user.email}
                   </h4>
                 </Col>
               </Row>

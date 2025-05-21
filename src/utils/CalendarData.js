@@ -14,13 +14,13 @@ export const months = [
 ];
 
 export const daysOfWeekShort = [
-  "Mon",
-  "Tue",
-  "Wed",
-  "Thu",
-  "Fri",
-  "Sat",
-  "Sun",
+  "MON",
+  "TUE",
+  "WED",
+  "THU",
+  "FRI",
+  "SAT",
+  "SUN",
 ];
 
 export const daysOfWeek = [

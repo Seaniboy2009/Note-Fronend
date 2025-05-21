@@ -7,43 +7,62 @@ import Col from "react-bootstrap/Col";
 import SearchPage from "../SearchPage";
 import { useTheme } from "../../contexts/ThemeSelection";
 import { useUser } from "../../contexts/UserContext";
-import { addDoc } from "firebase/firestore";
+import { addDoc, query, where, getCountFromServer } from "firebase/firestore";
 import { dbNotes } from "../../firebase";
 import ThemedButton from "../../components/ThemedButton";
 import ThemedInput from "../../components/ThemedInput";
 
 const NoteCreate = () => {
   const navigate = useNavigate();
-  // const imageInput = useRef(null);
-  const { userData } = useUser();
-
+  const { userDetails } = useUser();
+  const [pickedImageFromList, setPickedImageFromList] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const { theme, activeTheme } = useTheme();
   const [noteData, setNoteData] = useState({
     title: "",
     category: "Other",
     image_url: "",
     is_private: false,
   });
-
-  const { theme, activeTheme } = useTheme();
-  const [submitting, setSubmitting] = useState(false);
-  const pickImage = true;
-  const [pickedImageFromList, setPickedImageFromList] = useState(false);
+  const [error, setError] = useState(null);
+  const isSubscriber = userDetails?.subscription.active === true;
+  const pickImage = isSubscriber;
 
   // Create a new note
   const createNote = async () => {
-    if (!userData?.user) return;
+    if (!userDetails?.user) return;
 
-    setSubmitting(true);
+    if (!noteData.title) {
+      setError("Please enter a title for the note.");
+      return;
+    }
+
     try {
+      if (!isSubscriber) {
+        const userNotesQuery = query(
+          dbNotes,
+          where("userId", "==", userDetails.user.uid)
+        );
+        const snapshot = await getCountFromServer(userNotesQuery);
+        const noteCount = snapshot.data().count;
+
+        if (noteCount >= 10) {
+          setError("You need to be a subscriber to create more than 10 notes.");
+          return;
+        }
+      }
+
+      setSubmitting(true);
       const noteCreatedResponse = await addDoc(dbNotes, {
         ...noteData,
         date_created: new Date(),
-        userId: userData.user.uid,
+        userId: userDetails.user.uid,
       });
 
       navigate(`/notes/note/${noteCreatedResponse.id}`);
     } catch (error) {
       console.error("Error creating note:", error);
+      setError("An error occurred while creating the note. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -57,15 +76,6 @@ const NoteCreate = () => {
     }));
   };
 
-  // Handle toggling "is_private"
-  // const handleToggle = () => {
-  //   setNoteData((prevData) => ({
-  //     ...prevData,
-  //     is_private: !prevData.is_private,
-  //   }));
-  // };
-
-  // Handle setting image from list
   const handlePickedImageFromList = (imageUrl) => {
     console.log("Image URL:", imageUrl);
     setPickedImageFromList(!!imageUrl);
@@ -74,11 +84,6 @@ const NoteCreate = () => {
       image_url: imageUrl,
     }));
   };
-
-  // Toggle image selection
-  // const togglePickImage = () => {
-  //   setPickImage((prev) => !prev);
-  // };
 
   return (
     <Container fluid className={appStyle.Container}>
@@ -137,36 +142,6 @@ const NoteCreate = () => {
             />
           </Col>
         </Row>
-        {/* <Row style={{ alignItems: "center" }}>
-          <Col xs={8}>
-            <ThemedToggle
-              isChecked={noteData.is_private}
-              name="is_private"
-              handleToggle={handleToggle}
-              text="Make Private"
-            />
-          </Col>
-        </Row> */}
-        {/* <Row style={{ alignItems: "center" }}>
-          <Col>
-            <label htmlFor="image">Image</label>
-          </Col>
-          <Col>
-            <input
-              type="file"
-              name="image"
-              id="image"
-              ref={imageInput}
-              onChange={(e) =>
-                setNoteData((prevData) => ({
-                  ...prevData,
-                  image: e.target.files[0],
-                  image_url: "",
-                }))
-              }
-            />
-          </Col>
-        </Row> */}
         {pickedImageFromList && (
           <>
             {" "}
@@ -189,21 +164,41 @@ const NoteCreate = () => {
           </>
         )}
 
-        <Row style={{ padding: "10px 0" }}>
+        <Row
+          style={{
+            padding: "10px 0",
+            alignItems: "center",
+            textAlign: "center",
+          }}
+        >
           <Col>
             <ThemedButton onClick={createNote} disabled={submitting}>
               {submitting ? "Submitting..." : "Submit"}
             </ThemedButton>
+            {error && <p style={{ color: "red" }}>{error}</p>}
           </Col>
         </Row>
       </Container>
-      {pickImage && (
+      {pickImage ? (
         <SearchPage
           searchText={noteData.title}
-          searchPage
           category={noteData.category}
           handlePickedImageFromList={handlePickedImageFromList}
         />
+      ) : (
+        <Row style={{ alignItems: "center", textAlign: "center" }}>
+          <Col>
+            <p>
+              Image selection is disabled for your account, to enable it please
+              upgrade your account.
+            </p>
+            <p>
+              <Link to={"/account"}>
+                <ThemedButton fullWidth={false}>Upgrade Account</ThemedButton>
+              </Link>
+            </p>
+          </Col>
+        </Row>
       )}
     </Container>
   );

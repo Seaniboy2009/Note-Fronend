@@ -30,8 +30,8 @@ import DayEntry from "../../components/DayEntry";
 import CreateEntryForm from "../../components/CreateEntryForm";
 
 const CalendarPage = () => {
-  const { userData } = useUser();
-  const currentUserId = userData?.user?.uid;
+  const { userDetails } = useUser();
+  const currentUserId = userDetails?.user?.uid;
 
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
@@ -50,11 +50,10 @@ const CalendarPage = () => {
     currentUserId || null
   );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const sharedCalendars = userData?.sharedCalendars;
+  const sharedCalendars = userDetails?.sharedCalendars;
   const [isEditable, setIsEditable] = useState(false);
-  const [borderRounded, setBorderRounded] = useState(true);
 
-  const advancedFeatures = userData?.advancedUser || false;
+  const advancedFeatures = userDetails?.advancedUser || false;
 
   const entryMap = new Map();
 
@@ -72,13 +71,13 @@ const CalendarPage = () => {
 
   const fetchCalendarEntries = async () => {
     if (
-      !userData ||
+      !userDetails ||
       !selectedCalendar ||
       selectedMonth === null ||
       selectedYear === null
     ) {
       console.error(
-        "Invalid state: userData, selectedCalendar, selectedMonth, or selectedYear is undefined."
+        "Invalid state: userDetails, selectedCalendar, selectedMonth, or selectedYear is undefined."
       );
       return;
     }
@@ -128,10 +127,6 @@ const CalendarPage = () => {
     );
     setSelectedDay(selectedDay || currentDay);
     setDayEntry(entries);
-    console.log(
-      "Day set ",
-      selectedDay ? `selectedDay: ${selectedDay}` : `currentDay: ${currentDay}`
-    );
   };
 
   useEffect(() => {
@@ -154,7 +149,7 @@ const CalendarPage = () => {
       clearTimeout(timer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userData, hasLoaded, selectedCalendar, selectedMonth, selectedYear]);
+  }, [userDetails, hasLoaded, selectedCalendar, selectedMonth, selectedYear]);
 
   const handleMonthChange = (event) => {
     const newMonth = parseInt(event.target.value);
@@ -210,7 +205,7 @@ const CalendarPage = () => {
     }
 
     try {
-      const userId = userData?.user?.uid;
+      const userId = userDetails?.user?.uid;
       const newEntryData = {
         userId: userId,
         year: selectedDay.getFullYear(),
@@ -250,7 +245,7 @@ const CalendarPage = () => {
       return;
     }
 
-    if (entry.userId !== userData?.user?.uid) {
+    if (entry.userId !== userDetails?.user?.uid) {
       console.error("User does not have permission to update this entry");
       return;
     }
@@ -274,7 +269,7 @@ const CalendarPage = () => {
     }
   };
 
-  const confirmAction = (entry) => {
+  const confirmAction = () => {
     if (actionType === "edit") {
       handleUpdateEntry(entryData);
     } else if (actionType === "delete") {
@@ -294,7 +289,7 @@ const CalendarPage = () => {
       return;
     }
 
-    if (entryData.userId !== userData?.user?.uid) {
+    if (entryData.userId !== userDetails?.user?.uid) {
       console.error("User does not have permission to delete this entry");
       return;
     }
@@ -336,7 +331,7 @@ const CalendarPage = () => {
     setDayEntry(entries);
   };
 
-  function renderEntryDivs(day) {
+  const renderEntryDivs = (day) => {
     const entries = entryMap.get(`${day.getFullYear()}-${day.getDate()}`);
     if (!entries || entries.length === 0) return null;
 
@@ -353,20 +348,16 @@ const CalendarPage = () => {
         {entries.map((entry, idx) => (
           <div
             key={idx}
-            className={`${
-              borderRounded
-                ? style.calendarDayBannerRounded
-                : style.calendarDayBanner
-            }`}
+            className={style.calendarDayBannerRounded}
             style={{
-              backgroundColor: entry.color, // Color for the entry
+              backgroundColor: entry.color,
             }}
             title={entry.note}
           />
         ))}
       </div>
     );
-  }
+  };
 
   return (
     <Container fluid className={style.calendarContainer}>
@@ -394,19 +385,10 @@ const CalendarPage = () => {
                 {">"}
               </ThemedButton>
             </Col>
-            <Col xs={3} style={{ textAlign: "right", alignContent: "center" }}>
-              <ThemedButton
-                size="small"
-                fullWidth={false}
-                onClick={() => setBorderRounded(!borderRounded)}
-              >
-                {borderRounded ? (
-                  <i className="fa-regular fa-square"></i>
-                ) : (
-                  <i className="fa-regular fa-circle"></i>
-                )}
-              </ThemedButton>
-            </Col>
+            <Col
+              xs={3}
+              style={{ textAlign: "right", alignContent: "center" }}
+            ></Col>
             <Col xs={2} style={{ textAlign: "right", alignContent: "center" }}>
               <button
                 onClick={toggleDropdown}
@@ -507,12 +489,7 @@ const CalendarPage = () => {
               )}
             </Col>
           </Row>
-          <Row
-            style={{
-              background: `linear-gradient(180deg, ${theme[activeTheme].backgroundColor} 10%, ${theme[activeTheme].backgroundColorGradient} 90%)`,
-              paddingBottom: "10px",
-            }}
-          >
+          <Row>
             <Col>
               <div className={style.calendarGrid}>
                 {daysOfWeekShort.map((day) => (
@@ -525,26 +502,19 @@ const CalendarPage = () => {
                 {days.map((day, index) =>
                   day ? (
                     <ThemedButton
-                      key={index}
+                      key={day + index}
                       className={`${style.calendarDay}`}
                       onClick={() => handleDayClick(day)}
                       style={{
-                        backgroundColor: theme[activeTheme].panelColor,
-                        borderRadius: borderRounded ? "50%" : "0",
-                        color: theme[activeTheme].color,
-                        border:
+                        backgroundColor:
                           selectedDay?.getTime() === day.getTime()
-                            ? theme[activeTheme].border
-                            : "",
+                            ? theme[activeTheme].selectedColor
+                            : theme[activeTheme].backgroundColor,
+                        borderRadius: "50%",
+                        color: theme[activeTheme].color,
                       }}
                     >
-                      <p
-                        className={`${
-                          borderRounded
-                            ? style.calendarDayNumberRounded
-                            : style.calendarDayNumber
-                        }`}
-                      >
+                      <p className={style.calendarDayNumberRounded}>
                         {day.getDate()}
                       </p>
                       {doesDayHaveEntry(day) ? renderEntryDivs(day) : null}

@@ -15,12 +15,12 @@ export const useTheme = () => {
 export const theme = {
   RedDark: {
     backgroundColor: "#100000",
-    backgroundColorGradient: "#2f0000", // Slightly lighter than #240000
     panelColor: "#240000",
+    selectedColor: "#410004",
     border: "1px solid #410004",
-    color: "#9d0913",
-    altColor: "#4b1fa3",
-    hoverColor: "#a63c3a",
+    color: " #9d0913",
+    altColor: "rgb(163, 31, 42)",
+    hoverColor: " #a63c3a",
     textUnavailable: "#5c060a",
     toggleColor: "#410004",
     createButton: "#2f0000",
@@ -38,9 +38,9 @@ export const theme = {
   //   createButton: "#ff9999",
   // },
   BlueDark: {
-    backgroundColor: " #0F303D",
-    backgroundColorGradient: "rgb(22, 70, 87)", // Slightly lighter than #265e70
-    panelColor: "rgb(0, 58, 78)",
+    backgroundColor: "rgb(12, 40, 51)",
+    panelColor: " #0F303D",
+    selectedColor: "rgb(33, 101, 128)",
     border: "1px solid rgb(77, 109, 110)",
     color: "rgb(153, 200, 255)",
     altColor: "#265e70",
@@ -63,8 +63,8 @@ export const theme = {
   // },
   PurpleDark: {
     backgroundColor: "#4b1fa3",
-    backgroundColorGradient: "#5f39b5", // Slightly lighter than #4b1fa3
     panelColor: "#6739c4",
+    selectedColor: "#7a4bdb",
     border: "1px solid #a63c3a",
     color: "#e9b8ff",
     altColor: "#a63c3a",
@@ -86,9 +86,9 @@ export const theme = {
   //   createButton: "#d1b3ff",
   // },
   GreenDark: {
-    backgroundColor: "#021428",
-    backgroundColorGradient: "#041B29", // Slightly lighter than #021428
-    panelColor: "#002627",
+    backgroundColor: " #002918",
+    panelColor: "rgb(0, 61, 36)",
+    selectedColor: "rgb(0, 50, 12)",
     border: "1px solid #004f4f",
     color: "#a3f7bf",
     altColor: "#72c59a",
@@ -110,11 +110,11 @@ export const theme = {
   //   createButton: "#b3ffb3",
   // },
   BasicDark: {
-    backgroundColor: "#f9f9f9",
-    backgroundColorGradient: "#ffffff", // Slightly lighter than #f9f9f9
-    panelColor: "#e0e0e0",
-    border: "1px solid #d0d0d0",
-    color: "#333333",
+    backgroundColor: "rgb(94, 94, 94)",
+    panelColor: "rgb(58, 58, 58)",
+    selectedColor: "rgb(136, 136, 136)",
+    border: "1px solid rgb(126, 126, 126)",
+    color: "rgb(0, 0, 0)",
     altColor: "#d0d0d0",
     hoverColor: "#cccccc",
     textUnavailable: "#b0b0b0",
@@ -122,11 +122,11 @@ export const theme = {
     createButton: "#ffffff",
   },
   BasicLight: {
-    backgroundColor: "#ffffff",
-    backgroundColorGradient: "#f9f9f9",
-    panelColor: "#ffffff",
-    border: "1px solid #e0e0e0",
-    color: "#666666",
+    backgroundColor: " #ffffff",
+    panelColor: "rgb(207, 214, 214)",
+    selectedColor: " #f2f2f2",
+    border: "1px solid #000000",
+    color: "rgb(77, 77, 77)",
     altColor: "#e0e0e0",
     hoverColor: "#f2f2f2",
     textUnavailable: "#cccccc",

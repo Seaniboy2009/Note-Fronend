@@ -59,7 +59,12 @@ const SignUp = () => {
         email: email,
         userId: userId,
         date_created: new Date(),
-        isNewUser: true,
+        subscription: {
+          plan: "Free",
+          active: false,
+          date_created: new Date(),
+          date_ended: null,
+        },
       });
       navigate("/");
     } catch (error) {

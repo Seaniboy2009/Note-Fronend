@@ -33,14 +33,14 @@ const ListDetailPage = () => {
   const [list, setList] = useState({});
   const [items, setItems] = useState([]);
   const [hasLoaded, setHasLoaded] = useState(false);
-  const { userData } = useUser();
+  const { userDetails } = useUser();
   const { activeTheme, theme } = useTheme();
   const [content, setContent] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [error, setError] = useState(null);
 
   const getLists = async () => {
-    if (!userData) return;
+    if (!userDetails) return;
     try {
       const docRef = doc(db, "lists", docId);
       const docSnap = await getDoc(docRef);
@@ -90,8 +90,8 @@ const ListDetailPage = () => {
   };
 
   const handleCreateItem = async () => {
-    if (!userData) return;
-    if (!userData.user) return;
+    if (!userDetails) return;
+    if (!userDetails.user) return;
 
     if (!content) {
       console.log("Content is empty");

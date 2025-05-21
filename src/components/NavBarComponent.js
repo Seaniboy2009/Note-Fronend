@@ -13,7 +13,7 @@ import { useUserSettings } from "../contexts/UserSettingsContext";
 const isLargeScreen = window.innerWidth >= 768; // Check screen width
 const iconSize = isLargeScreen ? "30px" : "25px";
 const NavBarComponent = () => {
-  const { userData } = useUser();
+  const { userDetails } = useUser();
   const { activeTheme, theme } = useTheme();
   const linkStyle = { color: theme[activeTheme]?.color };
   const { settings } = useUserSettings();
@@ -45,7 +45,7 @@ const NavBarComponent = () => {
             )}
           </Nav.Link>
         </Col>
-        {userData?.user ? (
+        {userDetails?.user ? (
           <>
             <Col xs="auto" style={{ paddingRight: useIcons ? "5px" : "1px" }}>
               <Nav.Link

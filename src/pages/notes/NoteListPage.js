@@ -27,15 +27,16 @@ const formatDate = (date) => {
 const NoteListPage = () => {
   const [myNotes, setMyNotes] = useState([]);
   const [hasLoaded, setHasLoaded] = useState(false);
-  const { userData } = useUser();
+  const { userDetails } = useUser();
   const { activeTheme, theme } = useTheme();
+  const [notesTotal, setNotesTotal] = useState(0);
 
   useEffect(() => {
     const handleGetNotes = async () => {
       try {
         const queryNotes = query(
           dbNotes,
-          where("userId", "==", userData.user.uid)
+          where("userId", "==", userDetails.user.uid)
         );
         const querySnapshot = await getDocs(queryNotes);
         const userUpdatedResponse = querySnapshot.docs.map((doc) => {
@@ -59,6 +60,8 @@ const NoteListPage = () => {
           return dateB - dateA; // Sort in descending order
         });
 
+        console.log("Total notes found: ", userUpdatedResponse.length);
+        setNotesTotal(userUpdatedResponse.length);
         setMyNotes(sortedNotes);
       } catch (error) {
         console.error("Error getting documents: ", error);
@@ -73,7 +76,7 @@ const NoteListPage = () => {
     return () => {
       clearTimeout(timer);
     };
-  }, [userData]);
+  }, [userDetails]);
 
   return (
     <Container
@@ -89,10 +92,13 @@ const NoteListPage = () => {
             </Col>
           </Row>
           <br />
-          {userData?.user ? (
-            <Row>
+          {userDetails?.user ? (
+            <Row key={userDetails.user.uid}>
               <Col xs={5}>
-                <ThemedCreateButton url={"note/create"} />
+                <ThemedCreateButton
+                  url={"note/create"}
+                  notesTotal={notesTotal}
+                />
               </Col>
             </Row>
           ) : null}
@@ -111,7 +117,7 @@ const NoteListPage = () => {
             >
               {myNotes?.map((note, index) => (
                 <>
-                  <NoteItem key={note.id} {...note} />
+                  <NoteItem key={note.id + index} {...note} />
                 </>
               ))}
             </InfiniteScroll>
