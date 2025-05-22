@@ -109,12 +109,12 @@ const SearchPage = ({
         <Row>
           <Col>
             <ThemedButton onClick={() => setSearchList("Game")}>
-              Games
+              Games {searchList === "Game" ? "(active)" : ""}
             </ThemedButton>
           </Col>
           <Col>
             <ThemedButton onClick={() => setSearchList("Movie")}>
-              Movies
+              Movies {searchList === "Movie" ? "(active)" : ""}
             </ThemedButton>
           </Col>
         </Row>
@@ -244,7 +244,7 @@ const SearchPage = ({
           </InfiniteScroll>
         </Container>
       ) : (
-        <Loader text="Please begin typing to get suggestions below" />
+        <Loader text="Begin typing title to get suggested images below" />
       )}
     </>
   );

@@ -7,11 +7,14 @@ import Col from "react-bootstrap/Col";
 import { useTheme } from "../contexts/ThemeSelection";
 import ThemedButton from "./ThemedButton";
 import ThemedTextarea from "./ThemedTextArea";
+import { returnCategoryIcon } from "../utils/CategoryUtils";
 
 const NoteItem = (props) => {
   const {
     docId,
     title,
+    is_private: privateNote,
+    category,
     detailPage,
     date_created,
     handleNoteUpdate,
@@ -28,38 +31,44 @@ const NoteItem = (props) => {
   };
 
   const noteListPage = (
-    <Link to={`note/${docId}`}>
-      <Container
-        style={{
-          backgroundColor: theme[activeTheme].panelColor,
-          color: theme[activeTheme].color,
-          border: theme[activeTheme].border,
-          marginBottom: "10px",
-        }}
+    <Container
+      style={{
+        backgroundColor: theme[activeTheme].panelColor,
+        color: theme[activeTheme].color,
+        border: theme[activeTheme].border,
+        marginBottom: "10px",
+      }}
+    >
+      {" "}
+      <Link
+        to={`note/${docId}`}
+        style={{ textDecoration: "none", color: "inherit", hover: "none" }}
       >
+        <Row style={{ paddingTop: "5px" }}>
+          <Col xs={10}>{title}</Col>
+          <Col xs={2} style={{ fontSize: "70%" }}>
+            <Row style={{ padding: "0px" }}>
+              <Col style={{ padding: "0px" }}>
+                {privateNote ? <i className="fa-solid fa-lock" /> : null}
+              </Col>
+
+              <Col style={{ padding: "0px" }}>
+                {image_url ? <i className="fa-solid fa-image" /> : null}
+              </Col>
+              <Col style={{ padding: "0px" }}>
+                {returnCategoryIcon(category)}
+              </Col>
+            </Row>
+          </Col>
+        </Row>
         <Row>
-          {" "}
-          <Col xs={12}>{title}</Col>
+          <Col xs={10}></Col>
         </Row>
         <Row style={{ padding: "0px", fontSize: "70%" }}>
-          {" "}
-          <Col xs={10}></Col>
-          <Col xs={2}>
-            {image_url ? (
-              <i className="fa-solid fa-image"></i>
-            ) : (
-              <span style={{ paddingBottom: "20px" }}></span>
-            )}
-          </Col>
+          <Col xs={10}> {date_created}</Col>
         </Row>
-        <Row>
-          {" "}
-          <Col xs={12} style={{ fontSize: "70%" }}>
-            {date_created}
-          </Col>
-        </Row>
-      </Container>
-    </Link>
+      </Link>
+    </Container>
   );
 
   return detailPage ? (

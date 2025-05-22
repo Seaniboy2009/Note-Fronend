@@ -7,7 +7,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { fetchMoreData } from "../../utils/utils";
 import Loader from "../../components/Loader";
 import { useUser } from "../../contexts/UserContext";
-import { getDocs, query, where } from "firebase/firestore";
+import { getDocs, query, where, getCountFromServer } from "firebase/firestore";
 import { dbNotes } from "../../firebase";
 import ThemedCreateButton from "../../components/ThemedCreateButton";
 import { useTheme } from "../../contexts/ThemeSelection";
@@ -29,7 +29,22 @@ const NoteListPage = () => {
   const [hasLoaded, setHasLoaded] = useState(false);
   const { userDetails } = useUser();
   const { activeTheme, theme } = useTheme();
+  const [noteCount, setNoteCount] = useState(0);
   const [notesTotal, setNotesTotal] = useState(0);
+
+  useEffect(() => {
+    const getNoteCount = async () => {
+      if (!userDetails?.user) return;
+      const userNotesQuery = query(
+        dbNotes,
+        where("userId", "==", userDetails.user.uid)
+      );
+      const snapshot = await getCountFromServer(userNotesQuery);
+      const noteCount = snapshot.data().count;
+      setNoteCount(noteCount);
+    };
+    getNoteCount();
+  }, [userDetails]);
 
   useEffect(() => {
     const handleGetNotes = async () => {
@@ -60,7 +75,6 @@ const NoteListPage = () => {
           return dateB - dateA; // Sort in descending order
         });
 
-        console.log("Total notes found: ", userUpdatedResponse.length);
         setNotesTotal(userUpdatedResponse.length);
         setMyNotes(sortedNotes);
       } catch (error) {
@@ -88,7 +102,7 @@ const NoteListPage = () => {
         <>
           <Row>
             <Col xs={12}>
-              <h5>Notes</h5>
+              <h5>Notes ({noteCount})</h5>
             </Col>
           </Row>
           <br />

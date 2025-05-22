@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import appStyle from "../../styles/App.module.css";
 import Container from "react-bootstrap/Container";
@@ -11,22 +11,44 @@ import { addDoc, query, where, getCountFromServer } from "firebase/firestore";
 import { dbNotes } from "../../firebase";
 import ThemedButton from "../../components/ThemedButton";
 import ThemedInput from "../../components/ThemedInput";
+import ThemedTextarea from "../../components/ThemedTextArea";
 
 const NoteCreate = () => {
   const navigate = useNavigate();
   const { userDetails } = useUser();
   const [pickedImageFromList, setPickedImageFromList] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [noteCount, setNoteCount] = useState(0);
   const { theme, activeTheme } = useTheme();
   const [noteData, setNoteData] = useState({
     title: "",
+    details: "",
     category: "Other",
     image_url: "",
     is_private: false,
   });
   const [error, setError] = useState(null);
   const isSubscriber = userDetails?.subscription.active === true;
-  const pickImage = isSubscriber;
+  const isSubscriptionModeEnabled =
+    process.env.REACT_APP_SUBSCRIPTION_ACTIVE === "true";
+  const pickImage = isSubscriber || !isSubscriptionModeEnabled;
+
+  useEffect(() => {
+    if (!userDetails?.user) {
+      navigate("/login");
+    }
+    const getNoteCount = async () => {
+      const userNotesQuery = query(
+        dbNotes,
+        where("userId", "==", userDetails.user.uid)
+      );
+      const snapshot = await getCountFromServer(userNotesQuery);
+      const noteCount = snapshot.data().count;
+      console.log("Note count:", noteCount);
+      setNoteCount(noteCount);
+    };
+    getNoteCount();
+  }, [userDetails, navigate]);
 
   // Create a new note
   const createNote = async () => {
@@ -37,15 +59,10 @@ const NoteCreate = () => {
       return;
     }
 
-    try {
-      if (!isSubscriber) {
-        const userNotesQuery = query(
-          dbNotes,
-          where("userId", "==", userDetails.user.uid)
-        );
-        const snapshot = await getCountFromServer(userNotesQuery);
-        const noteCount = snapshot.data().count;
+    console.log(isSubscriptionModeEnabled);
 
+    try {
+      if (!isSubscriber && isSubscriptionModeEnabled) {
         if (noteCount >= 10) {
           setError("You need to be a subscriber to create more than 10 notes.");
           return;
@@ -86,12 +103,12 @@ const NoteCreate = () => {
   };
 
   return (
-    <Container fluid className={appStyle.Container}>
+    <Container className={appStyle.Container}>
       <Row>
         <Col xs={10}>
-          <Link to={"/notes/"}>
+          <ThemedButton onClick={() => navigate("/notes/")} fullWidth={false}>
             <i className="fa-solid fa-arrow-left" />
-          </Link>
+          </ThemedButton>
         </Col>
       </Row>
       <Container
@@ -108,7 +125,7 @@ const NoteCreate = () => {
             <h5>Create a New Note</h5>
           </Col>
         </Row>
-        <Row>
+        <Row style={{ borderBottom: "1px solid #eee" }}>
           <Col xs={6}>
             <label style={{ padding: "10px" }} htmlFor="title">
               Title
@@ -122,10 +139,10 @@ const NoteCreate = () => {
             />
           </Col>
         </Row>
-        <Row style={{ alignItems: "center" }}>
+        <Row style={{ alignItems: "center", borderBottom: "1px solid #eee" }}>
           <Col xs={6}>
             <label style={{ padding: "10px" }} htmlFor="category">
-              Category
+              Select a Category
             </label>
           </Col>
           <Col xs={6}>
@@ -138,10 +155,34 @@ const NoteCreate = () => {
                 { value: "Other", label: "Other" },
                 { value: "Game", label: "Game" },
                 { value: "Movie", label: "Movie" },
+                { value: "Music", label: "Music" },
+                { value: "Book", label: "Book" },
+                { value: "Food", label: "Food" },
+                { value: "Travel", label: "Travel" },
+                { value: "Hobby", label: "Hobby" },
+                { value: "Health", label: "Health" },
+                { value: "Event", label: "Event" },
               ]}
             />
           </Col>
         </Row>
+        <Row>
+          <Col xs={6}>
+            <label style={{ padding: "10px" }} htmlFor="details">
+              Details
+            </label>
+          </Col>
+        </Row>
+        <Row style={{ borderBottom: "1px solid #eee" }}>
+          <Col xs={12}>
+            <ThemedTextarea
+              value={noteData.details}
+              name="details"
+              onChange={(e) => handleChange("details", e.target.value)}
+            />
+          </Col>
+        </Row>
+
         {pickedImageFromList && (
           <>
             {" "}

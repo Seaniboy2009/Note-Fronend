@@ -27,10 +27,11 @@ const AccountPage = () => {
   const [requestingRemovingAccess, setRequestingRemovingAccess] =
     useState(false);
   const isSubscriber = userDetails?.subscription.active === true;
-  const advancedFeatures = isSubscriber;
   const [showSubscriberModal, setShowSubscriberModal] = useState(false);
 
   const { settings, updateSettings } = useUserSettings();
+  const isSubscriptionModeEnabled =
+    process.env.REACT_APP_SUBSCRIPTION_ACTIVE === "true";
 
   const handleUpdateIcons = (newValue) => {
     updateSettings({ useIcons: newValue });
@@ -380,65 +381,68 @@ const AccountPage = () => {
           </Row>
           <Row>
             <Col>
-              <div
-                style={{
-                  padding: "16px",
-                  borderRadius: "8px",
-                  backgroundColor: activeTheme
-                    ? theme[activeTheme].backgroundColor
-                    : "#f5f5f5",
-                  color: activeTheme ? theme[activeTheme].color : "#333",
-                  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                  lineHeight: "1.6",
-                }}
-              >
-                <h5 style={{ marginBottom: "12px" }}>
-                  Subscription:{" "}
-                  <span style={{ color: isSubscriber ? "green" : "#888" }}>
-                    {isSubscriber ? "Active" : "Free Plan"}
-                  </span>
-                </h5>
+              {isSubscriptionModeEnabled ? (
+                <div
+                  style={{
+                    padding: "16px",
+                    borderRadius: "8px",
+                    backgroundColor: activeTheme
+                      ? theme[activeTheme].backgroundColor
+                      : "#f5f5f5",
+                    color: activeTheme ? theme[activeTheme].color : "#333",
+                    boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                    lineHeight: "1.6",
+                  }}
+                >
+                  <h5 style={{ marginBottom: "12px" }}>
+                    Subscription:{" "}
+                    <span style={{ color: isSubscriber ? "green" : "#888" }}>
+                      {isSubscriber ? "Active" : "Free Plan"}
+                    </span>
+                  </h5>
 
-                {isSubscriber ? (
-                  <>
-                    <p>
-                      <strong>Plan:</strong>{" "}
-                      {userDetails?.subscription?.plan || "N/A"}
-                    </p>
-                    <p>
-                      <strong>Started:</strong>{" "}
-                      {userDetails?.subscription?.startDate
-                        ? new Date(
-                            userDetails.subscription.startDate
-                          ).toLocaleDateString()
-                        : "Unknown"}
-                    </p>
-                    <p>
-                      <strong>Expires:</strong>{" "}
-                      {userDetails?.subscription?.endDate
-                        ? new Date(
-                            userDetails.subscription.endDate
-                          ).toLocaleDateString()
-                        : "Never"}
-                    </p>
-                    {userDetails?.subscriptionEndingSoon && (
-                      <p style={{ color: "#d48806", fontWeight: "bold" }}>
-                        ⚠ Your subscription is ending soon!
+                  {isSubscriber ? (
+                    <>
+                      <p>
+                        <strong>Plan:</strong>{" "}
+                        {userDetails?.subscription?.plan || "N/A"}
                       </p>
-                    )}
-                  </>
-                ) : (
-                  <ThemedButton
-                    fullWidth={false}
-                    onClick={() => setShowSubscriberModal(true)}
-                  >
-                    Upgrade Account
-                  </ThemedButton>
-                )}
-                {userDetails?.existingSubscription && !isSubscriber && (
-                  <p>Your subscription has ended.</p>
-                )}
-              </div>
+                      <p>
+                        <strong>Started:</strong>{" "}
+                        {userDetails?.subscription?.startDate
+                          ? new Date(
+                              userDetails.subscription.startDate
+                            ).toLocaleDateString()
+                          : "Unknown"}
+                      </p>
+                      <p>
+                        <strong>Expires:</strong>{" "}
+                        {userDetails?.subscription?.endDate
+                          ? new Date(
+                              userDetails.subscription.endDate
+                            ).toLocaleDateString()
+                          : "Never"}
+                      </p>
+                      {userDetails?.subscriptionEndingSoon && (
+                        <p style={{ color: "#d48806", fontWeight: "bold" }}>
+                          ⚠ Your subscription is ending soon!
+                        </p>
+                      )}
+                    </>
+                  ) : (
+                    <ThemedButton
+                      fullWidth={false}
+                      onClick={() => setShowSubscriberModal(true)}
+                    >
+                      Upgrade Account
+                    </ThemedButton>
+                  )}
+
+                  {userDetails?.existingSubscription && !isSubscriber && (
+                    <p>Your subscription has ended.</p>
+                  )}
+                </div>
+              ) : null}
             </Col>
           </Row>
           {/* ** Icon selection */}
@@ -457,7 +461,7 @@ const AccountPage = () => {
           </Row>
         </Container>
         {/* Theme selection */}
-        {advancedFeatures ? (
+        {isSubscriber || !isSubscriptionModeEnabled ? (
           <Container
             style={{
               backgroundColor: theme[activeTheme].panelColor,
@@ -477,7 +481,8 @@ const AccountPage = () => {
               {Object.entries(theme)
                 .filter(
                   ([themeName]) =>
-                    advancedFeatures ||
+                    !isSubscriptionModeEnabled ||
+                    isSubscriber ||
                     themeName === "Basic" ||
                     themeName === "BasicLessContrast"
                 )
@@ -520,7 +525,7 @@ const AccountPage = () => {
           </Container>
         )}
         {/* Calendar access */}
-        {advancedFeatures ? (
+        {isSubscriber || !isSubscriptionModeEnabled ? (
           <>
             <Container
               style={{
