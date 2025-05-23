@@ -90,8 +90,9 @@ export const UserProvider: React.FC<UserContextProps> = ({ children }) => {
         }
 
         if (data.subscription) {
-          const startDate = data.subscription.startDate.toDate();
-          const endDate = data.subscription.endDate.toDate();
+          const startDate =
+            data?.subscription?.startDate?.toDate() || new Date();
+          const endDate = data?.subscription?.endDate?.toDate() || new Date();
           const now = new Date();
           const timeDiff = endDate.getTime() - now.getTime();
           const daysRemaining = timeDiff / (1000 * 60 * 60 * 24);
